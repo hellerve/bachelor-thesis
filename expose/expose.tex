@@ -1,0 +1,157 @@
+\documentclass[oneside,11pt,xetex]{scrbook}
+\KOMAoptions{%
+  headings=normal,
+  captions=rightbeside,
+  bibliography=totoc,
+  listof=totoc}
+
+\usepackage{amsmath}
+\newcommand{\argmax}[1]{\underset{#1}{\operatorname{argmax}}}
+
+\usepackage{fontspec}
+\setmonofont[Scale=MatchLowercase,Mapping=tex-text]{Tahoma}
+
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+\usepackage[svgnames,hyperref]{xcolor}
+
+\usepackage[margin=10pt,labelfont=bf]{caption}
+\usepackage[labelformat=simple]{subcaption}
+\renewcommand\thesubfigure{(\alph{subfigure})}
+
+\usepackage{metalogo}
+\usepackage{hologo}
+\usepackage{verbatim}
+\usepackage{setspace}
+\usepackage{enumitem}
+
+\newlist{transcriptlist}{description}{1}
+\setlist[transcriptlist]{font=\sffamily\bfseries,
+                              align=left,
+                              leftmargin=1.6cm,
+                              labelindent=\parindent, 
+                              labelwidth=*}
+
+\newlist{headinglist}{description}{1}
+\setlist[headinglist]{font=\sffamily\bfseries, 
+                           leftmargin=0cm,
+                           style=nextline}
+
+\usepackage[%
+backend=biber,
+natbib=true,
+backref=true,
+citecounter=true,
+dashed=false,
+backrefstyle=three,
+citestyle=authoryear-icomp,
+firstinits=true,
+maxcitenames=2,
+maxbibnames=10,
+uniquename=mininit,
+bibstyle=authoryear,
+url=false,
+doi=false]{biblatex}
+
+\AtEveryBibitem{\clearfield{month}}
+\AtEveryCitekey{\clearfield{month}}
+
+\usepackage[%
+unicode=true,
+hyperindex=true,
+bookmarks=true,
+pdftitle={Beyond .*Script},
+pdfauthor={Veit Heller},
+colorlinks=false,
+pdfborder=0,
+allcolors=DarkBlue,
+pdfpagelabels,
+hyperfootnotes=true]{hyperref}
+
+\usepackage{bookmark}
+
+\setcounter{tocdepth}{1}
+
+\usepackage[%
+acronym, 
+nomain,
+toc=true]{glossaries}
+
+\usepackage{cleveref}
+
+\begin{document}
+
+
+\renewcommand{\thepage}{\roman{page}}
+
+\pagestyle{empty}
+
+\frontmatter
+
+\vspace*{0.4\textheight}
+
+\begin{flushleft}
+\Large{\textbf{Exposé zur Bachelor-Thesis}}
+\vspace{0.5cm}
+
+\large{"Beyond .*Script - Implementing A Language For The Web"}
+\vspace{0.5cm}
+
+Erstellt von: Veit Heller (s0539501)
+\vspace{0.1cm}
+
+Studiengang:  Angewandte Informatik (Bachelor)\linebreak
+Hochschule für Technik und Wirtschaft (HTW) Berlin
+\vspace{0.1cm}
+
+Betreuer:
+\end{flushleft}
+
+\date{\today}
+
+\addchap{Background}
+
+The modern web is comprised of an abundance of very different beasts. Technologies that powered the first versions of the World Wide Web, such as HTML, CSS and JavaScript, and relatively new conceptions like TypeScript, CoffeScript, PureScript, ClojureScript, Elm, LASS, SCSS, Jade and Emscripten - to name but a few - are shaping the internet as we know it. There is a flaw that many of the new technologies have in common, as different as they may look and feel - they are mere preprocessors. In the end, it all boils down to the classic technologies again and we are left with the same programming we have been doing for the last twenty years.
+\vspace{0.3cm}
+
+All of this is for a good reason: having fewer technologies means that browsers and clients have to care for only a handful of things instead of fighting a hydra. However, there is undoubtably potential lost when we are focussing on what we already have instead of what could be. There is not a lot of research going on into real alternatives for the web, meaning embedded languages and technologies. The author believes that experimenting with these alternatives is worth trying.
+\vspace{0.3cm}
+
+Building a new programming language directly into the browser would, however, not be a good idea. Standard commitees exist for a reason and building and maintaining a production size interpreter, making it work within the context of a widely used browser and integrating it seamlessly with existing components must not be underestimated. This all leads to the conclusion that the prototype of such a language has to be created on top of existing technologies (meaning that it has to be implemented in JavaScript). Soundness, security and stability have to be guaranteed.
+
+\addchap{Purpose of this work}
+To substantiate his ideas, the author is to create a small runtime for a R5RS-like language with a foreign function interface into Javascript, some syntactical additions and a fairly extensive standard library. The language should be able to be used within the context of webpages without being preprocessed, given that the runtime was already loaded, with all the usual comfort and discomfort of web pages.
+\vspace{0.3cm}
+
+The efficiency in both programming effort and execution time are to be measured. Further, R5RS compliance should be evaluated. Any concerns have to be either eliminated or justified.
+\vspace{0.3cm}
+
+Ease of use and power have to be balanced. To that end, advanced Scheme features like Macros and Continuations, their use and stability are to be considered and, if necessary, excluded from the prototype. Other features might be included with the interpreter, to increase the syntactic ease for the user and avoid overly steep learning curves.
+\vspace{0.3cm}
+
+The focus of this work lies in the creation of a working interpreter for the web, adhering to all the requirements that were previously mentioned. The toolchain has to be easily reproducible and maintainable. The overloading of existing HTML elements - i.e. \texttt{script} tags - will be implemented to make the emulation of native programming as realistic as possible.
+\vspace{0.3cm}
+
+\addchap{Structure of this work}
+In the preliminary the terminology should be explained and the basis of the subject matter is to be laid out.
+
+Within the context of an analysis of \emph{Related Work} frequently used approaches and standards (if they exist) should be evaluated. The approaches that are being used have to match the design goals of the project and its' structure. Evaluation models are chosen to make an unbiased analysis possible.
+
+A \emph{Concept Design} has to be created, based on preliminary goals and standard approaches. The system has to work on standard web technologies without the need of any third party libraries.
+
+Following that, the \emph{System Design} explains the architecture of the runtime and the language itself. Interfaces have to be created to integrate it seamlessly into existing code and runtimes.
+
+The \emph{Implementation} details the creation of proof of concept runtime that matches the design and architecture originally laid out.
+
+An \emph{Evaluation of the Prototype} will be documented. It details the functionality and interface and how to work with it and applies aforementioned evaluation models to analyze and interpret the findings.
+
+Lastly, the \emph{Summary and Outlook} will present a look into the future of the language and related technologies.
+
+\addchap{Outline}
+\input{./expose/expose.toc}
+
+\addchap{Timetable}
+\input{./expose/timetable.toc}
+
+\end{document}
