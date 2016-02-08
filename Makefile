@@ -14,6 +14,7 @@ exp:
 
 cleanup:
 	rm -f *.acn *.aux *.bcf *.idx *.ist *.lo* thesis.toc *.run.xml *.bbl *.blg *.acr *.alg
+	rm -rf `biber --cache`
 
 clean: cleanup
 	rm -f *.pdf

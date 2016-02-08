@@ -1,0 +1,304 @@
+%==========================================
+%
+% Academic thesis template
+%
+% Based on KOMA-Script book class.
+%
+% This template is not officially endorsed 
+% by any educational institution.
+%
+% Ben Swift   22/6/12
+% benjamin.j.swift@gmail.com
+% http://github.com/benswift/thesis-template
+% 
+% This template is in the public domain
+% 
+%==========================================
+% preamble
+\documentclass[oneside,11pt,xetex]{scrbook}
+\KOMAoptions{%
+  headings=normal,
+  captions=rightbeside,
+  bibliography=totoc,
+  listof=totoc}
+
+%\usepackage{libertineotf}
+\usepackage{amsmath}
+\newcommand{\argmax}[1]{\underset{#1}{\operatorname{argmax}}}
+
+\usepackage{fontspec}
+\setmonofont[Scale=MatchLowercase,Mapping=tex-text]{Tahoma}
+
+\usepackage{booktabs}
+\usepackage{tabularx}
+% if you want colour tables
+% \usepackage{colortbl}
+
+\usepackage[svgnames,hyperref]{xcolor}
+
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
+\graphicspath{{./figures/}}
+
+\usepackage[margin=10pt,labelfont=bf]{caption}
+\usepackage[labelformat=simple]{subcaption}
+\renewcommand\thesubfigure{(\alph{subfigure})}
+
+\usepackage{metalogo}
+\usepackage{hologo}
+\usepackage{verbatim}
+\usepackage{setspace}
+\usepackage{enumitem}
+
+\newlist{transcriptlist}{description}{1}
+\setlist[transcriptlist]{font=\sffamily\bfseries,
+                              align=left,
+                              leftmargin=1.6cm,
+                              labelindent=\parindent, 
+                              labelwidth=*}
+
+\newenvironment{transcript}%
+{\small\begin{transcriptlist}}%
+{\end{transcriptlist}}
+
+\newlist{headinglist}{description}{1}
+\setlist[headinglist]{font=\sffamily\bfseries, 
+                           leftmargin=0cm,
+                           style=nextline}
+
+\usepackage[%
+backend=biber,
+natbib=true,
+backref=true,
+citecounter=true,
+dashed=false,
+backrefstyle=three,
+citestyle=authoryear-icomp,
+firstinits=true,
+maxcitenames=2,
+maxbibnames=10,
+uniquename=mininit,
+bibstyle=authoryear,
+url=false,
+doi=false]{biblatex}
+
+\AtEveryBibitem{\clearfield{month}}
+\AtEveryCitekey{\clearfield{month}}
+
+\nocite{*}
+\addbibresource[datatype=bibtex]{thesis.bib}
+
+\usepackage[english=british,threshold=15,thresholdtype=words]{csquotes}
+\SetCiteCommand{\parencite}
+
+\newenvironment*{smallquote}
+  {\quote\small}
+  {\endquote}
+\SetBlockEnvironment{smallquote}
+
+\usepackage[%
+unicode=true,
+hyperindex=true,
+bookmarks=true,
+pdftitle={Beyond .*Script},
+pdfauthor={Veit Heller},
+colorlinks=false,
+pdfborder=0,
+allcolors=DarkBlue,
+pdfpagelabels,
+hyperfootnotes=true]{hyperref}
+
+\usepackage{bookmark}
+
+\setcounter{tocdepth}{1}
+
+\usepackage[%
+acronym, 
+nomain,
+toc=true]{glossaries}
+
+\usepackage{cleveref}
+
+\makeindex
+\makeglossaries
+
+\begin{document}
+
+\newacronym{ast}{AST}{Abstract Syntax Tree}
+\newacronym{ir}{IR}{Intermediate Representation}
+
+\renewcommand{\thepage}{\roman{page}}
+
+\pagestyle{empty}
+
+\title{Beyond .*Script}
+\subtitle{Implementing A Language For The Web}
+
+\author{Veit Heller}
+
+\date{\today}
+
+\publishers{%
+  \normalsize{%
+  A thesis submitted for the degree of \\
+  B.Sc. of Applied Computer Science of \\
+  The University of Applied Sciences Berlin}}
+
+\uppertitleback{%
+  \textbf{Institutional Address}\\
+  HTW Berlin\\
+  Campus Treskowallee\\
+  Treskowallee 8\\
+  10318 Berlin\\
+  \textsc{Germany}\\
+  \bigskip\\
+  \textbf{Supervisory Panel}\\
+
+  Prof. Jürgen Sieck\\
+  Forschungsgruppe Informations- und Kommunikationsanwendungen\\
+  HTW Berlin\\
+
+%TODO:
+  Dr. John Oldmate\\
+  School of Cooking\\
+  The University of Wherever\\
+  \bigskip\\
+  Set with the help of {\KOMAScript} and
+  \XeLaTeX.\\
+
+  \copyright~\the\year. All rights reserved.}
+
+\dedication{\small{\emph{For Meredith, Tobias and all people who cope with me. Your undying support will not be forgotten.}}}
+
+\pdfbookmark{Title Page}{Title Page}
+\maketitle
+
+\frontmatter
+
+\vspace*{0.4\textheight}
+
+\begin{center}
+  Except where otherwise indicated, this thesis is my own original
+  work.
+\end{center}
+\vspace*{4cm}
+
+\begin{flushright}
+  \begin{minipage}{4cm}
+    Veit Heller\\
+    \today
+  \end{minipage}
+\end{flushright}
+
+\begin{onehalfspace}
+
+\addchap{Abstract}
+
+The modern web is comprised of an abundance of very different beasts. Technologies that powered the first versions of the World Wide Web, such as HTML, CSS and JavaScript, and relatively new conceptions like TypeScript, CoffeScript, PureScript, ClojureScript, Elm, LASS, SCSS, Jade and Emscripten - to name but a few - are shaping the internet as we know it. There is a flaw that many of the new technologies have in common, as different as they may look and feel - they are mere preprocessors. In the end, it all boils down to the classic technologies again and we are left with the same programming we have been doing for the last twenty years.
+
+All of this is for a good reason: having fewer technologies means that browsers and clients have to care for only a handful of things instead of fighting a hydra. However, there is undoubtably potential lost when we are focussing on what we already have instead of what could be. There is not a lot of research going on into real alternatives for the web, meaning embedded languages and technologies.(1) The author believes that experimenting with these alternatives is worth trying.
+
+To substantiate his ideas, the author created a small runtime for a R5RS-like language with a foreign function interface into Javascript, some syntactical additions and a fairly extensive standard library. The language can be used within the context of webpages without being preprocessed, given that the runtime was already loaded, with all the usual comfort and discomfort of web pages.
+
+\pdfbookmark{Contents}{Contents}
+\tableofcontents
+
+\printglossary[type=\acronymtype,title=Abbreviations]
+
+\mainmatter
+
+\pagestyle{headings}
+
+% Quotes: Practicality beats Purity. Tim Peters, The Zen of Python
+
+\setchapterpreamble[u]{%
+  \dictum[\emph{B. Kernighan}]{Controlling complexity is the essence of computer programming.}
+  \bigskip}
+\chapter{Introduction}
+\label{chap:intro}
+
+\section{Motivation}
+
+There is a profound hatred of many programmers, who are mostly not related with web programming in the first place,
+for JavaScript. Its' design was critized since its' initial inception in 1993. Brendan Eich, its' designer, was
+mocked by traditional desktop programmers for a long time, and it is a fairly recent change for people to step
+forward and say that they like JavaScript. This is partially due to its' extremely vivid ecosystem and a plethora of
+frameworks, libraries and learning material. The other reason is that recent changes have made the language more
+manageable; not only are many syntactic additions such as classes and lambdas and interface reworks included in the
+latest standards ECMAscript 6 and 7, languages that compile to JavaScript have also risen in popularity.
+
+This popularity has given way for a new dogma: JavaScript is the assembly of the web. But not all of it is good,
+particularly as an assembly language. This is the reason why the creator of the popular Emscripten transpiler
+located a subset of the language that he calls ASM.js, a highly optimizable dialect that is extremely hard to
+write for humans. All of this work comes at a cost, though, and that is transparency. One of the reasons the web
+works with an interpreted language and not bytecode in the first place is security - compiling and minifying it
+goes straight against that intuition.
+
+Maybe it is too late to change all of this.
+
+\section{Purpose of this work}
+
+\section{Structure of this work}
+
+\setchapterpreamble[u]{%
+  \dictum[\emph{T. Peters}---The Zen of Python]{Practicality beats purity.}
+  \bigskip}
+\chapter{Motivation}
+\label{chap:motivation}
+
+
+\setchapterpreamble[u]{%
+  \dictum[\emph{F. Nietzsche}---approximately]{If you look into the abyss for long enough, bytecode will look back at you.}
+  \bigskip}
+\chapter{Implementation}
+\label{chap:Implementation}
+
+  \gls{ir} \gls{ast}
+
+
+\setchapterpreamble[u]{%
+  \dictum[\emph{R. Buckminster Fuller}]{When I'm working on a problem, I never think about beauty. I think only how to solve the problem. But when I have finished, if the solution is not beautiful, I know it is wrong.}
+  \bigskip}
+\chapter{Outlook}
+\label{chap:outlook}
+
+
+\chapter{Conclusion}
+\label{chap:conclusion}
+
+
+\section{Summary of contributions}
+\label{sec:summary-of-contributions}
+
+\begin{headinglist}
+\item[Some bollocks]
+  I did some bollocks, and it was pretty interesting.
+\item[Some other bollocks] 
+  Really, if you think about it, I did a whole other lot of bollocks
+  as well.
+\end{headinglist}
+
+%============================================
+%============================================
+% end matter
+
+\appendix
+
+\chapter{An appendix}
+\label{chap:an-appendix}
+
+Put any appendices here---they are just like regular chapters, except
+they follow the \texttt{\textbackslash{}appendix} directive.
+
+\end{onehalfspace}
+
+\backmatter
+
+\bookmarksetup{startatroot}
+
+\printbibliography[title=References,heading=bibintoc]
+
+\listoffigures
+
+\listoftables
+
+\end{document}
