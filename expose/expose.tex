@@ -110,39 +110,37 @@ Betreuer:
 
 \date{\today}
 
-\addchap{Background}
+\clearpage
 
-The modern web is comprised of an abundance of very different beasts. Technologies that powered the first versions of the World Wide Web, such as HTML, CSS and JavaScript, and relatively new conceptions like TypeScript, CoffeScript, PureScript, ClojureScript, Elm, LASS, SCSS, Jade and Emscripten - to name but a few - are shaping the internet as we know it. There is a flaw that many of the new technologies have in common, as different as they may look and feel - they are mere preprocessors. In the end, it all boils down to the classic technologies again and we are left with the same programming we have been doing for the last twenty years.
-\vspace{0.3cm}
+\section*{Background}
 
-All of this is for a good reason: having fewer technologies means that browsers and clients have to care for only a handful of things instead of fighting a hydra. However, there is undoubtably potential lost when we are focussing on what we already have instead of what could be. There is not a lot of research going on into real alternatives for the web, meaning embedded languages and technologies.
-\vspace{0.3cm}
+The modern web is comprised of an abundance of very different beasts. Technologies that powered the first versions of the World Wide Web, such as HTML, CSS and JavaScript, and relatively new conceptions like TypeScript, CoffeScript, PureScript, ClojureScript, Elm, LASS, SCSS, Jade and Emscripten - to name but a few - are shaping the internet as we know it. There is one flaw that many of the new technologies have in common, as different as they may look and feel - they are mere preprocessors. In the end, it all boils down to the classic technologies again and we are left with the same limited capabilities we have had for the last 20 years.
 
-Building a new programming language directly into the browser would, however, not be a good idea. Standard commitees exist for a reason and building and maintaining a production size interpreter, making it work within the context of a widely used browser and integrating it seamlessly with existing components must not be underestimated. This all leads to the conclusion that the prototype of such a language has to be created on top of existing technologies (meaning that it has to be implemented in JavaScript). Soundness, security and stability have to be guaranteed.
+All of this is for a good reason: having fewer technologies means that browsers and clients have to care for only a handful of things instead of fighting a hydra. However, there is undoubtedly potential lost when we are focussing on what we already have instead of what could be. There is not a lot of research being done to develop embedded languages and technologies, which would be viable alternatives for the web.
 
-\addchap{Purpose of this work}
-To substantiate his ideas, a small runtime for a R5RS-like language with a foreign function interface into Javascript, some syntactical additions and a fairly extensive standard library has to be created. The language should be able to be used within the context of webpages without being preprocessed, given that the runtime was already loaded, with all the usual comfort and discomfort of web pages.
-\vspace{0.3cm}
+Building a new programming language directly into the browser would not, however, be a good idea. Standard committees exist for a reason and building and maintaining a production size interpreter, making it work within the context of a widely used browser and integrating it seamlessly with existing components must not be underestimated. This all leads to the conclusion that the prototype of such a language has to be created on top of existing technologies (i.e. it has to be implemented in JavaScript). Soundness, security and stability have to be guaranteed.
 
-All of this work serves the purpose of a novel approach to implement and use languages on the web, possibly even those that were never designed to do that. Many industries that usually operated in the environment of desktop computing or even data centers, e.g. data science and gaming, now increasingly rush towards the web in an effort to mine its' capabilities. They usually have different needs than the traditional web development industry, which is apparent in the way JavaScript was designed. Libraries are created to work around these deficiencies, although at the core, nothing changes. Fast computing with inifinite precision numbers, effective, comfortable multithreading and type safety are only some of the features those industries will typically need. Being able to develop Domain Specific Languages or even general purpose programming languages is a real advantage for these communities.
-\vspace{0.3cm}
+\clearpage
 
-R5RS is a standard of the Scheme programming language, a Lisp derivative popular in university, research and teaching. The reason why R5RS was chosen as a basis is its extensibility. Through its' massive metaprogramming capabilities, it can serve as a swiss knife for building domain-specific languages and toolkits. Many of the aforementioned needs are baked into the language definition.
-\vspace{0.3cm}
+\section*{Purpose of this work}
+To substantiate these ideas, a small runtime for a R5RS-like language with a foreign function interface into Javascript, some syntactical additions and a fairly extensive standard library has to be created. The language should be able to be used within the context of webpages without being preprocessed, given that the runtime was already loaded, with all the usual comfort and discomfort of web pages.
 
-The efficiency in both programming effort and execution time are to be measured. Further, R5RS compliance should be evaluated. Any concerns have to be either eliminated or justified.
-\vspace{0.3cm}
+All of this work seeks to develop a novel approach for implementing and using languages on the web, possibly even for those that were never designed to do that. Many industries that usually operated in the environment of desktop computing or even data centers, e.g. data science and gaming, now increasingly rush towards the web in an effort to mine its capabilities. They usually have different needs than the traditional web development industry, which is apparent in the way JavaScript was designed. Libraries are created to work around these deficiencies, although at the core, nothing changes. Fast computing with infinite precision numbers, effective, comfortable multithreading, and type safety are only some of the features those industries will typically need. Being able to develop Domain Specific Languages or even general purpose programming languages is a real advantage for these communities.
+
+R5RS is a standard of the Scheme programming language, a Lisp derivative popular in universities, research and teaching. R5RS was chosen as a basis for its extensibility. Through its massive metaprogramming capabilities, it functions as a swiss knife for building domain-specific languages and toolkits. Many of the aforementioned needs are already baked into the language definition.
+
+The efficiency in both programming effort and execution time are to be measured. Furthermore R5RS compliance should be evaluated. Any concerns have to be either eliminated or justified.
 
 Ease of use and power have to be balanced. To that end, advanced Scheme features like Macros and Continuations, their use and stability are to be considered and, if necessary, excluded from the prototype. Other features might be included with the interpreter, to increase the syntactic ease for the user and avoid overly steep learning curves.
-\vspace{0.3cm}
 
 The focus of this work lies in the creation of a working interpreter for the web, adhering to all the requirements that were previously mentioned. The toolchain has to be easily reproducible and maintainable. The overloading of existing HTML elements - i.e. \texttt{script} tags - will be implemented to make the emulation of native programming as realistic as possible.
-\vspace{0.3cm}
 
-\addchap{Structure of this work}
+\clearpage
+
+\section*{Structure of this work}
 In the preliminary the terminology should be explained and the basis of the subject matter is to be laid out.
 
-Within the context of an analysis of \emph{Related Work} frequently used approaches and standards (if they exist) should be evaluated. The approaches that are being used have to match the design goals of the project and its' structure. Evaluation models are chosen to make an unbiased analysis possible.
+Within the context of an analysis of \emph{Related Work} frequently used approaches and standards (if they exist) should be evaluated. The approaches that are being used have to match the design goals of the project and its structure. Evaluation models will be chosen to make possible an unbiased analysis.
 
 A \emph{Concept Design} has to be created, based on preliminary goals and standard approaches. The system has to work on standard web technologies without the need of any third party libraries.
 
@@ -154,10 +152,14 @@ An \emph{Evaluation of the Prototype} will be documented. It details the functio
 
 Lastly, the \emph{Summary and Outlook} will present a look into the future of the language and related technologies.
 
-\addchap{Outline}
+\clearpage
+
+\section*{Outline}
 \input{./expose/expose.toc}
 
-\addchap{Timetable}
+\clearpage
+
+\section*{Timetable}
 \input{./expose/timetable.toc}
 
 \end{document}
