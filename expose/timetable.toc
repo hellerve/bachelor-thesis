@@ -2,29 +2,23 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {chapter}{\numberline {1}Research (1 week)}{}{chapter*.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {1.1}Interpreters}{}{section.1.1}
+\contentsline {section}{\numberline {1.1}Cross Compilation}{}{section.1.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {1.2}R5RS}{}{section.1.2}
+\contentsline {section}{\numberline {1.2}Hijacking of HTML Components}{}{section.1.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {1.3}Hijacking of HTML components}{}{section.1.3}
-\defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {2}Concept (2 weeks)}{}{chapter*.2}
+\contentsline {chapter}{\numberline {1}Concept (1 weeks)}{}{chapter*.2}
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {2.1}Construction Design}{}{section.2.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2.2}Standards Integration}{}{section.2.2}
+\contentsline {section}{\numberline {2.2}Additional Features}{}{section.2.2}
 \defcounter {refsection}{0}\relax 
 \contentsline {chapter}{\numberline {3}Implementation (3 weeks)}{}{chapter*.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.1}Language Implementation}{}{section.3.1}
+\contentsline {section}{\numberline {3.1}Language Port}{}{section.3.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.1.1}Interpreter}{}{subsection.3.1.1}
+\contentsline {section}{\numberline {3.2}Integration into the Browser}{}{section.3.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.1.2}Standard Library}{}{subsection.3.1.2}
-\defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.2}Cross-Compilation}{}{section.3.2}
-\defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {4}Writing the Bachelor Thesis (2 weeks)}{}{chapter*.4}
+\contentsline {chapter}{\numberline {4}Writing the Bachelor Thesis (3 weeks)}{}{chapter*.4}
 \defcounter {refsection}{0}\relax 
 \contentsline {chapter}{\numberline {5}Corrections (2 weeks)}{}{chapter*.5}
 \defcounter {refsection}{0}\relax 

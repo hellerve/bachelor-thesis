@@ -1,0 +1,60 @@
+\ifglsentryexists{ast}{}%
+{%
+\gls@defglossaryentry{ast}%
+{%
+name={AST},%
+sort={AST},%
+type={acronym},%
+first={Abstract Syntax Tree\glsspace (AST)},%
+firstplural={Abstract Syntax Trees\glsspace (ASTs)},%
+text={AST},%
+plural={ASTs},%
+description={Abstract Syntax Tree},%
+descriptionplural={Abstract Syntax Tree\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Abstract Syntax Tree},%
+longplural={Abstract Syntax Trees},%
+short={AST},%
+shortplural={ASTs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{ir}{}%
+{%
+\gls@defglossaryentry{ir}%
+{%
+name={IR},%
+sort={IR},%
+type={acronym},%
+first={Intermediate Representation\glsspace (IR)},%
+firstplural={Intermediate Representations\glsspace (IRs)},%
+text={IR},%
+plural={IRs},%
+description={Intermediate Representation},%
+descriptionplural={Intermediate Representation\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Intermediate Representation},%
+longplural={Intermediate Representations},%
+short={IR},%
+shortplural={IRs},%
+counter={page},%
+parent={},%
+%
+}%
+}%

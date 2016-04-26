@@ -54,6 +54,9 @@ bibstyle=authoryear,
 url=false,
 doi=false]{biblatex}
 
+\bibliography{./expose.bib}
+\nocite{*}
+
 \AtEveryBibitem{\clearfield{month}}
 \AtEveryCitekey{\clearfield{month}}
 
@@ -72,11 +75,6 @@ hyperfootnotes=true]{hyperref}
 \usepackage{bookmark}
 
 \setcounter{tocdepth}{1}
-
-\usepackage[%
-acronym, 
-nomain,
-toc=true]{glossaries}
 
 \usepackage{cleveref}
 
@@ -103,9 +101,11 @@ Erstellt von: Veit Heller (s0539501)
 
 Studiengang:  Angewandte Informatik (Bachelor)\linebreak
 Hochschule für Technik und Wirtschaft (HTW) Berlin
-\vspace{0.1cm}
+\vspace{0.2cm}
 
-Betreuer:
+Betreuer:\linebreak
+Prof. Hendrik Gärtner\linebreak
+Prof. Henrik Lochmann
 \end{flushleft}
 
 \date{\today}
@@ -116,22 +116,22 @@ Betreuer:
 
 The modern web is comprised of an abundance of very different beasts. Technologies that powered the first versions of the World Wide Web, such as HTML, CSS and JavaScript, and relatively new conceptions like TypeScript, CoffeScript, PureScript, ClojureScript, Elm, LASS, SCSS, Jade and Emscripten - to name but a few - are shaping the internet as we know it. There is one flaw that many of the new technologies have in common, as different as they may look and feel - they are mere preprocessors. In the end, it all boils down to the classic technologies again and we are left with the same limited capabilities we have had for the last 20 years.
 
-All of this is for a good reason: having fewer technologies means that browsers and clients have to care for only a handful of things instead of fighting a hydra. However, there is undoubtedly potential lost when we are focussing on what we already have instead of what could be. There is not a lot of research being done to develop embedded languages and technologies, which would be viable alternatives for the web.
+All of this is for a good reason: having fewer technologies means that browsers and clients have to care for only a handful of things instead of fighting a hydra. However, there is undoubtedly potential lost when we are focusing on what we already have instead of what could be. There is not a lot of research being done to develop embedded languages and technologies, which would be viable alternatives for the web.
 
 Building a new programming language directly into the browser would not, however, be a good idea. Standard committees exist for a reason and building and maintaining a production size interpreter, making it work within the context of a widely used browser and integrating it seamlessly with existing components must not be underestimated. This all leads to the conclusion that the prototype of such a language has to be created on top of existing technologies (i.e. it has to be implemented in JavaScript). Soundness, security and stability have to be guaranteed.
 
 \clearpage
 
 \section*{Purpose of this work}
-To substantiate these ideas, a small runtime for a R5RS-like language with a foreign function interface into Javascript, some syntactical additions and a fairly extensive standard library has to be created. The language should be able to be used within the context of webpages without being preprocessed, given that the runtime was already loaded, with all the usual comfort and discomfort of web pages.
+To substantiate these ideas, a preexisting language shall be implemented in JavaScript. By removing the creation of the language from the problem space, the design process will be simplified. This also allows for reusing the existing standard library and any software that was created in the source language. To narrow it down further, the existing implementation of the language should be cross-compiled, so as to not build any components that are already there.
+
+To allow the implementation to run in the environment of a webpage without requiring any change in the browser, the compilation target will be JavaScript. In order to make the experience resemble native browser technologies as closely as possible, a few additions to the source language will have to be made.
+
+Zepto, a Scheme derivative with a fairly simple implementation, was chosen as a compilation source. It is based on the R5RS standard of the Scheme programming language.
 
 All of this work seeks to develop a novel approach for implementing and using languages on the web, possibly even for those that were never designed to do that. Many industries that usually operated in the environment of desktop computing or even data centers, e.g. data science and gaming, now increasingly rush towards the web in an effort to mine its capabilities. They usually have different needs than the traditional web development industry, which is apparent in the way JavaScript was designed. Libraries are created to work around these deficiencies, although at the core, nothing changes. Fast computing with infinite precision numbers, effective, comfortable multithreading, and type safety are only some of the features those industries will typically need. Being able to develop Domain Specific Languages or even general purpose programming languages is a real advantage for these communities.
 
-R5RS is a standard of the Scheme programming language, a Lisp derivative popular in universities, research and teaching. R5RS was chosen as a basis for its extensibility. Through its massive metaprogramming capabilities, it functions as a swiss knife for building domain-specific languages and toolkits. Many of the aforementioned needs are already baked into the language definition.
-
-The efficiency in both programming effort and execution time are to be measured. Furthermore R5RS compliance should be evaluated. Any concerns have to be either eliminated or justified.
-
-Ease of use and power have to be balanced. To that end, advanced Scheme features like Macros and Continuations, their use and stability are to be considered and, if necessary, excluded from the prototype. Other features might be included with the interpreter, to increase the syntactic ease for the user and avoid overly steep learning curves.
+R5RS is a standard of the Scheme programming language, a Lisp derivative popular in universities, research and teaching. Zepto was chosen as a basis for its extensibility. Through its massive metaprogramming capabilities, it functions as a swiss knife for building domain-specific languages and toolkits. Many of the aforementioned needs are already baked into the language definition.
 
 The focus of this work lies in the creation of a working interpreter for the web, adhering to all the requirements that were previously mentioned. The toolchain has to be easily reproducible and maintainable. The overloading of existing HTML elements - i.e. \texttt{script} tags - will be implemented to make the emulation of native programming as realistic as possible.
 
@@ -146,7 +146,7 @@ A \emph{Concept Design} has to be created, based on preliminary goals and standa
 
 Following that, the \emph{System Design} explains the architecture of the runtime and the language itself. Interfaces have to be created to integrate it seamlessly into existing code and runtimes.
 
-The \emph{Implementation} details the creation of proof of concept runtime that matches the design and architecture originally laid out.
+The \emph{Implementation} details the steps needed to make Zepto useful in a browser context. This includes cross compilation technology, any additions to the original source and an explanation of the resulting pipeline.
 
 An \emph{Evaluation of the Prototype} will be documented. It details the functionality and interface and how to work with it and applies aforementioned evaluation models to analyze and interpret the findings.
 
@@ -155,11 +155,14 @@ Lastly, the \emph{Summary and Outlook} will present a look into the future of th
 \clearpage
 
 \section*{Outline}
-\input{./expose/expose.toc}
+\input{./expose.toc}
 
 \clearpage
 
 \section*{Timetable}
-\input{./expose/timetable.toc}
+\input{./timetable.toc}
+
+\printbibliography
+
 
 \end{document}
