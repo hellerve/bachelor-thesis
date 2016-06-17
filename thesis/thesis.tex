@@ -169,6 +169,8 @@ toc=true]{glossaries}
    captionpos=b
 }
 
+\linespread{1.3}
+
 \begin{document}
 
 
@@ -228,9 +230,6 @@ toc=true]{glossaries}
     \today
   \end{minipage}
 \end{flushright}
-
-\begin{onehalfspace}
-\end{onehalfspace}
 
 \addchap{Abstract}
 
@@ -393,7 +392,50 @@ zepto.observer.observe(document, {childList: true, subtree: true});
 
 \section{The \gls{ffi}}
 
-The \gls{ffi}
+The \gls{ffi} is a central part of the port. If it weren't usable, none of the browser's
+capabilities could be used from within zepto, thus rendering the effort of bringing zepto into
+the browser effectively useless. The \gls{api}s of the Web are a big part of what it means to
+program for the browser, after all.
+
+An initial sketch of the programming interface was extremely simplistic: a call to the
+function \texttt{js} could be called with a string as argument, representing the textual
+representation of the JavaScript program that should be run. It was piped to the JavaScript
+function \texttt{eval} and the function returned an affirmative truth value. Quasi-quoting
+larger blocks of JavaScript was also possible.
+
+Of course this is unusable. The missing return value makes any effort of talking to an
+\gls{api} impossible, as one could never yield any results. A different kind of return
+value is needed.
+
+* implementation of ffi with strings
+
+* caveats of that method
+
+* short programming example
+
+\clearpage
+
+\section{The \gls{dom}}
+
+* the dom library
+
+* small example
+
+\begin{lstlisting}[language=Lisp,caption=A minimal version of a DOM module]
+; TODO: need to get this from work laptop
+(module "dom"
+  (export
+   `("add-node" add-node)
+   `("get-elem" get-elem))
+
+  (define (add-node node)
+    ())
+
+  (define (get-elem elem)
+    ()))
+\end{lstlisting}
+
+\clearpage
 
 \setchapterpreamble[u]{%
   \dictum[\emph{R. Buckminster Fuller}]{When I'm working on a problem, I never think about beauty. I think only how to solve the problem. But when I have finished, if the solution is not beautiful, I know it is wrong.}
@@ -401,6 +443,11 @@ The \gls{ffi}
 \chapter{Outlook}
 \label{chap:outlook}
 
+* porting efforts
+
+* compiler efforts
+
+* classes
 
 \chapter{Conclusion}
 \label{chap:conclusion}
