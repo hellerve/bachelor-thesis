@@ -31,6 +31,7 @@
 
 \usepackage{booktabs}
 \usepackage{tabularx}
+\usepackage{listings}
 % if you want colour tables
 % \usepackage{colortbl}
 
@@ -119,20 +120,59 @@ toc=true]{glossaries}
 
 \usepackage{cleveref}
 
-\makeindex
-\makeglossaries
-
-\begin{document}
-
 \newacronym{ast}{AST}{Abstract Syntax Tree}
-
 \newacronym{ir}{IR}{Intermediate Representation}
+\newacronym{ghc}{GHC}{Glasgow Haskell Compiler}
+\newacronym{repl}{REPL}{Read-Eval-Print Loop}
+\newacronym{ffi}{FFI}{Foreign Function Interface}
+\newacronym{api}{API}{Application Programming Interface}
+\newacronym{dom}{DOM}{Document Object Model}
 
 \renewcommand{\thepage}{\roman{page}}
 
-\pagestyle{empty}
+\makeindex
+\makeglossaries
 
-\title{Beyond \.*Script}
+
+\usepackage{color}
+\definecolor{lightgray}{rgb}{.9,.9,.9}
+\definecolor{darkgray}{rgb}{.4,.4,.4}
+\definecolor{purple}{rgb}{0.65, 0.12, 0.82}
+\lstdefinelanguage{JavaScript}{
+  keywords={break, case, catch, continue, debugger, default, delete, do, else, false, finally, for, function, if, in, instanceof, new, null, return, switch, this, throw, true, try, typeof, var, void, while, with},
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]',
+  morestring=[b]",
+  ndkeywords={class, export, boolean, throw, implements, import, this},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  sensitive=true
+}
+
+\lstset{
+   language=JavaScript,
+   backgroundcolor=\color{lightgray},
+   extendedchars=true,
+   showstringspaces=false,
+   basicstyle=\small,
+   showspaces=false,
+   numbers=left,
+   numberstyle=\footnotesize,
+   numbersep=9pt,
+   tabsize=2,
+   breaklines=true,
+   showtabs=false,
+   captionpos=b
+}
+
+\begin{document}
+
+
+\title{Beyond .*Script}
 \subtitle{Implementing A Language For The Web}
 
 \author{Veit Heller}
@@ -236,11 +276,12 @@ objects being Self.
   \dictum[\emph{T. Peters}---The Zen of Python]{Practicality beats purity.}
   \bigskip}
 \chapter{Motivation}
-\label{chap:motivation}
+\label{chap:Motivation}
 
 A common saying among programming language designers is that every programmer has written
 their own implementation of Lisp. There are a lot of different implementations of Lisp
-in the wild, even ones that compile to JavaScript\footnote{such as \href{https://github.com/clojure/clojurescript}{ClojureScript}.}.
+in the wild, even ones that compile to JavaScript\footnote{such as \href{https://github.com/clojure/clojurescript}{ClojureScript},
+a backend of the Clojure compiler that targets JavaScript.}.
 
 The main reason for that is often cited to be the simplicity of the language on a parsing
 level. A simple Lisp can be implemented in less than one hundred lines of code, if no
@@ -263,11 +304,17 @@ directly from the \gls{ast}. This is slow but ensures a small interpreter size\f
 codebase is about 4000 lines of Haskell code}. The compilers are written directly in
 zepto itself.
 
-* chosen because small
+The small code base makes zepto a good target for porting it to the web. Further, ecause it
+is written in Haskell the code base was expected to be possibly almost entirely compilable
+to JavaScript using GHC-JS, a backend for the \gls{ghc} targetting JavaScript instead of
+native code. It offers many advanced features such as inlining of JavaScript into the code
+base using a technique called quasi-quoting, where a special character sequence delimits the
+inlined code, much like regular quotes. This tool set was expected to make the work of porting
+an existing language to the web as simple as possible.
 
-* makes a good counter-example to JavaScript
-
-* a functional language as opposed to an object-oriented one
+Of course there are other reasons to use a functional language as an example. With both syntax
+and semantics differing wildly from JavaScript, this example makes way for languages more
+closely related to JavaScript also making their eventual way into the browser.
 
 \setchapterpreamble[u]{%
   \dictum[\emph{Hofstadter’s Law}]{It always takes longer than you expect, even when you take into account Hofstadter’s Law.}
@@ -275,7 +322,76 @@ zepto itself.
 \chapter{Implementation}
 \label{chap:Implementation}
 
+As predicted in \ref{chap:Motivation}, the code base of zepto could be reused in almost its' entirety.
+What had to be rewritten was mostly related to the startup of the interpreter, because the regular
+paths into the code - either via a script being passed into it or launching an interactive
+\gls{repl}\footnote{A \gls{repl} is an interactive code evaluation environment. Code is typed into
+a prompt and immediately evaluated. The convenience of such a short feedback loop is often used
+in the context of scripting languages and shells.} - were unavailable in the browser context.
+Instead, a way of passing the sources from within \texttt{script} tags needed to be found. Further
+customizations include a \gls{ffi} to enable better cross-evaluation of JavaScript and the adaptation
+of existing \gls{apis}, such as the \gls{dom}.
 
+\section{The \texttt{script} tag}
+
+Initially, a \gls{dom} node walker was considered, but rejected relatively early because of two reasons:
+Firstly, it introduced a layer of complexity from within JavaScript code that would have likely made
+it brittle and hardly portable. Secondly, it would require a walk of the nodes every time a \gls{dom}
+element is inserted or replaced, which is a common occurence in modern interactive web applications.
+
+As of November of 2015, the \gls{w3c} specifies an \gls{api} that simplifies this process for the programmer.
+Within their specification of the \href{https://www.w3.org/TR/dom/#mutationobserver}{DOM4}, the fourth
+specification of \gls{apis} for the Web, an object called \texttt{MutationObserver} is included which
+is able to register for \gls{dom} manipulations. Its main function will be triggered whenever a change
+occurs within the \gls{dom} part that it registered for listening to.
+
+This simplifies the implementation of a listener to DOM events a great deal. Only minimal programming
+is required to configure the listener and to filter out all the nodes that are not \texttt{script} nodes
+of the type \texttt{text/zepto}\footnote{This was chosen in analogy to the existing \texttt{text/javascript}
+node type}.
+
+A problem untended to with that method was nodes insert before the listener starts. This was resolved by
+singling out all the \texttt{script} tags that are present before the listener starts and applying the
+same filter/evaluation function to all of them. This also ensures that they are executed before any
+additional code (and possibly dependent) is passed into the zepto object.
+
+The code was then included in the \texttt{zepto} object, which is the global interpreter object
+used for the management and interactivity of the zepto interpreter\footnote{It also conveniently
+serves as the entrypoint for a \gls{ffi} from JavaScript to zepto.}.
+
+\begin{lstlisting}[language=JavaScript,caption=The final mutation observer code (simplified)]
+// the initial observer and the function it takes
+zepto.observer = new MutationObserver(zepto.handleMutation);
+
+// this function will get a list of mutations and apply handleDom to them
+zepto.handleMutation = function(mutations) {
+  mutations.forEach(mutation => {
+    mutation.addedNodes.map(zepto.handleDom);
+  });
+}
+
+// evaluate if it is a text/zepto node
+zepto.handleDom = function(node) {
+  if (node.nodeName != "SCRIPT" || node.type != "text/zepto") {
+    return null;
+  }
+  return zepto.eval(node.innerHTML);
+}
+
+// execute this on startup
+window.onload = () => {
+  let scripts = document.getElementsByTagName("script");
+  scripts.map(zepto.handleDom);
+}
+// the extra arguments signify recursive listening
+zepto.observer.observe(document, {childList: true, subtree: true});
+\end{lstlisting}
+
+\clearpage
+
+\section{The \gls{ffi}}
+
+The \gls{ffi}
 
 \setchapterpreamble[u]{%
   \dictum[\emph{R. Buckminster Fuller}]{When I'm working on a problem, I never think about beauty. I think only how to solve the problem. But when I have finished, if the solution is not beautiful, I know it is wrong.}
