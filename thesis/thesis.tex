@@ -125,6 +125,7 @@ toc=true]{glossaries}
 \begin{document}
 
 \newacronym{ast}{AST}{Abstract Syntax Tree}
+
 \newacronym{ir}{IR}{Intermediate Representation}
 
 \renewcommand{\thepage}{\roman{page}}
@@ -220,8 +221,11 @@ objects being Self.
 
 
 * things get better
+
 * es 6 and es7 thank god
+
 * a lot of research funneled into it
+
 * still a fundamental rethinking might be necessary
 
 \section{Purpose of this work}
@@ -238,13 +242,39 @@ A common saying among programming language designers is that every programmer ha
 their own implementation of Lisp. There are a lot of different implementations of Lisp
 in the wild, even ones that compile to JavaScript\footnote{such as \href{https://github.com/clojure/clojurescript}{ClojureScript}.}.
 
+The main reason for that is often cited to be the simplicity of the language on a parsing
+level. A simple Lisp can be implemented in less than one hundred lines of code, if no
+intermediate representation is generated. This is made possible by the unique property
+of Lisp of enclosing every statement in parentheses, where the first element within
+those parentheses is the statement and the other elements are the arguments.
+It can be evaluated straight from a textual level, because things such as operator precedence
+and statement amiguity do not exist. In regular Lisp as specified in the initial paper by
+John McCarthy\parencite{GCM} only six special forms exist to allow not only for Turing-completeness,
+but also for expressiveness.
+
+\section{zepto}
+
+Zepto is a new Scheme implementation that aims to be as small as possible, to be able
+to target a lot of different backends. Currently, LLVM and Erlang Core\footnote{Erlang Core 
+is the \gls{ir} of Erlang code before it is complied. Resources and documentation
+about it are sparse, it mostly seems to exist inside the BEAM's implementation.} bindings are
+under development, the reference implementation is a simple interpreter that interprets code
+directly from the \gls{ast}. This is slow but ensures a small interpreter size\footnoe{The entire
+codebase is about 4000 lines of Haskell code}. The compilers are written directly in
+zepto itself.
+
+* chosen because small
+
+* makes a good counter-example to JavaScript
+
+* a functional language as opposed to an object-oriented one
+
 \setchapterpreamble[u]{%
   \dictum[\emph{Hofstadter’s Law}]{It always takes longer than you expect, even when you take into account Hofstadter’s Law.}
   \bigskip}
 \chapter{Implementation}
 \label{chap:Implementation}
 
-  \gls{ir} \gls{ast}
 
 
 \setchapterpreamble[u]{%
@@ -258,39 +288,14 @@ in the wild, even ones that compile to JavaScript\footnote{such as \href{https:/
 \label{chap:conclusion}
 
 
-\section{Summary of contributions}
-\label{sec:summary-of-contributions}
-
-\begin{headinglist}
-\item[Some bollocks]
-  I did some bollocks, and it was pretty interesting.
-\item[Some other bollocks] 
-  Really, if you think about it, I did a whole other lot of bollocks
-  as well.
-\end{headinglist}
-
 %============================================
 %============================================
 % end matter
-
-\appendix
-
-\chapter{An appendix}
-\label{chap:an-appendix}
-
-Put any appendices here---they are just like regular chapters, except
-they follow the \texttt{\textbackslash{}appendix} directive.
-
-\end{onehalfspace}
 
 \backmatter
 
 \bookmarksetup{startatroot}
 
 \printbibliography[title=References,heading=bibintoc]
-
-\listoffigures
-
-\listoftables
 
 \end{document}
