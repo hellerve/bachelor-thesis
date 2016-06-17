@@ -49,7 +49,6 @@
 \usepackage{verbatim}
 \usepackage{setspace}
 \usepackage{enumitem}
-\usepackage{hyperref}
 
 \newlist{transcriptlist}{description}{1}
 \setlist[transcriptlist]{font=\sffamily\bfseries,
@@ -101,7 +100,7 @@ doi=false]{biblatex}
 unicode=true,
 hyperindex=true,
 bookmarks=true,
-pdftitle={Beyond \.*Script},
+pdftitle={Beyond .*Script},
 pdfauthor={Veit Heller},
 colorlinks=false,
 pdfborder=0,
@@ -127,6 +126,7 @@ toc=true]{glossaries}
 \newacronym{ffi}{FFI}{Foreign Function Interface}
 \newacronym{api}{API}{Application Programming Interface}
 \newacronym{dom}{DOM}{Document Object Model}
+\newacronym{w3c}{W3C}{World Wide Web Consortium}
 
 \renewcommand{\thepage}{\roman{page}}
 
@@ -230,6 +230,7 @@ toc=true]{glossaries}
 \end{flushright}
 
 \begin{onehalfspace}
+\end{onehalfspace}
 
 \addchap{Abstract}
 
@@ -291,7 +292,7 @@ of Lisp of enclosing every statement in parentheses, where the first element wit
 those parentheses is the statement and the other elements are the arguments.
 It can be evaluated straight from a textual level, because things such as operator precedence
 and statement amiguity do not exist. In regular Lisp as specified in the initial paper by
-John McCarthy\parencite{GCM} only six special forms exist to allow not only for Turing-completeness,
+John McCarthy\parencite{JCM} only six special forms exist to allow not only for Turing-completeness,
 but also for expressiveness.
 
 \section{zepto}
@@ -301,9 +302,9 @@ to target a lot of different backends. Currently, LLVM and Erlang Core\footnote{
 is the \gls{ir} of Erlang code before it is complied. Resources and documentation
 about it are sparse, it mostly seems to exist inside the BEAM's implementation.} bindings are
 under development, the reference implementation is a simple interpreter that interprets code
-directly from the \gls{ast}. This is slow but ensures a small interpreter size\footnoe{The entire
-codebase is about 4000 lines of Haskell code}. The compilers are written directly in
-zepto itself.
+directly from the \gls{ast}. This is slow but ensures a small interpreter size\footnote{The
+entire codebase is only about 4000 lines of Haskell code big}. The compilers are written directly
+in zepto itself.
 
 The small code base makes zepto a good target for porting it to the web. Further, ecause it
 is written in Haskell the code base was expected to be possibly almost entirely compilable
@@ -331,7 +332,7 @@ a prompt and immediately evaluated. The convenience of such a short feedback loo
 in the context of scripting languages and shells.} - were unavailable in the browser context.
 Instead, a way of passing the sources from within \texttt{script} tags needed to be found. Further
 customizations include a \gls{ffi} to enable better cross-evaluation of JavaScript and the adaptation
-of existing \gls{apis}, such as the \gls{dom}.
+of existing \gls{api}s, such as the \gls{dom}.
 
 \section{The \texttt{script} tag}
 
@@ -342,7 +343,7 @@ element is inserted or replaced, which is a common occurence in modern interacti
 
 As of November of 2015, the \gls{w3c} specifies an \gls{api} that simplifies this process for the programmer.
 Within their specification of the \href{https://www.w3.org/TR/dom/#mutationobserver}{DOM4}, the fourth
-specification of \gls{apis} for the Web, an object called \texttt{MutationObserver} is included which
+specification of \gls{api}s for the Web, an object called \texttt{MutationObserver} is included which
 is able to register for \gls{dom} manipulations. Its main function will be triggered whenever a change
 occurs within the \gls{dom} part that it registered for listening to.
 
