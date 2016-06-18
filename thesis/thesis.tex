@@ -273,6 +273,8 @@ objects being Self.
 NOTE: This had to be moved from chapter 2 to match the current design of the thesis. Please
 excuse the lack of coherence to the part above.
 
+\subsection{Lisp}
+
 A common saying among programming language designers is that every programmer has written
 their own implementation of Lisp. There are a lot of different implementations of Lisp
 in the wild, even ones that compile to JavaScript\footnote{such as \href{https://github.com/clojure/clojurescript}{ClojureScript},
@@ -288,7 +290,7 @@ and statement amiguity do not exist. In regular Lisp as specified in the initial
 John McCarthy\parencite{JCM} only six special forms exist to allow not only for Turing-completeness,
 but also for expressiveness.
 
-\section{zepto}
+\subsection{zepto}
 
 Zepto is a new Scheme implementation that aims to be as small as possible, to be able
 to target a lot of different backends. Currently, LLVM and Erlang Core\footnote{Erlang Core 
@@ -347,12 +349,20 @@ zepto, both the desktop and the JavaScript version, in the future.
 \chapter{Related Work}
 \label{chap:RelatedWork}
 
+\section{Existing Projects}
+
+\section{Existing Standards}
+
 
 \setchapterpreamble[u]{%
   \dictum[\emph{T. Peters}---The Zen of Python]{Practicality beats purity.}
   \bigskip}
 \chapter{Concept Design}
 \label{chap:ConceptDesign}
+
+\section{Construction Design}
+
+\section{Additional Features}
 
 
 \setchapterpreamble[u]{%
@@ -361,12 +371,18 @@ zepto, both the desktop and the JavaScript version, in the future.
 \chapter{System Design}
 \label{chap:System Design}
 
+\section{Integration into the Web Ecosystem}
+
 
 \setchapterpreamble[u]{%
   \dictum[\emph{Hofstadter’s Law}]{It always takes longer than you expect, even when you take into account Hofstadter’s Law.}
   \bigskip}
 \chapter{Implementation}
 \label{chap:Implementation}
+
+\section{Description of the Toolchain}
+
+\section{Description of the Implementation}
 
 As predicted in \ref{sec:Motivation}, the code base of zepto could be reused in almost its' entirety.
 What had to be rewritten was mostly related to the startup of the interpreter, because the regular
@@ -378,7 +394,7 @@ Instead, a way of passing the sources from within \texttt{script} tags needed to
 customizations include a \gls{ffi} to enable better cross-evaluation of JavaScript and the adaptation
 of existing \gls{api}s, such as the \gls{dom}.
 
-\section{The \texttt{script} tag}
+\subsection{The \texttt{script} tag}
 
 Initially, a \gls{dom} node walker was considered, but rejected relatively early because of two reasons:
 Firstly, it introduced a layer of complexity from within JavaScript code that would have likely made
@@ -432,7 +448,7 @@ window.onload = () => {
 zepto.observer.observe(document, {childList: true, subtree: true});
 \end{lstlisting}
 
-\section{The \gls{ffi}}
+\subsection{The \gls{ffi}}
 
 The \gls{ffi} is a central part of the port. If it weren't usable, none of the browser's
 capabilities could be used from within zepto, thus rendering the effort of bringing zepto into
@@ -508,7 +524,7 @@ will return in the execution of this piece of code and the return the textual
 representation of the zepto object so that the entire communication between
 the languages is string-based.
 
-\section{The \gls{dom}}
+\subsection{The \gls{dom}}
 
 After building the \gls{ffi}, it was possible to implement the entire
 communication with the \gls{dom} in terms of calls to foreign functions
@@ -542,6 +558,11 @@ because it is at risk of getting in the way of the job.
   \bigskip}
 \chapter{Evaluation of the Prototype}
 \label{chap:evaluation}
+
+\section{Seamlessness of Integration}
+
+\section{Test Against Standard Implementation of Zepto}
+
 
 \setchapterpreamble[u]{%
   \dictum[\emph{R. Buckminster Fuller}]{When I'm working on a problem, I never think about beauty. I think only how to solve the problem. But when I have finished, if the solution is not beautiful, I know it is wrong.}
