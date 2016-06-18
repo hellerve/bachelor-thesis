@@ -253,6 +253,7 @@ This thesis presents a port of the zepto programming language to the web. It aim
 \label{chap:intro}
 
 \section{Motivation}
+\label{sec:Motivation}
 
 JavaScript has, since its inception, attracted a lot of controversy. This is rooted
 in various aspects of its design, from prototypal inheritance to operator precedence.
@@ -269,15 +270,8 @@ objects being Self.
 
 * still a fundamental rethinking might be necessary
 
-\section{Purpose of this work}
-
-\section{Structure of this work}
-
-\setchapterpreamble[u]{%
-  \dictum[\emph{T. Peters}---The Zen of Python]{Practicality beats purity.}
-  \bigskip}
-\chapter{Motivation}
-\label{chap:Motivation}
+NOTE: This had to be moved from chapter 2 to match the current design of the thesis. Please
+excuse the lack of coherence to the part above.
 
 A common saying among programming language designers is that every programmer has written
 their own implementation of Lisp. There are a lot of different implementations of Lisp
@@ -302,7 +296,7 @@ is the \gls{ir} of Erlang code before it is complied. Resources and documentatio
 about it are sparse, it mostly seems to exist inside the BEAM's implementation.} bindings are
 under development, the reference implementation is a simple interpreter that interprets code
 directly from the \gls{ast}. This is slow but ensures a small interpreter size\footnote{The
-entire codebase is only about 4000 lines of Haskell code big}. The compilers are written directly
+entire codebase is only about 4000 lines of Haskell code.}. The compilers are written directly
 in zepto itself.
 
 The small code base makes zepto a good target for porting it to the web. Further, ecause it
@@ -317,13 +311,64 @@ Of course there are other reasons to use a functional language as an example. Wi
 and semantics differing wildly from JavaScript, this example makes way for languages more
 closely related to JavaScript also making their eventual way into the browser.
 
+\section{Goals of this Thesis}
+
+The primary goal of this thesis is to present a novel approach at implementing languages
+for the Web. This is exemplified by a sample implementation of a non-trivial functional programming
+language.
+
+* functional because different
+
+* fairly different feature set
+
+\section{Structure of this Thesis}
+
+Chapter 2 examines related work in the field of cross-compilation into JavaScript and implementation
+of interpreters that are directly embeddable into larger systems. This includes desktop applications,
+game scripting engines and creative suites.
+
+Chapter 3 gives an overview of the concept design and how the features are laid out to match the needs
+of both the goals of this thesis and the prototype itself.
+
+Chapter 4 presents the system design and how the prototype integrates into existing web components.
+
+Chapter 5 discusses the implementation, picking out different fundamental parts of the system and
+presents how they work.
+
+Chapter 6 evaluates the prototype. This includes problems such as how well the integration of the
+system worked and how it compares to the reference implementation of zepto.
+
+Chapter 7 gives a short summary of what was done and gives an outlook to what might happen with
+zepto, both the desktop and the JavaScript version, in the future.
+
+\setchapterpreamble[u]{%
+  \dictum[\emph{T. Peters}---The Zen of Python]{Practicality beats purity.}
+  \bigskip}
+\chapter{Related Work}
+\label{chap:RelatedWork}
+
+
+\setchapterpreamble[u]{%
+  \dictum[\emph{T. Peters}---The Zen of Python]{Practicality beats purity.}
+  \bigskip}
+\chapter{Concept Design}
+\label{chap:ConceptDesign}
+
+
+\setchapterpreamble[u]{%
+  \dictum[\emph{T. Peters}---The Zen of Python]{Practicality beats purity.}
+  \bigskip}
+\chapter{System Design}
+\label{chap:System Design}
+
+
 \setchapterpreamble[u]{%
   \dictum[\emph{Hofstadter’s Law}]{It always takes longer than you expect, even when you take into account Hofstadter’s Law.}
   \bigskip}
 \chapter{Implementation}
 \label{chap:Implementation}
 
-As predicted in \ref{chap:Motivation}, the code base of zepto could be reused in almost its' entirety.
+As predicted in \ref{sec:Motivation}, the code base of zepto could be reused in almost its' entirety.
 What had to be rewritten was mostly related to the startup of the interpreter, because the regular
 paths into the code - either via a script being passed into it or launching an interactive
 \gls{repl}\footnote{A \gls{repl} is an interactive code evaluation environment. Code is typed into
@@ -356,9 +401,8 @@ singling out all the \texttt{script} tags that are present before the listener s
 same filter/evaluation function to all of them. This also ensures that they are executed before any
 additional code (and possibly dependent) is passed into the zepto object.
 
-The code was then included in the \texttt{zepto} object, which is the global interpreter object
-used for the management and interactivity of the zepto interpreter\footnote{It also conveniently
-serves as the entrypoint for a \gls{ffi} from JavaScript to zepto.}.
+The code was then included in the \texttt{zepto} singleton, which is the global interpreter object
+used for the management and interactivity of the zepto interpreter.
 
 \begin{lstlisting}[language=JavaScript,caption=The final mutation observer code (simplified)]
 // the initial observer and the function it takes
@@ -388,8 +432,6 @@ window.onload = () => {
 zepto.observer.observe(document, {childList: true, subtree: true});
 \end{lstlisting}
 
-\clearpage
-
 \section{The \gls{ffi}}
 
 The \gls{ffi} is a central part of the port. If it weren't usable, none of the browser's
@@ -407,19 +449,77 @@ Of course this is unusable. The missing return value makes any effort of talking
 \gls{api} impossible, as one could never yield any results. A different kind of return
 value is needed.
 
-* implementation of ffi with strings
+The obvious but most challenging to implement solution would be to infer a fitting zepto
+type for every return value in JavaScript and return a result depending on that. While
+this could be seen as a rather elegant solution, it comes with its own set of caveats
+and exceptions, as the mapping between JavaScript and zepto values is not always obvious.
+A JavaScript object has too many properties that get lost in the process of translating
+it to zepto as to make it intuitive.
 
-* caveats of that method
+\begin{lstlisting}[language=Lisp,caption=The ideal FFI]
+; this would return an integer
+(js "1 + 1")
 
-* short programming example
+; this would return a hashmap
+(js "{key: \"val\""})
 
-\clearpage
+; this is problematic, because it will return an object
+(js "new Error()")
+\end{lstlisting}
+
+Another problematic point is the implementation of JavaScript values in GHCJS. They
+are opaque datatypes, aliases for addresses and byte vectors. While zepto supports
+byte vectors and pointers, they are hardly a good representation for semantically rich
+prototypes as they only offer a glance into the underlying implementation of the
+JavaScript engine. While it is true that GHCJS itself provides methods for type
+coercion, they are crude and possibly error-prone.
+
+A simpler method that is still mostly sensible came up: returning the string
+values of all of the values returned. While this places the burden of coercion
+into the programmer's hand, it also gives them the power to make their own 
+decisions of how to deserialize values. Functions for deserializing the most
+common datatypes are included in the standard library of the JavaScript
+implementation of zepto, to aid the programmer in the process of finding
+the right methods of getting a value out of the \gls{ffi}.
+
+This still does not solve the problem of helping manage classes, but it empowers
+the programmer to find their own ways of serializing on the JavaScript side
+and deserializing on the zepto side to preserve the information they need in
+their specific programming context.
+
+All of this needs an additional layer of abstraction to avoid unnecessary
+boiler plate, but it is stable enough for most purposes that zepto in JavaScript
+was used for yet.
+
+\begin{lstlisting}[language=Lisp,caption=The final form of the FFI]
+; the function string->number is a standard zepto function
+(string->number (js "Math.pow(2, 32)"))
+
+; this is an example of how to resolve the earlier problem:
+; override the prototype of the object to return the value that is needed
+(js "Error.prototype.toString = function() { return this.message; }")
+(error (js "new Error(\"fatal error occured\")"))
+\end{lstlisting}
+
+Implementing the JavaScript to zepto \gls{ffi} was much simpler, as the
+interpreter is defined within the JavaScript environment. A call to the
+\texttt{eval} function of the \texttt{zepto} object with a string as argument
+will return in the execution of this piece of code and the return the textual
+representation of the zepto object so that the entire communication between
+the languages is string-based.
 
 \section{The \gls{dom}}
 
-* the dom library
+After building the \gls{ffi}, it was possible to implement the entire
+communication with the \gls{dom} in terms of calls to foreign functions
+and the parsing of their return values. This allows for a stable library,
+because it is unintrusive and does not interfer with existing JavaScript
+constructs.
 
-* small example
+Existing implementations often find it convenient to write a hybrid mix
+of JavaScript and zepto code that calls each other at certain points.
+This is, however, not advisable at the layer of libraries or utilities,
+because it is at risk of getting in the way of the job.
 
 \begin{lstlisting}[language=Lisp,caption=A minimal version of a DOM module]
 ; TODO: need to get this from work laptop
@@ -440,7 +540,13 @@ value is needed.
 \setchapterpreamble[u]{%
   \dictum[\emph{R. Buckminster Fuller}]{When I'm working on a problem, I never think about beauty. I think only how to solve the problem. But when I have finished, if the solution is not beautiful, I know it is wrong.}
   \bigskip}
-\chapter{Outlook}
+\chapter{Evaluation of the Prototype}
+\label{chap:evaluation}
+
+\setchapterpreamble[u]{%
+  \dictum[\emph{R. Buckminster Fuller}]{When I'm working on a problem, I never think about beauty. I think only how to solve the problem. But when I have finished, if the solution is not beautiful, I know it is wrong.}
+  \bigskip}
+\chapter{Summary and Outlook}
 \label{chap:outlook}
 
 * porting efforts
