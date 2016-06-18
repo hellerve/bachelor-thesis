@@ -380,7 +380,22 @@ zepto, both the desktop and the JavaScript version, in the future.
 \chapter{Implementation}
 \label{chap:Implementation}
 
+The implementation philosophy philosophy of the port presented in this thesis has always been to
+reuse as much code from the reference implementation as possible. This guided the flow of design
+choises down a rather natural path and thus kept the implementation described here fairly short and
+relatively trivial.
+
 \section{Description of the Toolchain}
+
+The tooling uses GHCJS, which is a backend for the \gls{ghc} compiler that targets JavaScript rather
+than native code (TODO: remove this from introduction). This makes cross-compiling the code base to
+JavaScript a rather simple undertaking.
+
+* quasi-quoting
+
+* jsbits
+
+* as little dependence on it as possible
 
 \section{Description of the Implementation}
 
@@ -563,6 +578,11 @@ because it is at risk of getting in the way of the job.
 
 \section{Test Against Standard Implementation of Zepto}
 
+* added: ffi
+
+* removed load statement, REPL functionality
+
+* inserting libraries?
 
 \setchapterpreamble[u]{%
   \dictum[\emph{R. Buckminster Fuller}]{When I'm working on a problem, I never think about beauty. I think only how to solve the problem. But when I have finished, if the solution is not beautiful, I know it is wrong.}
@@ -574,10 +594,16 @@ because it is at risk of getting in the way of the job.
 
 * compiler efforts
 
+* zeps
+
 * classes
 
 \chapter{Conclusion}
 \label{chap:conclusion}
+
+* fixing the web not necessary
+
+* rethinking it possible
 
 
 %============================================
