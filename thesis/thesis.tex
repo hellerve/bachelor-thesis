@@ -363,11 +363,33 @@ The tooling uses GHCJS, which is a backend for the \gls{ghc} compiler that targe
 than native code (TODO: remove this from introduction). This makes cross-compiling the code base to
 JavaScript a rather simple undertaking.
 
-* quasi-quoting
+GHCJS offers many advanced features such as inlining of JavaScript into the code
+base using a technique called quasi-quoting, where a special character sequence delimits the
+inlined code, much like regular quotes. This tool set was expected to simplify rewriting the code
+bits that needed adjustment.
 
-* jsbits
+Another important feature was the management of pure JavaScript sources. GHCJS provides management
+of these sources akin to the management of bits of C code that should interface with Haskell in a
+regular \gls{ghc} project. The build file includes a segment called \texttt{js-sources} which ensures
+that the JavaScript in those sources will be included in the final compilation. The informal convention
+seems to be to put the files that should be included into a directory called \texttt{jsbits} (a hat-tip
+to the \gls{ghc} convention of putting C sources into cbits).
 
-* as little dependence on it as possible
+The code emitted by GHCJS is conservative in feature use. This is an important feature if older clients
+with possibly even obsolete browsers want to access web pages supported by zepto code, rare as they might
+be.
+
+All these conveniences do not spare the programmer from the actual programming process, of course,
+and while GHCJS seems like a well-maintained project one has to keep in mind that it is not backed
+by a consortium as \gls{ghc} is and the current maintainer seems to do this work seemingly completely
+in his spare time. This leaves us with the notion that the projectm could be abandoned at any point
+and being too dependent on its' more unusual features could lead to a product that is unnecessarily
+hard to maintain.
+
+All of this considered, a preliminary analysis revealed that the two main conditions for the success
+of this thesis were given: the code emitted by GHCJS is fast, solid and reasonably compact and the
+newest features of both JavaScript and Haskell were supported\footnote{The newest version of \gls{ghc}
+at the time of writing, version 8.0, gained support while this thesis was in the works.}.
 
 \section{Description of the Implementation}
 
