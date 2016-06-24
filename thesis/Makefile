@@ -1,9 +1,9 @@
 thesis:
-	xelatex thesis
+	xelatex -shell-escape thesis
 	biber thesis
 	makeglossaries thesis
-	xelatex thesis
-	xelatex thesis
+	xelatex -shell-escape thesis
+	xelatex -shell-escape thesis
 	make cleanup
 
 cleanup:

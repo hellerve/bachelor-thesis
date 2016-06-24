@@ -32,6 +32,7 @@
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{listings}
+\usepackage{minted}
 % if you want colour tables
 % \usepackage{colortbl}
 
@@ -132,42 +133,6 @@ toc=true]{glossaries}
 
 \makeindex
 \makeglossaries
-
-
-\usepackage{color}
-\definecolor{lightgray}{rgb}{.9,.9,.9}
-\definecolor{darkgray}{rgb}{.4,.4,.4}
-\definecolor{purple}{rgb}{0.65, 0.12, 0.82}
-\lstdefinelanguage{JavaScript}{
-  keywords={break, case, catch, continue, debugger, default, delete, do, else, false, finally, for, function, if, in, instanceof, new, null, return, switch, this, throw, true, try, typeof, var, void, while, with},
-  morecomment=[l]{//},
-  morecomment=[s]{/*}{*/},
-  morestring=[b]',
-  morestring=[b]",
-  ndkeywords={class, export, boolean, throw, implements, import, this},
-  keywordstyle=\color{blue}\bfseries,
-  ndkeywordstyle=\color{darkgray}\bfseries,
-  identifierstyle=\color{black},
-  commentstyle=\color{purple}\ttfamily,
-  stringstyle=\color{red}\ttfamily,
-  sensitive=true
-}
-
-\lstset{
-   language=JavaScript,
-   backgroundcolor=\color{lightgray},
-   extendedchars=true,
-   showstringspaces=false,
-   basicstyle=\small,
-   showspaces=false,
-   numbers=left,
-   numberstyle=\footnotesize,
-   numbersep=9pt,
-   tabsize=2,
-   breaklines=true,
-   showtabs=false,
-   captionpos=b
-}
 
 \linespread{1.3}
 
@@ -442,7 +407,9 @@ additional code (and possibly dependent) is passed into the zepto object.
 The code was then included in the \texttt{zepto} singleton, which is the global interpreter object
 used for the management and interactivity of the zepto interpreter.
 
-\begin{lstlisting}[language=JavaScript,caption=The final mutation observer code (simplified)]
+\begin{listing}[H]
+\caption{The final mutation observer code (simplified)}
+\begin{minted}[linenos,frame=single]{javascript}
 // the initial observer and the function it takes
 zepto.observer = new MutationObserver(zepto.handleMutation);
 
@@ -468,7 +435,8 @@ window.onload = () => {
 }
 // the extra arguments signify recursive listening
 zepto.observer.observe(document, {childList: true, subtree: true});
-\end{lstlisting}
+\end{minted}
+\end{listing}
 
 \subsection{The \gls{ffi}}
 
@@ -494,7 +462,9 @@ and exceptions, as the mapping between JavaScript and zepto values is not always
 A JavaScript object has too many properties that get lost in the process of translating
 it to zepto as to make it intuitive.
 
-\begin{lstlisting}[language=Lisp,caption=The ideal FFI]
+\begin{listing}[H]
+\caption{The ideal FFI}
+\begin{minted}[linenos,frame=single]{clojure}
 ; this would return an integer
 (js "1 + 1")
 
@@ -503,7 +473,8 @@ it to zepto as to make it intuitive.
 
 ; this is problematic, because it will return an object
 (js "new Error()")
-\end{lstlisting}
+\end{minted}
+\end{listing}
 
 Another problematic point is the implementation of JavaScript values in GHCJS. They
 are opaque datatypes, aliases for addresses and byte vectors. While zepto supports
@@ -529,7 +500,9 @@ All of this needs an additional layer of abstraction to avoid unnecessary
 boiler plate, but it is stable enough for most purposes that zepto in JavaScript
 was used for yet.
 
-\begin{lstlisting}[language=Lisp,caption=The final form of the FFI]
+\begin{listing}[H]
+\caption{The final form of the FFI}
+\begin{minted}[linenos,frame=single]{clojure}
 ; the function string->number is a standard zepto function
 (string->number (js "Math.pow(2, 32)"))
 
@@ -537,7 +510,8 @@ was used for yet.
 ; override the prototype of the object to return the value that is needed
 (js "Error.prototype.toString = function() { return this.message; }")
 (error (js "new Error(\"fatal error occured\")"))
-\end{lstlisting}
+\end{minted}
+\end{listing}
 
 Implementing the JavaScript to zepto \gls{ffi} was much simpler, as the
 interpreter is defined within the JavaScript environment. A call to the
@@ -559,19 +533,33 @@ of JavaScript and zepto code that calls each other at certain points.
 This is, however, not advisable at the layer of libraries or utilities,
 because it is at risk of getting in the way of the job.
 
-\begin{lstlisting}[language=Lisp,caption=A minimal version of a DOM module]
-; TODO: need to get this from work laptop
+\begin{listing}[H]
+\caption{A minimal DOM module}
+\begin{minted}[linenos,frame=single]{clojure}
 (module "dom"
   (export
-   `("add-node" add-node)
-   `("get-elem" get-elem))
+    `("create" ,create)
+    `("insert" ,insert)
+    `("get" ,get))
 
-  (define (add-node node)
-    ())
+  (loads "html")
 
-  (define (get-elem elem)
-    ()))
-\end{lstlisting}
+  (update-dom! (lambda (node contents)
+    (js (++ "document.getElementById('" node "').innerHTML = '"
+            (create contents)
+            "';"))))
+
+  (create (lambda (tree)
+    ((import "html:build") tree)))
+
+  (insert (lambda (context tree)
+      (update-dom! context tree)))
+
+  (get (lambda (node)
+    ((import "html:parse")
+       (js (++ "document.getElementById('" node "');"))))))
+\end{minted}
+\end{listing}
 
 \clearpage
 
