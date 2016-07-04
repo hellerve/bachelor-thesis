@@ -111,10 +111,10 @@ hyperfootnotes=true]{hyperref}
 
 \usepackage{bookmark}
 
-\setcounter{tocdepth}{1}
+%\setcounter{tocdepth}{1}
 
 \usepackage[%
-acronym, 
+acronym,
 nomain,
 toc=true]{glossaries}
 
@@ -128,6 +128,7 @@ toc=true]{glossaries}
 \newacronym{api}{API}{Application Programming Interface}
 \newacronym{dom}{DOM}{Document Object Model}
 \newacronym{w3c}{W3C}{World Wide Web Consortium}
+\newacronym{yui}{YUI}{Yahoo User Interface Library}
 
 \renewcommand{\thepage}{\roman{page}}
 
@@ -198,14 +199,6 @@ toc=true]{glossaries}
 
 \addchap{Abstract}
 
-The modern web is comprised of an abundance of very different beasts. Technologies that powered
-the first versions of the World Wide Web, such as HTML, CSS and JavaScript, and relatively new
-conceptions like TypeScript, CoffeScript, PureScript, ClojureScript, Elm, LASS, SCSS, Jade and
-Emscripten - to name but a few - are shaping the internet as we know it. There is one flaw that
-many of the new technologies have in common, as different as they may look and feel - they are
-mere preprocessors. In the end, it all boils down to the classic technologies again and we are
-left with the same limited capabilities we have had for the last twenty years.
-
 This thesis presents and evaluates a port of the zepto programming language to the web. It aims to
 work as seamlessly with existing technologies as possible. It is largely influenced by R5RS Scheme.
 
@@ -228,19 +221,64 @@ work as seamlessly with existing technologies as possible. It is largely influen
 \label{sec:Motivation}
 
 JavaScript has, since its inception, attracted a lot of controversy. This is rooted
-in various aspects of its design, from prototypal inheritance to operator precedence.
-Prototypal inheritance has the reputation of being counter-intuitive, though it is older
-than JavaScript, the first commonly known programming language that implements prototypal
-objects being Self.
+in various aspects of its design, from prototypal inheritance and the \gls{dom} and it's
+\gls{api} to operator precedence. Especially prototypal inheritance  has been the root
+of a lot of discussions in the Computer Science community. It has the reputation of
+being counter-intuitive, though it is older than JavaScript, the first commonly known
+programming language that implemented prototypal objects being Self.
 
+This and a few other design choices have prompted many programmers to develop
+wrapper libraries around almost anything that comprises the language, the arguably
+most widely used examples being jQuery, a library that abstracts over the \gls{dom}.
+But more arcane topics have been covered as well: there is \gls{yui}, a now abandoned
+project of Yahoo that aims to abstract over web \gls{api}s as well but also comes with
+its' own inheritance model, likening JavaScript prototypes to classical classes by
+introducing special functions and properties to the objects such as \texttt{extend}
+and \texttt{superclass}.
 
-* things get better
+All of those libraries have shaped the way JavaScript has developed and in the
+upcoming revisions of ECMAScript\footnote{ECMAscript is the officially trademarked
+name of what application developers and browser vendors most commonly refer to as
+JavaScript.}, ECMAScript 6\footnote{ECMAScript 6 was renamed to ECMAScript 2015
+along the way but for the sake of clarity this thesis uses the more commonly
+know name of the revision.} and ECMAScript 7, a lot of conveniences from third-party
+libraries have been adopted by the "vanilla"\footnote{A common name for JavaScript
+that refrains from leveraging paradigm-altering libraries.} JavaScript canon.
+Among these features has been the widely controversial introduction of a \texttt{class}
+notation for JavaScript that makes prototypes feel more like classes (without
+breaking existing semantics).
 
-* es 6 and es7 thank god
+\subsection{Preprocessors}
 
-* a lot of research funneled into it
+This and other features have been available to JavaScript developers for much
+longer than the latest iterations of the JavaScript language and without
+the need to rely on a possibly massive library - provided they use a preprocessor.
+One of the earliest exemplars of preprocessing for JavaScript, CoffeeScript, included
+\texttt{lambdas}, a shorthand for anonymous functions, \texttt{pattern matching},
+a technique for destructuring data, and \texttt{classes}, all of which found
+their way into the latest ECMAScript revisions.
 
-* still a fundamental rethinking might be necessary
+Preprocessing can serve a lot of different purposes apart from providing
+syntactic commodities to the programmer. Babel, for instance, is a relatively
+novel library for transpiling JavaScript that adheres to the new standards
+of ECMAScript back to older revisions, for the sake of backwards-compatibility.
+It also aims to provide small optimizations before the code reaches the compiler,
+such as constant hoisting, a compiler optimization technique that eliminates
+pure functions that always produce the same result in favour of global constants
+to reduce the overhead of function calls.
+
+\subsubsection{Caveats} % do we really want to go as deep?
+
+**STUB: TODO**
+
+In its' heart, all of the preprocessors and transpilers that target JavaScript
+are JavaScript, even if the syntax and semantics differ radically. This makes
+for an interesting case, because it might hinder the web itself from evolving:
+at its' core, there is one technology only.
+
+Obviously, a lot of research is going into the development of JavaScript and
+it's tools and it might be ignorant to dismiss JavaScript tooling outright,
+though. Among transpiler writers, JavaScript is hailed as the assembly of the web.
 
 NOTE: This had to be moved from chapter 2 to match the current design of the thesis. Please
 excuse the lack of coherence to the part above.
