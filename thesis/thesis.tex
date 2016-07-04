@@ -200,7 +200,20 @@ toc=true]{glossaries}
 \addchap{Abstract}
 
 This thesis presents and evaluates a port of the zepto programming language to the web. It aims to
-work as seamlessly with existing technologies as possible. It is largely influenced by R5RS Scheme.
+work as seamlessly with existing technologies as possible and is largely influenced by R5RS,
+a standard of the Lisp derivative Scheme.
+
+It is the result of a year of independent research on zepto, a new programming language
+targetting various environments. The prototype described here and implemented for this
+thesis runs on JavaScript, a language found natively in many web browsers.
+
+The central problem addressed by this thesis is the incoporation of a language runtime
+into the web ecosystem without the need for extensive code rewrites while supporting
+most features of the reference implementation of zepto, including large parts of the
+standard library.
+
+It is also discussed inhowfar tooling for both JavaScript and zepto, most specifically
+their respective package managers, interoperate for building larger scale web applications.
 
 \pdfbookmark{Contents}{Contents}
 \tableofcontents
