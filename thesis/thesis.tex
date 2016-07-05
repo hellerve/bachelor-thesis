@@ -234,17 +234,17 @@ their respective package managers, interoperate for building larger scale web ap
 \label{sec:Motivation}
 
 JavaScript has, since its inception, attracted a lot of controversy. This is rooted
-in various aspects of its design, from prototypal inheritance and the \gls{dom} and it's
-\gls{api} to operator precedence. Especially prototypal inheritance  has been the root
+in various aspects of its design, from prototypal inheritance and the \gls{dom} to
+operator precedence. Especially prototypal inheritance  has been the root
 of a lot of discussions in the Computer Science community. It has the reputation of
 being counter-intuitive, though it is older than JavaScript, the first commonly known
 programming language that implemented prototypal objects being Self.
 
 This and a few other design choices have prompted many programmers to develop
 wrapper libraries around almost anything that comprises the language, the arguably
-most widely used examples being jQuery, a library that abstracts over the \gls{dom}.
-But more arcane topics have been covered as well: there is \gls{yui}, a now abandoned
-project of Yahoo that aims to abstract over web \gls{api}s as well but also comes with
+most widely used example being jQuery, a library that abstracts over the \gls{dom}.
+But more arcane topics have been covered as well: there is the \gls{yui}, a now abandoned
+project of Yahoo that aims to abstract over web \glspl{api} as well but also comes with
 its' own inheritance model, likening JavaScript prototypes to classical classes by
 introducing special functions and properties to the objects such as \texttt{extend}
 and \texttt{superclass}.
@@ -267,8 +267,8 @@ This and other features have been available to JavaScript developers for much
 longer than the latest iterations of the JavaScript language and without
 the need to rely on a possibly massive library - provided they use a preprocessor.
 One of the earliest exemplars of preprocessing for JavaScript, CoffeeScript, included
-\texttt{lambdas}, a shorthand for anonymous functions, \texttt{pattern matching},
-a technique for destructuring data, and \texttt{classes}, all of which found
+\texttt{lambdas}, a shorthand for anonymous functions; \texttt{pattern matching},
+a technique for destructuring data; and \texttt{classes}, all of which found
 their way into the latest ECMAScript revisions.
 
 Preprocessing can serve a lot of different purposes apart from providing
@@ -284,7 +284,7 @@ to reduce the overhead of function calls.
 
 **STUB: TODO**
 
-In its' heart, all of the preprocessors and transpilers that target JavaScript
+At its' heart, all of the preprocessors and transpilers that target JavaScript
 are JavaScript, even if the syntax and semantics differ radically. This makes
 for an interesting case, because it might hinder the web itself from evolving:
 at its' core, there is one technology only.
@@ -292,49 +292,6 @@ at its' core, there is one technology only.
 Obviously, a lot of research is going into the development of JavaScript and
 it's tools and it might be ignorant to dismiss JavaScript tooling outright,
 though. Among transpiler writers, JavaScript is hailed as the assembly of the web.
-
-NOTE: This had to be moved from chapter 2 to match the current design of the thesis. Please
-excuse the lack of coherence to the part above.
-
-\subsection{Lisp}
-
-A common saying among programming language designers is that every programmer has written
-their own implementation of Lisp. There are a lot of different implementations of Lisp
-in the wild, even ones that compile to JavaScript\footnote{such as \href{https://github.com/clojure/clojurescript}{ClojureScript},
-a backend of the Clojure compiler that targets JavaScript.}.
-
-The main reason for that is often cited to be the simplicity of the language on a parsing
-level. A simple Lisp can be implemented in less than one hundred lines of code, if no
-intermediate representation is generated. This is made possible by the unique property
-of Lisp of enclosing every statement in parentheses, where the first element within
-those parentheses is the statement and the other elements are the arguments.
-It can be evaluated straight from a textual level, because things such as operator precedence
-and statement amiguity do not exist. In regular Lisp as specified in the initial paper by
-John McCarthy\parencite{JCM} only six special forms exist to allow not only for Turing-completeness,
-but also for expressiveness.
-
-\subsection{zepto}
-
-Zepto is a new Scheme implementation that aims to be as small as possible, to be able
-to target a lot of different backends. Currently, LLVM and Erlang Core\footnote{Erlang Core 
-is the \gls{ir} of Erlang code before it is complied. Resources and documentation
-about it are sparse, it mostly seems to exist inside the BEAM's implementation.} bindings are
-under development, the reference implementation is a simple interpreter that interprets code
-directly from the \gls{ast}. This is slow but ensures a small interpreter size\footnote{The
-entire codebase is only about 4000 lines of Haskell code.}. The compilers are written directly
-in zepto itself.
-
-The small code base makes zepto a good target for porting it to the web. Further, ecause it
-is written in Haskell the code base was expected to be possibly almost entirely compilable
-to JavaScript using GHC-JS, a backend for the \gls{ghc} targetting JavaScript instead of
-native code. It offers many advanced features such as inlining of JavaScript into the code
-base using a technique called quasi-quoting, where a special character sequence delimits the
-inlined code, much like regular quotes. This tool set was expected to make the work of porting
-an existing language to the web as simple as possible.
-
-Of course there are other reasons to use a functional language as an example. With both syntax
-and semantics differing wildly from JavaScript, this example makes way for languages more
-closely related to JavaScript also making their eventual way into the browser.
 
 \section{Goals of this Thesis}
 
@@ -382,6 +339,51 @@ zepto, both the desktop and the JavaScript version, in the future.
   \bigskip}
 \chapter{Concept Design}
 \label{chap:ConceptDesign}
+
+NOTE: This had to be moved from chapter 2 to match the current design of the thesis. Please
+excuse the lack of coherence.
+
+\subsection{Lisp}
+
+A common saying among programming language designers is that every programmer has written
+their own implementation of Lisp. There are a lot of different implementations of Lisp
+in the wild, even ones that compile to JavaScript\footnote{such as \href{https://github.com/clojure/clojurescript}{ClojureScript},
+a backend of the Clojure compiler that targets JavaScript.}.
+
+The main reason for that is often cited to be the simplicity of the language on a parsing
+level. A simple Lisp can be implemented in less than one hundred lines of code, if no
+intermediate representation is generated. This is made possible by the unique property
+of Lisp of enclosing every statement in parentheses, where the first element within
+those parentheses is the statement name and the other elements are the arguments.
+It can be evaluated straight from a textual level, because things such as operator precedence
+and statement amiguity do not exist. In regular Lisp as specified in the initial paper by
+John McCarthy\parencite{JCM} only six special forms exist to allow not only for Turing-completeness,
+but also for expressiveness.
+
+\subsection{zepto}
+
+Zepto is a new Scheme implementation that aims to be as small as possible, to be able
+to target a lot of different backends. Currently, LLVM and Erlang Core\footnote{Erlang Core 
+is the \gls{ir} of Erlang code before it is complied. Resources and documentation
+about it are sparse, it mostly seems to exist inside the BEAM's implementation. A small
+paper\parencite{ERL} that describes its' basics was used to implement the compiler from
+zepto.} bindings are under development, the reference implementation is a simple interpreter
+that interprets code directly from the \gls{ast}. This is slow but ensures a small
+interpreter size\footnote{The entire codebase is only about 4000 lines of Haskell code.}.
+The compilers are written directly in zepto itself.
+
+The small code base makes zepto a good target for porting it to the web. Further, because it
+is written in Haskell the code base was expected to be possibly almost entirely compilable
+to JavaScript using GHC-JS, a backend for the \gls{ghc} targetting JavaScript instead of
+native code. It offers many advanced features such as inlining of JavaScript into the code
+base using a technique called quasi-quoting, where a special character sequence delimits the
+inlined code, much like regular quotes. This tool set was expected to make the work of porting
+an existing language to the web as simple as possible.
+
+Of course there are other reasons to use a functional language as an example. With both syntax
+and semantics differing strongly from JavaScript, this example makes way for languages more
+closely related to JavaScript also making their eventual way into the browser.
+
 
 \section{Construction Design}
 
@@ -470,7 +472,7 @@ occurs within the \gls{dom} part that it registered for listening to.
 This simplifies the implementation of a listener to DOM events a great deal. Only minimal programming
 is required to configure the listener and to filter out all the nodes that are not \texttt{script} nodes
 of the type \texttt{text/zepto}\footnote{This was chosen in analogy to the existing \texttt{text/javascript}
-node type}.
+node type.}.
 
 A problem untended to with that method was nodes insert before the listener starts. This was resolved by
 singling out all the \texttt{script} tags that are present before the listener starts and applying the
@@ -601,10 +603,10 @@ and the parsing of their return values. This allows for a stable library,
 because it is unintrusive and does not interfer with existing JavaScript
 constructs.
 
-Existing implementations often find it convenient to write a hybrid mix
+Existing zepto-js projects often find it convenient to write a hybrid mix
 of JavaScript and zepto code that calls each other at certain points.
-This is, however, not advisable at the layer of libraries or utilities,
-because it is at risk of getting in the way of the job.
+This is, however, probably not advisable at the layer of libraries or
+utilities, because it is at risk of getting in the way of the job.
 
 \begin{listing}[H]
 \caption{A minimal DOM module}

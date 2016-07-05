@@ -2,6 +2,11 @@
 
 My Bachelor Thesis about zepto-js.
 
+## Requirements
+
+You need xelatex (preferrably installed through TexLive)
+and pygments installed.
+
 ## Timeline
 
 **06.06.2016**: Received notice of approval
