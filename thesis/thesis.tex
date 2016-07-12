@@ -111,8 +111,6 @@ hyperfootnotes=true]{hyperref}
 
 \usepackage{bookmark}
 
-%\setcounter{tocdepth}{1}
-
 \usepackage[%
 acronym,
 nomain,
@@ -210,7 +208,7 @@ thesis runs on JavaScript, a language found natively in many web browsers.
 The central problem addressed by this thesis is the incoporation of a language runtime
 into the web ecosystem without the need for extensive code rewrites while supporting
 most features of the reference implementation of zepto, including large parts of the
-standard library.
+standard library. This also includes interoperability between the two languages.
 
 It is also discussed inhowfar tooling for both JavaScript and zepto, most specifically
 their respective package managers, interoperate for building larger scale web applications.
@@ -235,7 +233,7 @@ their respective package managers, interoperate for building larger scale web ap
 
 JavaScript has, since its inception, attracted a lot of controversy. This is rooted
 in various aspects of its design, from prototypal inheritance and the \gls{dom} to
-operator precedence. Especially prototypal inheritance  has been the root
+itsoperator precedence. Especially prototypal inheritance  has been the root
 of a lot of discussions in the Computer Science community. It has the reputation of
 being counter-intuitive, though it is older than JavaScript, the first commonly known
 programming language that implemented prototypal objects being Self.
@@ -245,7 +243,7 @@ wrapper libraries around almost anything that comprises the language, the arguab
 most widely used example being jQuery, a library that abstracts over the \gls{dom}.
 But more arcane topics have been covered as well: there is the \gls{yui}, a now abandoned
 project of Yahoo that aims to abstract over web \glspl{api} as well but also comes with
-its' own inheritance model, likening JavaScript prototypes to classical classes by
+its own inheritance model, likening JavaScript prototypes to classical classes by
 introducing special functions and properties to the objects such as \texttt{extend}
 and \texttt{superclass}.
 
@@ -254,9 +252,12 @@ upcoming revisions of ECMAScript\footnote{ECMAscript is the officially trademark
 name of what application developers and browser vendors most commonly refer to as
 JavaScript.}, ECMAScript 6\footnote{ECMAScript 6 was renamed to ECMAScript 2015
 along the way but for the sake of clarity this thesis uses the more commonly
-know name of the revision.} and ECMAScript 7, a lot of conveniences from third-party
-libraries have been adopted by the "vanilla"\footnote{A common name for JavaScript
-that refrains from leveraging paradigm-altering libraries.} JavaScript canon.
+know name of the revision. For an up-to-date version of that revision please
+refer to \parencite{ECMA6}.} and ECMAScript 7\footnote{Now ECMAScript 2017. For
+an up-to-date version of the current draft please refer to \parencite{ECMA7}.}, a
+lot of conveniences from third-party libraries have been adopted by the
+"vanilla"\footnote{A common name for JavaScript that refrains from leveraging
+paradigm-altering libraries.} JavaScript canon.
 Among these features has been the widely controversial introduction of a \texttt{class}
 notation for JavaScript that makes prototypes feel more like classes (without
 breaking existing semantics).
@@ -296,12 +297,30 @@ though. Among transpiler writers, JavaScript is hailed as the assembly of the we
 \section{Goals of this Thesis}
 
 The primary goal of this thesis is to present a novel approach at implementing languages
-for the Web. This is exemplified by a sample implementation of a non-trivial functional programming
-language.
+for the Web. This is exemplified by a sample implementation of a non-trivial, pure and
+largely feature-complete functional programming language that has been tested
+in production systems.
 
-* functional because different
+Many reasons would speak for a procedural or objective-oriented language as
+a prototype. For one, the language itself could be more easily expressed in
+terms of JavaScript if it is reasonably close to it. Another point that speaks
+against using a functional - and especially pure - programming language is that
+this might make the interoperability harder because JavaScript is intrinsically
+impure and stateful.
 
-* fairly different feature set
+But all of those reasons could also be read as argument for the implementation
+of a functional language. The difference showcases the ability of JavaScript
+to express concepts foreign to the language in it. It also serves as a better
+test bench for more advanced implementation patterns.
+
+This is especially true for those features of the base language that are not
+present in JavaScript and non-trivial to add to it from a user perspective.
+The features present in the target language implemented in this thesis but not
+in JavaScript most notably include Macros\footnote{The ability to rewrite
+code at parse or compile time, see \ref{macro}.} and Continuations\footnote{The
+control state of a program represented as a data structure within the code, see
+\ref{continuation}.}. Those features were chosen especially because they are
+extremely foreign to JavaScript programming.
 
 \section{Structure of this Thesis}
 
@@ -320,14 +339,14 @@ presents how they work.
 Chapter 6 evaluates the prototype. This includes problems such as how well the integration of the
 system worked and how it compares to the reference implementation of zepto.
 
-Chapter 7 gives a short summary of what was done and gives an outlook to what might happen with
+Chapter 7 gives a brief summary of what was done and gives an outlook to what might happen with
 zepto, both the desktop and the JavaScript version, in the future.
 
-\setchapterpreamble[u]{%
-  \dictum[\emph{T. Peters}---The Zen of Python]{Practicality beats purity.}
-  \bigskip}
 \chapter{Related Work}
 \label{chap:RelatedWork}
+
+This sections aims to give a quick overview of work that has already been done in the
+field of transpilation to and language implementations on top of JavaScript.
 
 \section{Existing Projects}
 
@@ -338,6 +357,9 @@ zepto, both the desktop and the JavaScript version, in the future.
   \dictum[\emph{T. Peters}---The Zen of Python]{Practicality beats purity.}
   \bigskip}
 \chapter{Concept Design}
+
+\section{Construction Design}
+
 \label{chap:ConceptDesign}
 
 NOTE: This had to be moved from chapter 2 to match the current design of the thesis. Please
@@ -384,8 +406,10 @@ Of course there are other reasons to use a functional language as an example. Wi
 and semantics differing strongly from JavaScript, this example makes way for languages more
 closely related to JavaScript also making their eventual way into the browser.
 
-
-\section{Construction Design}
+\subsection{Macros}
+\label{macro}
+\subsection{continuations}
+\label{continuation}
 
 \section{Additional Features}
 
@@ -464,7 +488,7 @@ it brittle and hardly portable. Secondly, it would require a walk of the nodes e
 element is inserted or replaced, which is a common occurence in modern interactive web applications.
 
 As of November of 2015, the \gls{w3c} specifies an \gls{api} that simplifies this process for the programmer.
-Within their specification of the \href{https://www.w3.org/TR/dom/#mutationobserver}{DOM4}, the fourth
+Within their specification of the \href{https://www.w3.org/TR/dom/#mutationobserver}{DOM4}\parencite{DOM4}, the fourth
 specification of \gls{api}s for the Web, an object called \texttt{MutationObserver} is included which
 is able to register for \gls{dom} manipulations. Its main function will be triggered whenever a change
 occurs within the \gls{dom} part that it registered for listening to.
