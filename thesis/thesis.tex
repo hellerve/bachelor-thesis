@@ -119,6 +119,8 @@ toc=true]{glossaries}
 \usepackage{cleveref}
 
 \newacronym{ast}{AST}{Abstract Syntax Tree}
+\newacronym{frp}{FRP}{Functional Reactive Programming}
+\newacronym{gui}{GUI}{Graphical User Interface}
 \newacronym{ir}{IR}{Intermediate Representation}
 \newacronym{ghc}{GHC}{Glasgow Haskell Compiler}
 \newacronym{repl}{REPL}{Read-Eval-Print Loop}
@@ -263,6 +265,7 @@ notation for JavaScript that makes prototypes feel more like classes (without
 breaking existing semantics).
 
 \subsection{Preprocessors \& Transpilers}
+\label{pretrans}
 
 This and other features have been available to JavaScript developers for much
 longer than the latest iterations of the JavaScript language and without
@@ -356,10 +359,50 @@ zepto, both the desktop and the JavaScript version, in the future.
 \chapter{Related Work}
 \label{chap:RelatedWork}
 
-This sections aims to give a quick overview of work that has already been done in the
-field of transpilation to and language implementations on top of JavaScript.
+This section aims to give a quick overview of work that has already been done in the
+field of transpilation to and language implementations on top of JavaScript. A few
+of the most important specimens have already been mentioned briefly in \ref{pretrans},
+although their relationship to this thesis have not yet been discussed.
 
 \section{Existing Projects}
+
+In this section, a brief overview over a short, not necessarily exhaustive list of
+transpilers from existing programming languages to and languages explicitly
+acting as a layer of abstraction over JavaScript shall be presented.
+
+The aim of this section is not to present the reader with the syntax and semantics
+of every single language that is discussed, but rather equip them with a general
+overview of the ecosystem at the time of writing and how it correlates to the
+work presented in this thesis.
+
+\subsection{Transpilers}
+\label{trans}
+
+\subsection{Abstraction Languages}
+
+The languages mentioned here are languages that purely abstract over JavaScript,
+choosing it as their primary backend. This differs from the languages discussed
+in \ref{trans}, which are general purpose languages with the option to compile
+to JavaScript if desired by the developer.
+
+\subsubsection{CoffeeScript}
+
+As mentioned int \ref{pretrans}, CoffeeScript was one of the first transpilers
+that targetted JavaScript when it first appeared\footnote{The first git commit
+dates back to \href{https://github.com/jashkenas/coffeescript/commit/8e9d637985d2dc9b44922076ad54ffef7fa8e9c2}{December 13th, 2009}. The first
+public release happened shortly after that.}. As also previously explained,
+many of the constructs have been adopted by JavaScript by now. CoffeeScript
+is similar to JavaScript in that it is a procedural, prototypal language. No
+semantic features have been added or removed from JavaScript.
+
+\subsubsection{Elm}
+
+Elm as it is presented in \parencite{CPL} is a language centered around
+\gls{frp}, with a special regard to browser-based \gls{gui}s. Borrowing
+its syntax largely from Haskell it is a pure, functional programming
+language. Notable features include \gls{gui}-centric tooling, such
+as a "time-traveling" debugger that caches the state of a program
+at any given time, allowing for rewinding, forwarding and jumping.
 
 \section{Existing Standards}
 
