@@ -262,7 +262,7 @@ Among these features has been the widely controversial introduction of a \texttt
 notation for JavaScript that makes prototypes feel more like classes (without
 breaking existing semantics).
 
-\subsection{Preprocessors}
+\subsection{Preprocessors \& Transpilers}
 
 This and other features have been available to JavaScript developers for much
 longer than the latest iterations of the JavaScript language and without
@@ -281,18 +281,29 @@ such as constant hoisting, a compiler optimization technique that eliminates
 pure functions that always produce the same result in favour of global constants
 to reduce the overhead of function calls.
 
-\subsubsection{Caveats} % do we really want to go as deep?
+Another way to use JavaScript as a platform that gains ever more importance
+is the transpilation from another language. One could argue that CoffeScript
+is nothing short of a transpiler, but one could also argue against that notion,
+considering its only purpose is to compile to JavaScript. Other general-purpose
+languages such as Clojure and C++, originally developed to run on other platforms,
+have the option to compile to JavaScript through ClojureScript\parencite{CLJS} and
+Emscripten\parencite{ZAKA} respectively.
 
-**STUB: TODO**
+\subsubsection{Caveats}
 
-At its' heart, all of the preprocessors and transpilers that target JavaScript
-are JavaScript, even if the syntax and semantics differ radically. This makes
-for an interesting case, because it might hinder the web itself from evolving:
-at its' core, there is one technology only.
+This thesis was inspired by the work done in the field of transpilation to
+JavaScript. Its goal is not to present yet another attempt at transpilation,
+but rather to rethink the way languages are incorporated into the web of today.
 
-Obviously, a lot of research is going into the development of JavaScript and
-it's tools and it might be ignorant to dismiss JavaScript tooling outright,
-though. Among transpiler writers, JavaScript is hailed as the assembly of the web.
+At their heart, all of the preprocessors and transpilers that target JavaScript
+are JavaScript, even if the syntax and semantics differ radically. There needs
+to be a clean mapping of the source language to JavaScript. Because of its flexibility,
+this is often a doable task, albeit not always desirable.
+
+The value of having the same abstraction present at runtime as at compile-time
+is obvious if the language that is consider places strong emphasis on code
+mutability, such as in Lisp or Elixir\footnote{As exemplified by Chris McCord in
+\parencite{ELIX}.}.
 
 \section{Goals of this Thesis}
 
