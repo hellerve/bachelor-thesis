@@ -433,14 +433,16 @@ The value of integrating zepto into existing web infrastructure lies in
 the addition of a host of new features that are not present natively in
 JavaScript and hard to implement in a stable manner\footnote{While stability
 is not guaranteed by the current version of zepto, it is tested and deployed
-in production systems and shows to function rather reliably.}.
+in production systems and shows to function rather reliably.}. The goal of
+the prototype was thus to expose all of the features that define zepto in
+the JavaScript implementation.
 
 \subsection{Lisp}
 
 A common saying among programming language designers is that every programmer has written
 their own implementation of Lisp. There are a lot of different implementations of Lisp
-in the wild, even ones that compile to JavaScript\footnote{such as \href{https://github.com/clojure/clojurescript}{ClojureScript},
-a backend of the Clojure compiler that targets JavaScript.}.
+in the wild, even ones that compile to JavaScript\footnote{such as ClojureScript, the
+backend for Clojure referenced in \href{sec:ClojureScript}.}.
 
 The main reason for that is often cited to be the simplicity of the language on a parsing
 level. A simple Lisp can be implemented in less than one hundred lines of code, if no
