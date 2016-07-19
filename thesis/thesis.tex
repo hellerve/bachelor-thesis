@@ -580,7 +580,7 @@ used for the management and interactivity of the zepto interpreter.
 
 \begin{listing}[H]
 \caption{The final mutation observer code (simplified)}
-\begin{minted}[linenos,frame=single]{javascript}
+\begin{minted}[]{javascript}
 // the initial observer and the function it takes
 zepto.observer = new MutationObserver(zepto.handleMutation);
 
@@ -635,7 +635,7 @@ it to zepto as to make it intuitive.
 
 \begin{listing}[H]
 \caption{The ideal FFI}
-\begin{minted}[linenos,frame=single]{clojure}
+\begin{minted}[]{clojure}
 ; this would return an integer
 (js "1 + 1")
 
@@ -673,7 +673,7 @@ was used for yet.
 
 \begin{listing}[H]
 \caption{The final form of the FFI}
-\begin{minted}[linenos,frame=single]{clojure}
+\begin{minted}[]{clojure}
 ; the function string->number is a standard zepto function
 (string->number (js "Math.pow(2, 32)"))
 
@@ -706,7 +706,7 @@ utilities, because it is at risk of getting in the way of the job.
 
 \begin{listing}[H]
 \caption{A minimal DOM module}
-\begin{minted}[linenos,frame=single]{clojure}
+\begin{minted}[]{clojure}
 (module "dom"
   (export
     `("create" ,create)
@@ -732,6 +732,35 @@ utilities, because it is at risk of getting in the way of the job.
 \end{minted}
 \end{listing}
 
+\subsection{Language definitions}
+
+One of the most advanced features are language definitions inspired by
+the parser macro system in Racket \parencite{RPM}. While this is handled
+fairly differently in zepto than it is in Racket, the syntax of the resulting
+language is compatible. Zepto handles the custom parser step with a dispatch
+at the time of file loading, which enabled the system to be implemented without
+changes to the core language, completely in zepto itself. While this was so
+designed with portability in mind and thought to ease the transition to
+different backends, this proved to actually complicate matters in the case
+of the JavaScript port, where the module loading system is not present due
+to the absence of files in the traditional sense.
+
+\begin{listing}[H]
+\caption{An example language definition that allows for inlining of JSON code.}
+\begin{minted}[]{clojure}
+; json-lang.zp
+(load "json/json")
+
+(zepto:implements-lang json:parse "json")
+
+; an example for a file that can now be normally loaded
+#lang json
+{
+  "hello": "json"
+}
+\end{minted}
+\end{listing}
+
 \clearpage
 
 \setchapterpreamble[u]{%
@@ -751,7 +780,7 @@ utilities, because it is at risk of getting in the way of the job.
 * inserting libraries?
 
 \setchapterpreamble[u]{%
-  \dictum[\emph{R. Buckminster Fuller}]{When I'm working on a problem, I never think about beauty. I think only how to solve the problem. But when I have finished, if the solution is not beautiful, I know it is wrong.}
+  \dictum[\emph{Isaac Asimov}]{Part of the inhumanity of the computer is that, once it is competently programmed and working smoothly, it is completely honest.}
   \bigskip}
 \chapter{Summary and Outlook}
 \label{chap:outlook}
