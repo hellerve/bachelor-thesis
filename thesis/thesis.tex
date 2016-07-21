@@ -553,6 +553,7 @@ customizations include a \gls{ffi} to enable better cross-evaluation of JavaScri
 of existing \gls{api}s, such as the \gls{dom}.
 
 \subsection{The \texttt{script} tag}
+\label{sec:MutObs}
 
 Initially, a \gls{dom} node walker was considered, but rejected relatively early because of two reasons:
 Firstly, it introduced a layer of complexity from within JavaScript code that would have likely made
@@ -760,6 +761,19 @@ to the absence of files in the traditional sense.
 }
 \end{minted}
 \end{listing}
+
+As the detection what to parse is handled from within JavaScript - by the
+MutationObserver mentioned in \ref{sec:MutObs} - the first implementation
+of the dispatch mechanism was written entirely in JavaScript. This proved
+to make the dispatch mechanism relatively clumsy, because registering
+additional languages had to be done in JavaScript, thus making this feature
+a JavaScript rather than a zepto feature. While building a parser dispatch
+mechanism for JavaScript would certainly also make for an interesting experiment,
+it is out of the scope of this thesis and would not really qualify as something
+unique about zepto\footnote{The code was salvaged for posteriority and can be
+found on \href{https://github.com/hellerve/js-parse-dispatch}{Github}.}.
+
+
 
 \clearpage
 
