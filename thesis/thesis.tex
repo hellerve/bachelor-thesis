@@ -484,20 +484,38 @@ head (Cons x _) = Just x
   \dictum[\emph{T. Peters}---The Zen of Python]{Practicality beats purity.}
   \bigskip}
 \chapter{Concept Design}
-
-\section{Construction Design}
-
 \label{chap:ConceptDesign}
 
-NOTE: This had to be moved from chapter 2 to match the current design of the thesis. Please
-excuse the lack of coherence.
+The concept of a version of zepto that would run on JavaScript arose rather
+naturally from the work done on zepto as a backend-agnostic, run-everywhere
+concept language. Concurrently to the work on a nanopass compiler that
+targets LLVM and Erlang but supports pluggable backends by design, efforts
+have been made to bring the language into the browser setting. After preliminary
+work on a compiler backend that emits JavaScript that was discarded in the
+early stages of its development for the reasons stated in \ref{sec:Motivation},
+the idea presented in this thesis emerged.
+
+In the following, a brief overview of the design of the concepts used
+in the port and how they impacted the construction of the system shall be
+given. A system-based design overview shall be given in \ref{chap:SystemDesign}.
+
+\section{Construction Design}
+\label{sec:ConstructionDesign}
+
+The value of integrating zepto into existing web infrastructure lies in
+the addition of a host of new features that are not present natively in
+JavaScript and hard to implement in a stable manner\footnote{While stability
+is not guaranteed by the current version of zepto, it is tested and deployed
+in production systems and shows to function rather reliably.}. The goal of
+the prototype was thus to expose all of the features that define zepto in
+the JavaScript implementation.
 
 \subsection{Lisp}
 
 A common saying among programming language designers is that every programmer has written
 their own implementation of Lisp. There are a lot of different implementations of Lisp
-in the wild, even ones that compile to JavaScript\footnote{such as \href{https://github.com/clojure/clojurescript}{ClojureScript},
-a backend of the Clojure compiler that targets JavaScript.}.
+in the wild, even ones that compile to JavaScript\footnote{such as ClojureScript, the
+backend for Clojure referenced in \href{sec:ClojureScript}.}.
 
 The main reason for that is often cited to be the simplicity of the language on a parsing
 level. A simple Lisp can be implemented in less than one hundred lines of code, if no
@@ -545,7 +563,7 @@ closely related to JavaScript also making their eventual way into the browser.
   \dictum[\emph{T. Peters}---The Zen of Python]{Practicality beats purity.}
   \bigskip}
 \chapter{System Design}
-\label{chap:System Design}
+\label{chap:SystemDesign}
 
 \section{Integration into the Web Ecosystem}
 
@@ -608,6 +626,7 @@ customizations include a \gls{ffi} to enable better cross-evaluation of JavaScri
 of existing \gls{api}s, such as the \gls{dom}.
 
 \subsection{The \texttt{script} tag}
+\label{sec:MutObs}
 
 Initially, a \gls{dom} node walker was considered, but rejected relatively early because of two reasons:
 Firstly, it introduced a layer of complexity from within JavaScript code that would have likely made
@@ -635,7 +654,7 @@ used for the management and interactivity of the zepto interpreter.
 
 \begin{listing}[H]
 \caption{The final mutation observer code (simplified)}
-\begin{minted}[linenos,frame=single]{javascript}
+\begin{minted}[]{javascript}
 // the initial observer and the function it takes
 zepto.observer = new MutationObserver(zepto.handleMutation);
 
@@ -690,7 +709,7 @@ it to zepto as to make it intuitive.
 
 \begin{listing}[H]
 \caption{The ideal FFI}
-\begin{minted}[linenos,frame=single]{clojure}
+\begin{minted}[]{clojure}
 ; this would return an integer
 (js "1 + 1")
 
@@ -728,7 +747,7 @@ was used for yet.
 
 \begin{listing}[H]
 \caption{The final form of the FFI}
-\begin{minted}[linenos,frame=single]{clojure}
+\begin{minted}[]{clojure}
 ; the function string->number is a standard zepto function
 (string->number (js "Math.pow(2, 32)"))
 
@@ -761,7 +780,7 @@ utilities, because it is at risk of getting in the way of the job.
 
 \begin{listing}[H]
 \caption{A minimal DOM module}
-\begin{minted}[linenos,frame=single]{clojure}
+\begin{minted}[]{clojure}
 (module "dom"
   (export
     `("create" ,create)
@@ -787,6 +806,48 @@ utilities, because it is at risk of getting in the way of the job.
 \end{minted}
 \end{listing}
 
+\subsection{Language definitions}
+
+One of the most advanced features are language definitions inspired by
+the parser macro system in Racket \parencite{RPM}. While this is handled
+fairly differently in zepto than it is in Racket, the syntax of the resulting
+language is compatible. Zepto handles the custom parser step with a dispatch
+at the time of file loading, which enabled the system to be implemented without
+changes to the core language, completely in zepto itself. While this was so
+designed with portability in mind and thought to ease the transition to
+different backends, this proved to actually complicate matters in the case
+of the JavaScript port, where the module loading system is not present due
+to the absence of files in the traditional sense.
+
+\begin{listing}[H]
+\caption{An example language definition that allows for inlining of JSON code.}
+\begin{minted}[]{clojure}
+; json-lang.zp
+(load "json/json")
+
+(zepto:implements-lang json:parse "json")
+
+; an example for a file that can now be normally loaded
+#lang json
+{
+  "hello": "json"
+}
+\end{minted}
+\end{listing}
+
+As the detection what to parse is handled from within JavaScript - by the
+MutationObserver mentioned in \ref{sec:MutObs} - the first implementation
+of the dispatch mechanism was written entirely in JavaScript. This proved
+to make the dispatch mechanism relatively clumsy, because registering
+additional languages had to be done in JavaScript, thus making this feature
+a JavaScript rather than a zepto feature. While building a parser dispatch
+mechanism for JavaScript would certainly also make for an interesting experiment,
+it is out of the scope of this thesis and would not really qualify as something
+unique about zepto\footnote{The code was salvaged for posteriority and can be
+found on \href{https://github.com/hellerve/js-parse-dispatch}{Github}.}.
+
+
+
 \clearpage
 
 \setchapterpreamble[u]{%
@@ -806,7 +867,7 @@ utilities, because it is at risk of getting in the way of the job.
 * inserting libraries?
 
 \setchapterpreamble[u]{%
-  \dictum[\emph{R. Buckminster Fuller}]{When I'm working on a problem, I never think about beauty. I think only how to solve the problem. But when I have finished, if the solution is not beautiful, I know it is wrong.}
+  \dictum[\emph{Isaac Asimov}]{Part of the inhumanity of the computer is that, once it is competently programmed and working smoothly, it is completely honest.}
   \bigskip}
 \chapter{Summary and Outlook}
 \label{chap:outlook}
@@ -822,9 +883,40 @@ utilities, because it is at risk of getting in the way of the job.
 \chapter{Conclusion}
 \label{chap:conclusion}
 
-* fixing the web not necessary
+There have been voices that insisted that the web need be fixed
+since its inception. Most disagreements over its inner workings
+have been philosophical and are a matter of ongoing dispute.
+While the web certainly can be improved - like any system can be,
+at any time - I do not believe it is fundamentally flawed. The
+technologies that power the current World Wide Web, from switches
+and cable technologies to protocols and development frameworks,
+have shown to be robust enough for a large part of the world
+to interconnect. We steadily evolve the way we work with it
+as trends and paradigms emerge and evolve.
 
-* rethinking it possible
+One of the major redeeming qualities of the fundamental
+philosophies of the World Wide Web has certainly been
+its ability to adapt to changes. Standardization of web
+technologies has a reputation of being slow, but in terms
+of design processes on a global scale, it is actually a
+reasonably fast process.
+
+Zepto is a young language that has adapted this mindset -
+changes rapidly and a stable release is yet to be announced.
+With this thesis, an important step towards reaching a fulfillment
+of its design goals has been made.
+
+Many questions that this thesis addressed remain unanswered.
+Even with that in mind, I hope that my work on it has asked
+questions that are worth being asked and that the technologies
+presented in this thesis will allow for more technologies that
+come to the web, so that an even more heterogeneous,
+expressive and inclusive system can emerge, one that
+caters to different aesthetics, philosophies and mindsets.
+
+I would happily welcome any contributions towards that
+end, both related to and unencumbered by the technology
+that is zepto.
 
 
 %============================================
