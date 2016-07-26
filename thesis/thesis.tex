@@ -235,7 +235,7 @@ their respective package managers, interoperate for building larger scale web ap
 
 JavaScript has, since its inception, attracted a lot of controversy. This is rooted
 in various aspects of its design, from prototypal inheritance and the \gls{dom} to
-itsoperator precedence. Especially prototypal inheritance  has been the root
+its operator precedence. Especially prototypal inheritance  has been the root
 of a lot of discussions in the Computer Science community. It has the reputation of
 being counter-intuitive, though it is older than JavaScript, the first commonly known
 programming language that implemented prototypal objects being Self.
@@ -289,8 +289,8 @@ is the transpilation from another language. One could argue that CoffeScript
 is nothing short of a transpiler, but one could also argue against that notion,
 considering its only purpose is to compile to JavaScript. Other general-purpose
 languages such as Clojure and C++, originally developed to run on other platforms,
-have the option to compile to JavaScript through ClojureScript\parencite{CLJS} and
-Emscripten\parencite{ZAKA} respectively.
+have the option to compile to JavaScript through ClojureScript \parencite{CLJS} and
+Emscripten \parencite{ZAKA} respectively.
 
 \subsubsection{Caveats}
 
@@ -378,6 +378,30 @@ work presented in this thesis.
 \subsection{Transpilers}
 \label{trans}
 
+Transpilers are normally defined as compiling one high level language into another.
+They are often referred to as cross-compilers, although this term is imperfect as
+it also refers to compilation from one hardware platform or operating system to
+another.
+
+Due to this ambiguity, the name \textit{transpiler} was chosen to refer to this
+kind of system in the context of this thesis.
+
+\subsubsection{GHCJS}
+
+GHCJS - often hyphenated as GHC-JS - is a transpiler from the Haskell language
+to JavaScript. It is currently maintained by Luite Stegeman. It aims to "solve
+the JavaScript problem"\footnote{A talk given by Stegeman bore this title, see
+\parencite{STEG}.}. It enables the user to compile any Haskell program to JavaScript
+instead of machine code by the means of inserting a custom compiler backend into
+the \gls{ghc} toolchain.
+
+It is the compiler used in this thesis to transpiler the existing zepto codebase
+to JavaScript.
+
+\subsubsection{Emscripten}
+
+\subsubsection{ClojureScript}
+
 \subsection{Abstraction Languages}
 
 The languages mentioned here are languages that purely abstract over JavaScript,
@@ -385,24 +409,73 @@ choosing it as their primary backend. This differs from the languages discussed
 in \ref{trans}, which are general purpose languages with the option to compile
 to JavaScript if desired by the developer.
 
+This list is not designed to be exhaustive, but rather aims to inform about
+recent developments in web programming.
+
 \subsubsection{CoffeeScript}
 
 As mentioned int \ref{pretrans}, CoffeeScript was one of the first transpilers
 that targetted JavaScript when it first appeared\footnote{The first git commit
-dates back to \href{https://github.com/jashkenas/coffeescript/commit/8e9d637985d2dc9b44922076ad54ffef7fa8e9c2}{December 13th, 2009}. The first
-public release happened shortly after that.}. As also previously explained,
-many of the constructs have been adopted by JavaScript by now. CoffeeScript
-is similar to JavaScript in that it is a procedural, prototypal language. No
-semantic features have been added or removed from JavaScript.
+dates back to
+\href{https://github.com/jashkenas/coffeescript/commit/8e9d637985d2dc9b44922076ad54ffef7fa8e9c2}{December 13th, 2009}.
+The first public release happened shortly after that.}. As also previously
+explained, many of the constructs have been adopted by JavaScript by now.
+CoffeeScript is similar to JavaScript in that it is a procedural, prototypal
+language. No semantic features have been added or removed from JavaScript,
+making it relatively dissimilar to the programming system presented in this
+thesis.
 
 \subsubsection{Elm}
 
 Elm as it is presented in \parencite{CPL} is a language centered around
-\gls{frp}, with a special regard to browser-based \gls{gui}s. Borrowing
+\gls{frp}\footnote{An in-depth explanation of \gls{frp} is out of
+the scope of this thesis, but it is a programming style originally formulated
+by Paul Hudak and Conal Elliott in a 1997 paper \parencite{frp}.}
+, with a special regard to browser-based \gls{gui}s. Borrowing
 its syntax largely from Haskell it is a pure, functional programming
 language. Notable features include \gls{gui}-centric tooling, such
 as a "time-traveling" debugger that caches the state of a program
 at any given time, allowing for rewinding, forwarding and jumping.
+
+The similarities with this thesis go insofar as it is a functional
+programming language for the Web, but it compiles to JavaScript, HTML
+and CSS, once again falling short of actually getting the code to the
+browser. It is also very centered around the aforementioned \gls{frp},
+whereas the runtime presented in this thesis aims to be a general-purpose
+programming environment.
+
+\subsubsection{PureScript}
+
+PureScript is, much like Elm, a functional, pure programming language
+that borrows a lot of its syntax from Haskell. It aims to compile into
+human-readable JavaScript and make general purpose programming for the web
+in a strongly typed, functional style possible.
+
+It is different from GHCJS insofar as it does not provide compatibility
+with Haskell code, although many libraries and functions are relatively
+similar. See \ref{fig:ps} for an example.
+
+as It shares a lot of features with Elm, it also largely shares the
+differences to the system presented in this thesis.
+
+\begin{listing}[H]
+\caption{A juxtaposition of a simple function in Haskell and PureScript.}
+\begin{minted}[linenos,frame=single]{haskell}
+-- | Extract the first element of a list (as implemented in the language standard library).
+-- | The Haskell version is unsafe and will throw an error
+-- | if it encounters an empty list.
+head :: [a] -> a
+head (x:_) =  x
+head [] =  badHead -- an exception function
+
+-- | the list data type in PureScript is safe by design and
+-- | the function returns a Maybe monad.
+head :: forall a. List a -> Maybe a
+head Nil = Nothing
+head (Cons x _) = Just x
+\end{minted}
+\end{listing}
+\label{fig:ps}
 
 \section{Existing Standards}
 
@@ -433,7 +506,7 @@ of Lisp of enclosing every statement in parentheses, where the first element wit
 those parentheses is the statement name and the other elements are the arguments.
 It can be evaluated straight from a textual level, because things such as operator precedence
 and statement amiguity do not exist. In regular Lisp as specified in the initial paper by
-John McCarthy\parencite{JCM} only six special forms exist to allow not only for Turing-completeness,
+John McCarthy \parencite{JCM} only six special forms exist to allow not only for Turing-completeness,
 but also for expressiveness.
 
 \subsection{zepto}
@@ -442,7 +515,7 @@ Zepto is a new Scheme implementation that aims to be as small as possible, to be
 to target a lot of different backends. Currently, LLVM and Erlang Core\footnote{Erlang Core 
 is the \gls{ir} of Erlang code before it is complied. Resources and documentation
 about it are sparse, it mostly seems to exist inside the BEAM's implementation. A small
-paper\parencite{ERL} that describes its' basics was used to implement the compiler from
+paper \parencite{ERL} that describes its' basics was used to implement the compiler from
 zepto.} bindings are under development, the reference implementation is a simple interpreter
 that interprets code directly from the \gls{ast}. This is slow but ensures a small
 interpreter size\footnote{The entire codebase is only about 4000 lines of Haskell code.}.
@@ -450,7 +523,7 @@ The compilers are written directly in zepto itself.
 
 The small code base makes zepto a good target for porting it to the web. Further, because it
 is written in Haskell the code base was expected to be possibly almost entirely compilable
-to JavaScript using GHC-JS, a backend for the \gls{ghc} targetting JavaScript instead of
+to JavaScript using GHCJS, a backend for the \gls{ghc} targetting JavaScript instead of
 native code. It offers many advanced features such as inlining of JavaScript into the code
 base using a technique called quasi-quoting, where a special character sequence delimits the
 inlined code, much like regular quotes. This tool set was expected to make the work of porting
@@ -542,8 +615,8 @@ it brittle and hardly portable. Secondly, it would require a walk of the nodes e
 element is inserted or replaced, which is a common occurence in modern interactive web applications.
 
 As of November of 2015, the \gls{w3c} specifies an \gls{api} that simplifies this process for the programmer.
-Within their specification of the \href{https://www.w3.org/TR/dom/#mutationobserver}{DOM4}\parencite{DOM4}, the fourth
-specification of \gls{api}s for the Web, an object called \texttt{MutationObserver} is included which
+Within their specification of the \href{https://www.w3.org/TR/dom/#mutationobserver}{DOM4} \parencite{DOM4}, the
+fourth specification of \gls{api}s for the Web, an object called \texttt{MutationObserver} is included which
 is able to register for \gls{dom} manipulations. Its main function will be triggered whenever a change
 occurs within the \gls{dom} part that it registered for listening to.
 
