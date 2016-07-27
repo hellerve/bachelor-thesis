@@ -119,6 +119,8 @@ toc=true]{glossaries}
 \usepackage{cleveref}
 
 \newacronym{ast}{AST}{Abstract Syntax Tree}
+\newacronym{jit}{JIT}{Just In Time Compiler}
+\newacronym{llvm}{LLVM}{Low Level Virtual Machine}
 \newacronym{frp}{FRP}{Functional Reactive Programming}
 \newacronym{gui}{GUI}{Graphical User Interface}
 \newacronym{ir}{IR}{Intermediate Representation}
@@ -396,11 +398,61 @@ instead of machine code by the means of inserting a custom compiler backend into
 the \gls{ghc} toolchain.
 
 It is the compiler used in this thesis to transpiler the existing zepto codebase
-to JavaScript.
+to JavaScript. Its plug-and-play design, complete enough implementation of the
+Haskell programming langauge and relative maturity all played a role in the choice
+to use it as an implementation language\footnote{Further discussion of the design
+and decision process can be found in \ref{chap:ConceptDesign} and
+\ref{chap:SystemDesign}.}.
 
 \subsubsection{Emscripten}
 
+Emscripten as discussed in \parencite{ZAKA} aims to be a transpiler from \gls{llvm} to
+JavaScript. Its main current focus is the translation of C and C++ source code
+to JavaScript.
+
+Its use case is similar to that of GHC-JS, enabling the user to both "(1)
+Compile code directly into LLVM assembly, and then compile that into JavaScript
+using Emscripten, or (2) Compile a language’s entire runtime into LLVM and then
+JavaScript, as in the previous approach, and then use the compiled runtime to
+run code written in that language" (\cite{ZAKA}), the latter of which sounding
+suspiciously like what zepto-js tries to achieve. There has been efforts to
+make the PyPy \gls{jit}\footnote{A \gls{jit} aimed to speed up Python programs
+by analyzing and compiling them, described in \parencite{PYPY}.} work in the
+browser, and while it seems to have gained a fair bit of traction and work
+reasonably well\footnote{A live demonstration of how it works can be found on
+its \href{https://pypyjs.org}{website, accessible under https://pypyjs.org}.},
+documentation on it is sparse and there is seemingly no academically viable
+source on its development.
+
 \subsubsection{ClojureScript}
+\label{sec:ClojureScript}
+
+ClojureScript is a backend for the Clojure programming language that targets
+JavaScript. Initially developed by Rich Hickey, the author of Clojure, it is
+now maintained under the lead of David Nolen \parencite{CLJS}.
+
+Being a Lisp, there are obvious syntactic similarites to zepto. Yet, as it is
+transpiled rather than interpreted directly in the browser it is quite different
+to program against. Most specifically the way the \gls{ffi} works is quite apparently
+different as ClojureScript has a lot of syntactic integrations that help embed
+JavaScript within it, i.e. all functions prefixed with a period are assumed to
+be JavaScript functions on the prototype of the object provied as first argument.
+JavaScript values can be directly accessed through the \texttt{js} namespace.
+Zepto's design is quite different, as is discussed in \ref{sec:ffi}.
+
+\begin{listing}[H]
+\caption{A comparison of the \gls{ffi} of JavaScript in zepto and ClojureScript.}
+\begin{minted}[linenos,frame=single]{clojure}
+; ClojureScript provides syntactic abstractions over
+; the embedding of foreign code.
+(.getElementById js/document "body")
+
+; An equivalent zepto call, with strings
+(js "document.getElementById(\"body\")")
+; OR, if a variable is accessed
+(js (++ "document.getElementById(\"" body "\")"))
+\end{minted}
+\end{listing}
 
 \subsection{Abstraction Languages}
 
@@ -489,7 +541,7 @@ head (Cons x _) = Just x
 The concept of a version of zepto that would run on JavaScript arose rather
 naturally from the work done on zepto as a backend-agnostic, run-everywhere
 concept language. Concurrently to the work on a nanopass compiler that
-targets LLVM and Erlang but supports pluggable backends by design, efforts
+targets \gls{llvm} and Erlang but supports pluggable backends by design, efforts
 have been made to bring the language into the browser setting. After preliminary
 work on a compiler backend that emits JavaScript that was discarded in the
 early stages of its development for the reasons stated in \ref{sec:Motivation},
@@ -515,7 +567,7 @@ the JavaScript implementation.
 A common saying among programming language designers is that every programmer has written
 their own implementation of Lisp. There are a lot of different implementations of Lisp
 in the wild, even ones that compile to JavaScript\footnote{such as ClojureScript, the
-backend for Clojure referenced in \href{sec:ClojureScript}.}.
+backend for Clojure referenced in \ref{sec:ClojureScript}.}.
 
 The main reason for that is often cited to be the simplicity of the language on a parsing
 level. A simple Lisp can be implemented in less than one hundred lines of code, if no
@@ -530,7 +582,7 @@ but also for expressiveness.
 \subsection{zepto}
 
 Zepto is a new Scheme implementation that aims to be as small as possible, to be able
-to target a lot of different backends. Currently, LLVM and Erlang Core\footnote{Erlang Core 
+to target a lot of different backends. Currently, \gls{llvm} and Erlang Core\footnote{Erlang Core 
 is the \gls{ir} of Erlang code before it is complied. Resources and documentation
 about it are sparse, it mostly seems to exist inside the BEAM's implementation. A small
 paper \parencite{ERL} that describes its' basics was used to implement the compiler from
@@ -684,6 +736,7 @@ zepto.observer.observe(document, {childList: true, subtree: true});
 \end{listing}
 
 \subsection{The \gls{ffi}}
+\label{sec:ffi}
 
 The \gls{ffi} is a central part of the port. If it weren't usable, none of the browser's
 capabilities could be used from within zepto, thus rendering the effort of bringing zepto into
@@ -844,7 +897,8 @@ a JavaScript rather than a zepto feature. While building a parser dispatch
 mechanism for JavaScript would certainly also make for an interesting experiment,
 it is out of the scope of this thesis and would not really qualify as something
 unique about zepto\footnote{The code was salvaged for posteriority and can be
-found on \href{https://github.com/hellerve/js-parse-dispatch}{Github}.}.
+found on \href{https://github.com/hellerve/js-parse-dispatch}{Github under the
+name of \texttt{js-parse-dispatch}}.}.
 
 
 
