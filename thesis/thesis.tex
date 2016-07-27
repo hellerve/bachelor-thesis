@@ -389,6 +389,7 @@ Due to this ambiguity, the name \textit{transpiler} was chosen to refer to this
 kind of system in the context of this thesis.
 
 \subsubsection{GHCJS}
+\label{sec:GHCJS}
 
 GHCJS - often hyphenated as GHC-JS - is a transpiler from the Haskell language
 to JavaScript. It is currently maintained by Luite Stegeman. It aims to "solve
@@ -422,7 +423,7 @@ browser, and while it seems to have gained a fair bit of traction and work
 reasonably well\footnote{A live demonstration of how it works can be found on
 its \href{https://pypyjs.org}{website, accessible under https://pypyjs.org}.},
 documentation on it is sparse and there is seemingly no academically viable
-source on its development.
+source detailing its development and architecture.
 
 \subsubsection{ClojureScript}
 \label{sec:ClojureScript}
@@ -530,7 +531,18 @@ head (Cons x _) = Just x
 \label{fig:ps}
 
 \section{Existing Standards}
+\label{sec:ExistingStandards}
 
+When developing a programming language derived from the Lisp family, one builds on
+top of almost 70 years of development, formalization and research. Of course
+many of the standards that were formed during that time are now obsolete.
+Nonetheless, the effort of standardizing the many languages and implementations
+is still thriving.
+
+Over the years, two main categories of languages have developed: Common Lisp
+and Scheme. While the syntactic proximity remains, they differ widely in
+concepts. Macro transformations are written quite differently and continuations
+are a feature that is exclusive to Scheme.
 
 \setchapterpreamble[u]{%
   \dictum[\emph{T. Peters}---The Zen of Python]{Practicality beats purity.}
@@ -560,7 +572,10 @@ JavaScript and hard to implement in a stable manner\footnote{While stability
 is not guaranteed by the current version of zepto, it is tested and deployed
 in production systems and shows to function rather reliably.}. The goal of
 the prototype was thus to expose all of the features that define zepto in
-the JavaScript implementation.
+the JavaScript implementation as well.
+
+A brief overview over why a Lisp was chosen for this thesis and, more specifically,
+why zepto, shall be given in the following.
 
 \subsection{Lisp}
 
@@ -570,19 +585,20 @@ in the wild, even ones that compile to JavaScript\footnote{such as ClojureScript
 backend for Clojure referenced in \ref{sec:ClojureScript}.}.
 
 The main reason for that is often cited to be the simplicity of the language on a parsing
-level. A simple Lisp can be implemented in less than one hundred lines of code, if no
+level. A simple Lisp can be implemented in less than one hundred lines of code if no
 intermediate representation is generated. This is made possible by the unique property
 of Lisp of enclosing every statement in parentheses, where the first element within
 those parentheses is the statement name and the other elements are the arguments.
 It can be evaluated straight from a textual level, because things such as operator precedence
 and statement amiguity do not exist. In regular Lisp as specified in the initial paper by
-John McCarthy \parencite{JCM} only six special forms exist to allow not only for Turing-completeness,
-but also for expressiveness.
+John McCarthy \parencite{JCM} only a handful special forms exist to allow not only for
+Turing-completeness, but also for expressiveness and elegance.
 
 \subsection{zepto}
 
-Zepto is a new Scheme implementation that aims to be as small as possible, to be able
-to target a lot of different backends. Currently, \gls{llvm} and Erlang Core\footnote{Erlang Core 
+As explained in \ref{sec:ExistingStandards}, Zepto is a new Scheme implementation that aims
+to be as small as possible, to be able to target a lot of different backends and simplify the
+process of writing new backend code. Currently, \gls{llvm} and Erlang Core\footnote{Erlang Core 
 is the \gls{ir} of Erlang code before it is complied. Resources and documentation
 about it are sparse, it mostly seems to exist inside the BEAM's implementation. A small
 paper \parencite{ERL} that describes its' basics was used to implement the compiler from
@@ -593,8 +609,9 @@ The compilers are written directly in zepto itself.
 
 The small code base makes zepto a good target for porting it to the web. Further, because it
 is written in Haskell the code base was expected to be possibly almost entirely compilable
-to JavaScript using GHCJS, a backend for the \gls{ghc} targetting JavaScript instead of
-native code. It offers many advanced features such as inlining of JavaScript into the code
+to JavaScript using GHCJS\footnote{The transpiler mentioned in \ref{sec:GHCJS}.}, a backend
+for the \gls{ghc} targetting JavaScript instead of native code. It offers many advanced
+compilation features such as inlining of JavaScript into the Haskell code
 base using a technique called quasi-quoting, where a special character sequence delimits the
 inlined code, much like regular quotes. This tool set was expected to make the work of porting
 an existing language to the web as simple as possible.
@@ -605,6 +622,9 @@ closely related to JavaScript also making their eventual way into the browser.
 
 \subsection{Macros}
 \label{macro}
+
+Macros are a mechanism for rewriting code at compilation time. 
+
 \subsection{continuations}
 \label{continuation}
 
