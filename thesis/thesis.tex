@@ -32,7 +32,7 @@
 \setmonofont[Scale=MatchLowercase,Mapping=tex-text]{Tahoma}
 
 \usepackage{booktabs}
-\usepackage{tabularx}
+\usepackage{tabu}
 \usepackage{listings}
 \usepackage{minted}
 % if you want colour tables
@@ -121,6 +121,7 @@ toc=true]{glossaries}
 \usepackage{cleveref}
 
 \newacronym{ast}{AST}{Abstract Syntax Tree}
+\newacronym{r5rs}{R5RS}{Revised\textsuperscript{5} Report on the Algorithmic Language Scheme}
 \newacronym{jit}{JIT}{Just In Time Compiler}
 \newacronym{llvm}{LLVM}{Low Level Virtual Machine}
 \newacronym{frp}{FRP}{Functional Reactive Programming}
@@ -204,8 +205,9 @@ toc=true]{glossaries}
 \addchap{Abstract}
 
 This thesis presents and evaluates a port of the zepto programming language to the web. It aims to
-work as seamlessly with existing technologies as possible and is largely influenced by R5RS,
-a standard of the Lisp derivative Scheme.
+work as seamlessly with existing technologies as possible and is largely influenced by \gls{r5rs},
+a standard of the Lisp derivative Scheme\footnote{A deeper introduction into \gls{r5rs} can be found
+in \ref{sec:ExistingStandards}.}.
 
 It is the result of over a year of independent research on zepto, a new programming language
 targetting various environments. The prototype described here and implemented for this
@@ -484,7 +486,7 @@ thesis.
 
 Elm as it is presented in \parencite{CPL} is a language centered around
 \gls{frp}\footnote{An in-depth explanation of \gls{frp} is outside of
-the scope of this thesis, but it is a programming style \parencite{frp}.}
+the scope of this thesis, but it is a programming style \parencite{FRP}.}
 with a special regard to browser-based \glspl{gui}. Formulated by Paul Hudak
 and Conal Elliott in a 1997 paper, it borrows
 its syntax largely from Haskell and is a pure, functional programming
@@ -543,8 +545,77 @@ is still thriving.
 
 Over the years, two main categories of languages have developed: Common Lisp
 and Scheme. While the syntactic proximity remains, they differ widely in
-concepts. Macro transformations are written quite differently and continuations
-are a feature that is exclusive to Scheme.
+concepts. \ref{fig:lispcomp} shows the differences between those language families.
+
+Zepto is a Scheme derivative loosely based on \gls{r5rs} \parencite{R5RS}, the most
+widely implemented standard of Scheme. It takes from it a lot of stnadard library
+functions, syntax definitions and continuations, but aims to introduce custom namespaces
+to provide a cleaner, more modular way of defining software libraries\footnote{This module
+system will be explained in \ref{chap:ConceptDesign} in depth.}.
+
+The reason why a Scheme derivative was chosen over an implementation of Common Lisp can be
+found in the feature set: hygienic macros and continuations are valuable abstractions that
+guarantee that components work together more seamlessly. An example of code that works as
+expected in Scheme but not in Common Lisp can be found in \ref{fig:schemevscomlisp}. It
+implements a simple if a bit contrived version of binary \texttt{or}, in Common Lisp and
+in Scheme. In Common Lisp, the variables defined in regular code will potentially be
+shadowed by the ones generated during macro expansion where in Scheme they reside in
+different contexts and thus are hygienic.
+
+While \gls{r5rs} is certainly a valuable standard and provided a lot of very useful information
+for the development for zepto, the language is not as closely tied to the standard as most other
+implementations. This allowed for the development of zepto-js to progress relatively unencumbered
+by incompatibilities, although one goal of the development effort was not to break any existing
+syntactic or semantic ties with \gls{r5rs}.
+
+\begin{center}
+\begin{figure}
+  \begin{tabu}{| l | l | l | l | l | l |}
+  \hline
+  \rowfont{\footnotesize}
+              & Macro Keyword & Macro Dispatch   & Hygienic Macros & Continuations & Standard\\ \hline
+  \rowfont{\footnotesize}
+  Scheme      & define-syntax & pattern matching & present         & present       & ANSI Common Lisp\\ \hline
+  \rowfont{\footnotesize}
+  Common Lisp & defmacro      & argument passing & not present     & not present   & RNRS\\ \hline
+  \end{tabu}
+  \caption{A comparison between Common Lisp and Scheme}
+\end{figure}
+\label{fig:lispcomp}
+\end{center}
+
+
+\begin{listing}[H]
+\caption{Common Lisp Macros vs. Scheme Macros}
+\begin{minted}[]{scheme}
+; the Common Lisp version
+(defmacro my-or (x y)
+  `(let ((tmp x))
+    (if tmp
+      x
+      y)))
+
+(my-or #f #t)
+; works, expands to:
+(let ((tmp #f)) (if #f #f #t))
+
+(let ((tmp #t))
+  (my-or #f #t))
+; does not work, expands to:
+(let ((tmp #t)) ((tmp #f)) (if #f #f tmp))
+
+; the Scheme version
+; it will work as expected in both versions
+(define-syntax
+  (syntax-rules
+    ((my-or x y)
+      (let ((tmp x))
+        (if tmp
+          x
+          y)))))
+\end{minted}
+\end{listing}
+
 
 \setchapterpreamble[u]{%
   \dictum[\emph{T. Peters}---The Zen of Python]{Practicality beats purity.}
@@ -586,8 +657,8 @@ A common saying among programming language designers is that every programmer ha
 their own implementation of Lisp.\footnote{The README of the femtolisp project even goes so
 far to claim "Some programmers' dogs and cats probably have their own lisp implementations as well." \parencite{BEZL}.}
 There are a lot of different implementations of Lisp
-in the wild, even ones that compile to JavaScript\footnote{such as ClojureScript, the
-backend for Clojure referenced in \ref{sec:ClojureScript}.}.
+in the wild, even ones that compile to JavaScript, such as ClojureScript, the
+backend for Clojure referenced in \ref{sec:ClojureScript}.
 
 The simplicity of the language on a parsing level is often cited as the main reason for
 its popularity as a language to implement.
@@ -615,7 +686,7 @@ The compilers are written directly in zepto itself.
 
 The small code base makes zepto a good target for porting it to the web. Further, because it
 is written in Haskell the code base was expected to be possibly almost entirely compilable
-to JavaScript using GHCJS\footnote{The transpiler mentioned in \ref{sec:GHCJS}.}, a backend
+to JavaScript using GHCJS, the transpiler mentioned in \ref{sec:GHCJS}, a backend
 for the \gls{ghc} targetting JavaScript instead of native code. It offers many advanced
 compilation features such as inlining of JavaScript into the Haskell code
 base using a technique called quasi-quoting, where a special character sequence delimits the
@@ -624,7 +695,7 @@ an existing language to the web as simple as possible.
 
 Of course there are other reasons to use a functional language as an example for how to
 bring a language into the browser. With both syntax
-and semantics differing strongly from JavaScript, this example enables  languages more
+and semantics differing strongly from JavaScript, this example enables languages more
 closely related to JavaScript to eventually make their way into the browser.
 
 \subsection{Macros}
@@ -636,6 +707,53 @@ Macros are a mechanism for rewriting code at compilation time.
 \label{continuation}
 
 \section{Additional Features}
+
+There are features in zepto that are not present in Scheme as specified by \gls{r5rs}, such
+as the module system and the extensive standard library. In this section, a brief list of
+the features and libraries that discriminate zepto from "regular" Scheme shall be given.
+
+\subsection{The module system}
+
+Zepto implements a custom module system that is completely defined in terms of the language
+itself. A small code example of different actions in zepto's module space are given in \ref{fig:zepmod}.
+This allows for namespaced, conditional and renaming imports, a feature missing from standard
+Scheme\footnote{Although the upcoming R7RS standard will most likely include such a mechanism.}.
+
+\begin{listing}[H]
+\caption{Defining \& using a zepto module}
+\begin{minted}[]{scheme}
+; this defines a module of the name "mathematics"
+(module "mathematics"
+  (export
+    `("add" ,add)
+    `("substract" ,substract)
+    `("multiply" ,multiply))
+
+  ; the actual worker function (not exposed)
+  ; applies a function to a list of arguments
+  (doop (op args)
+    (apply op args))
+
+  ; the exported functions; essentially just wrappers
+  ; around doop
+  (add (lambda arguments (doop + arguments)))
+  (substract (lambda arguments (doop - arguments)))
+  (multiply (lambda arguments (doop * arguments))))
+
+; will return a reference to the function
+(import "mathematics:add")
+; so that it can be bound to a name
+(define add (import "mathematics:add"))
+; or called directly
+((import "mathematics:add") 1 2)
+
+; import all under the namespace "mathematics"
+(import-all "mathematics")
+; import all under the namespace "mt"
+(import-all "mathematics" "mt")
+\end{minted}
+\end{listing}
+\label{fig:zepmod}
 
 
 \setchapterpreamble[u]{%
