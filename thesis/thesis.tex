@@ -10,9 +10,11 @@
 % Ben Swift   22/6/12
 % benjamin.j.swift@gmail.com
 % http://github.com/benswift/thesis-template
-% 
+%
 % This template is in the public domain
-% 
+%
+% Strongly modified by Veit Heller
+%
 %==========================================
 % preamble
 \documentclass[oneside,11pt,xetex]{scrbook}
@@ -243,11 +245,11 @@ being counter-intuitive, though it is older than JavaScript, the first commonly 
 programming language that implemented prototypal objects being Self.
 
 This and a few other design choices have prompted many programmers to develop
-wrapper libraries around almost anything that comprises the language, the arguably
-most widely used example being jQuery, a library that abstracts over the \gls{dom}.
-But more arcane topics have been covered as well: there is the \gls{yui}, a now abandoned
-project of Yahoo that aims to abstract over web \glspl{api} as well but also comes with
-its own inheritance model, likening JavaScript prototypes to classical classes by
+wrapper libraries around almost anything that comprises the language. The most widely-used
+example of this is arguably jQuery, a library that abstracts over the \gls{dom}.
+But more arcane topics have been covered as well: there is, for example, the \gls{yui}, a now-abandoned
+project of Yahoo that aimed to abstract over web \glspl{api} but also comes with
+its own inheritance model. This model likens JavaScript prototypes to classical classes by
 introducing special functions and properties to the objects such as \texttt{extend}
 and \texttt{superclass}.
 
@@ -270,8 +272,8 @@ breaking existing semantics).
 \label{pretrans}
 
 This and other features have been available to JavaScript developers for much
-longer than the latest iterations of the JavaScript language and without
-the need to rely on a possibly massive library - provided they use a preprocessor.
+longer than the latest iterations of the JavaScript language without them needing
+to rely on a possibly massive library - provided they use a preprocessor.
 One of the earliest exemplars of preprocessing for JavaScript, CoffeeScript, included
 \texttt{lambdas}, a shorthand for anonymous functions; \texttt{pattern matching},
 a technique for destructuring data; and \texttt{classes}, all of which found
@@ -286,9 +288,9 @@ such as constant hoisting, a compiler optimization technique that eliminates
 pure functions that always produce the same result in favour of global constants
 to reduce the overhead of function calls.
 
-Another way to use JavaScript as a platform that gains ever more importance
-is the transpilation from another language. One could argue that CoffeScript
-is nothing short of a transpiler, but one could also argue against that notion,
+Transpilation from a different language is another increasingly popular
+way to use JavaScript as a platform. One could argue that CoffeScript
+is nothing short of a transpiler; but one could also argue against this idea,
 considering its only purpose is to compile to JavaScript. Other general-purpose
 languages such as Clojure and C++, originally developed to run on other platforms,
 have the option to compile to JavaScript through ClojureScript \parencite{CLJS} and
@@ -318,14 +320,14 @@ largely feature-complete functional programming language that has been tested
 in production systems.
 
 Many reasons would speak for a procedural or objective-oriented language as
-a prototype. For one, the language itself could be more easily expressed in
-terms of JavaScript if it is reasonably close to it. Another point that speaks
-against using a functional - and especially pure - programming language is that
-this might make the interoperability harder because JavaScript is intrinsically
+a prototype. On one hand, the language itself could be more easily implemented in
+JavaScript if it is reasonably close to it. Another point that speaks
+against using a functional - and especially pure - programming language is the possibility of
+making interoperability harder because JavaScript is intrinsically
 impure and stateful.
 
-But all of those reasons could also be read as argument for the implementation
-of a functional language. The difference showcases the ability of JavaScript
+But all of those reasons could also be read as argument \textit{for} the implementation
+of a functional language. The difference showcases JavaScript's ability
 to express concepts foreign to the language in it. It also serves as a better
 test bench for more advanced implementation patterns.
 
@@ -398,7 +400,7 @@ the JavaScript problem"\footnote{A talk given by Stegeman bore this title, see
 instead of machine code by the means of inserting a custom compiler backend into
 the \gls{ghc} toolchain.
 
-It is the compiler used in this thesis to transpiler the existing zepto codebase
+GHCJS is the compiler used in this thesis to transpile the existing zepto codebase
 to JavaScript. Its plug-and-play design, complete enough implementation of the
 Haskell programming langauge and relative maturity all played a role in the choice
 to use it as an implementation language\footnote{Further discussion of the design
@@ -408,7 +410,7 @@ and decision process can be found in \ref{chap:ConceptDesign} and
 \subsubsection{Emscripten}
 
 Emscripten as discussed in \parencite{ZAKA} aims to be a transpiler from \gls{llvm} to
-JavaScript. Its main current focus is the translation of C and C++ source code
+JavaScript. Its primary focus is the translation of C and C++ source code
 to JavaScript.
 
 Its use case is similar to that of GHC-JS, enabling the user to both "(1)
@@ -430,14 +432,14 @@ source detailing its development and architecture.
 
 ClojureScript is a backend for the Clojure programming language that targets
 JavaScript. Initially developed by Rich Hickey, the author of Clojure, it is
-now maintained under the lead of David Nolen \parencite{CLJS}.
+now maintained under David Nolen's lead \parencite{CLJS}.
 
 Being a Lisp, there are obvious syntactic similarites to zepto. Yet, as it is
-transpiled rather than interpreted directly in the browser it is quite different
-to program against. Most specifically the way the \gls{ffi} works is quite apparently
-different as ClojureScript has a lot of syntactic integrations that help embed
-JavaScript within it, i.e. all functions prefixed with a period are assumed to
-be JavaScript functions on the prototype of the object provied as first argument.
+transpiled rather than interpreted directly in the browser, programming against
+it is quite difficult. Specifically, the way the \gls{ffi} works is quite apparently** 
+different, as ClojureScript has a lot of syntactic integrations that help embed
+JavaScript within it. **new sentence** all functions prefixed with a period are assumed to
+be JavaScript functions on the prototype of the object provided as first argument.
 JavaScript values can be directly accessed through the \texttt{js} namespace.
 Zepto's design is quite different, as is discussed in \ref{sec:ffi}.
 
@@ -471,8 +473,8 @@ As mentioned int \ref{pretrans}, CoffeeScript was one of the first transpilers
 that targetted JavaScript when it first appeared\footnote{The first git commit
 dates back to
 \href{https://github.com/jashkenas/coffeescript/commit/8e9d637985d2dc9b44922076ad54ffef7fa8e9c2}{December 13th, 2009}.
-The first public release happened shortly after that.}. As also previously
-explained, many of the constructs have been adopted by JavaScript by now.
+The first public release happened shortly after that.}. Many of the constructs
+have been adopted by JavaScript by now, both in terms of syntax and semantics.
 CoffeeScript is similar to JavaScript in that it is a procedural, prototypal
 language. No semantic features have been added or removed from JavaScript,
 making it relatively dissimilar to the programming system presented in this
@@ -481,17 +483,17 @@ thesis.
 \subsubsection{Elm}
 
 Elm as it is presented in \parencite{CPL} is a language centered around
-\gls{frp}\footnote{An in-depth explanation of \gls{frp} is out of
-the scope of this thesis, but it is a programming style originally formulated
-by Paul Hudak and Conal Elliott in a 1997 paper \parencite{frp}.}
-, with a special regard to browser-based \gls{gui}s. Borrowing
-its syntax largely from Haskell it is a pure, functional programming
+\gls{frp}\footnote{An in-depth explanation of \gls{frp} is outside of
+the scope of this thesis, but it is a programming style \parencite{frp}.}
+with a special regard to browser-based \glspl{gui}. Formulated by Paul Hudak
+and Conal Elliott in a 1997 paper, it borrows
+its syntax largely from Haskell and is a pure, functional programming
 language. Notable features include \gls{gui}-centric tooling, such
 as a "time-traveling" debugger that caches the state of a program
 at any given time, allowing for rewinding, forwarding and jumping.
 
-The similarities with this thesis go insofar as it is a functional
-programming language for the Web, but it compiles to JavaScript, HTML
+Elm's sole similarity to the language discussed in this thesis is that it is
+a functional language for the Web. However, it compiles to JavaScript, HTML
 and CSS, once again falling short of actually getting the code to the
 browser. It is also very centered around the aforementioned \gls{frp},
 whereas the runtime presented in this thesis aims to be a general-purpose
@@ -570,7 +572,8 @@ The value of integrating zepto into existing web infrastructure lies in
 the addition of a host of new features that are not present natively in
 JavaScript and hard to implement in a stable manner\footnote{While stability
 is not guaranteed by the current version of zepto, it is tested and deployed
-in production systems and shows to function rather reliably.}. The goal of
+in production systems and shows to function rather reliably.}.**Make sentence
+into two or eliminate clauses; restructure to eliminate intro** The goal of
 the prototype was thus to expose all of the features that define zepto in
 the JavaScript implementation as well.
 
@@ -580,12 +583,15 @@ why zepto, shall be given in the following.
 \subsection{Lisp}
 
 A common saying among programming language designers is that every programmer has written
-their own implementation of Lisp. There are a lot of different implementations of Lisp
+their own implementation of Lisp.\footnote{The README of the femtolisp project even goes so
+far to claim "Some programmers' dogs and cats probably have their own lisp implementations as well." \parencite{BEZL}.}
+There are a lot of different implementations of Lisp
 in the wild, even ones that compile to JavaScript\footnote{such as ClojureScript, the
 backend for Clojure referenced in \ref{sec:ClojureScript}.}.
 
-The main reason for that is often cited to be the simplicity of the language on a parsing
-level. A simple Lisp can be implemented in less than one hundred lines of code if no
+The simplicity of the language on a parsing level is often cited as the main reason for
+its popularity as a language to implement.
+A simple Lisp can be implemented in less than one hundred lines of code if no
 intermediate representation is generated. This is made possible by the unique property
 of Lisp of enclosing every statement in parentheses, where the first element within
 those parentheses is the statement name and the other elements are the arguments.
@@ -616,9 +622,10 @@ base using a technique called quasi-quoting, where a special character sequence 
 inlined code, much like regular quotes. This tool set was expected to make the work of porting
 an existing language to the web as simple as possible.
 
-Of course there are other reasons to use a functional language as an example. With both syntax
-and semantics differing strongly from JavaScript, this example makes way for languages more
-closely related to JavaScript also making their eventual way into the browser.
+Of course there are other reasons to use a functional language as an example for how to
+bring a language into the browser. With both syntax
+and semantics differing strongly from JavaScript, this example enables  languages more
+closely related to JavaScript to eventually make their way into the browser.
 
 \subsection{Macros}
 \label{macro}
