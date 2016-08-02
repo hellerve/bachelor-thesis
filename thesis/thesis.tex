@@ -121,6 +121,11 @@ toc=true]{glossaries}
 \usepackage{cleveref}
 
 \newacronym{ast}{AST}{Abstract Syntax Tree}
+\newacronym{bsd}{BSD}{Berkeley Software Distribution}
+\newacronym{zeps}{zeps}{Zepto Package System}
+\newacronym[plural={Scheme Requests For Implementation (SRFIs)}]{srfi}{SRFI}{Scheme Request For Implementation}
+\newacronym{pep}{PEP}{Python Enhancement Proposal}
+\newacronym{eep}{EEP}{Erlang Enhancement Proposal}
 \newacronym{r5rs}{R5RS}{Revised\textsuperscript{5} Report on the Algorithmic Language Scheme}
 \newacronym{jit}{JIT}{Just In Time Compiler}
 \newacronym{llvm}{LLVM}{Low Level Virtual Machine}
@@ -512,7 +517,7 @@ It is different from GHCJS insofar as it does not provide compatibility
 with Haskell code, although many libraries and functions are relatively
 similar. See \ref{fig:ps} for an example.
 
-as It shares a lot of features with Elm, it also largely shares the
+As it shares a lot of features with Elm, it also largely shares the
 differences to the system presented in this thesis.
 
 \begin{listing}[H]
@@ -560,13 +565,15 @@ expected in Scheme but not in Common Lisp can be found in \ref{fig:schemevscomli
 implements a simple if a bit contrived version of binary \texttt{or}, in Common Lisp and
 in Scheme. In Common Lisp, the variables defined in regular code will potentially be
 shadowed by the ones generated during macro expansion where in Scheme they reside in
-different contexts and thus are hygienic.
+different contexts and thus are hygienic. This makes the system more intuitive and eliminates
+a class of potential bugs and is thus more desirable.
 
 While \gls{r5rs} is certainly a valuable standard and provided a lot of very useful information
 for the development for zepto, the language is not as closely tied to the standard as most other
 implementations. This allowed for the development of zepto-js to progress relatively unencumbered
 by incompatibilities, although one goal of the development effort was not to break any existing
-syntactic or semantic ties with \gls{r5rs}.
+syntactic or semantic ties with \gls{r5rs}, as this might potentially have broken a big part of
+the standard library, one of the major arguments for zepto as a language.
 
 \begin{center}
 \begin{figure}
@@ -584,6 +591,21 @@ syntactic or semantic ties with \gls{r5rs}.
 \label{fig:lispcomp}
 \end{center}
 
+\subsection{\glspl{srfi}}
+
+An important argument for adhering to the \gls{r5rs} standard are \glspl{srfi}. They are proposals
+of the Scheme programmer community to enhance the standard libraries of the implementations through
+the additions of features, much like \glspl{pep} for the Python programming languages and \glspl{eep}
+for Erlang. However, the differences that sets the former apart from the latter two is the inclusion
+of a reference implementation\footnote{This is not required, but part of the "good tone" of the community
+and \gls{srfi}s lacking them are relatively rare.}. Zepto currently supports 5 of these requests by default,
+one of which implements a core feature of the language, descriptive custom data types.
+
+It proved to be a major convenience in the past that the implementation of these requests could be
+ported with relative ease. By moving away even more from the Scheme standards, this process would
+undoubitably be affected in a negative manner. Thus, for both the reference implementation and its
+JavaScript equivalent, it was decided that a core set of primitives must be available under all circumstances
+to allow for the cross-fertilization of Scheme and zepto.
 
 \begin{listing}[H]
 \caption{Common Lisp Macros vs. Scheme Macros}
@@ -596,12 +618,12 @@ syntactic or semantic ties with \gls{r5rs}.
       y)))
 
 (my-or #f #t)
-; works, expands to:
+; works (yields true), expands to:
 (let ((tmp #f)) (if #f #f #t))
 
 (let ((tmp #t))
   (my-or #f #t))
-; does not work, expands to:
+; does not work (yields false), expands to:
 (let ((tmp #t)) ((tmp #f)) (if #f #f tmp))
 
 ; the Scheme version
@@ -616,6 +638,15 @@ syntactic or semantic ties with \gls{r5rs}.
 \end{minted}
 \end{listing}
 
+\subsection{Unix}
+
+While not necessarily a standard, Unix and its guidelines do affect zepto in an indirect way as much of zeptos
+tooling, such as the \gls{zeps} are using Unix utilities and system calls internally. This is expected to change
+in the future, but so far all the developers that have worked on or with zepto\footnote{At least to the knowledge
+of the author.} have used Unix or Unix-like systems such as MacOS X or \gls{bsd}. This is less of a problem in the
+browser context because many of the packaging and versioning tools are run from the command line before the application
+is distributed, but it is important to keep in mind that some of the tools rely on a specific Operating System when
+developing zepto programs.
 
 \setchapterpreamble[u]{%
   \dictum[\emph{T. Peters}---The Zen of Python]{Practicality beats purity.}
