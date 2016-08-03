@@ -121,8 +121,10 @@ toc=true]{glossaries}
 \usepackage{cleveref}
 
 \newacronym{ast}{AST}{Abstract Syntax Tree}
+\newacronym{dsl}{DSL}{Domain-Specific Language}
 \newacronym{bsd}{BSD}{Berkeley Software Distribution}
 \newacronym{zeps}{zeps}{Zepto Package System}
+\newacronym{zpr}{ZPR}{Zepto Package Registry}
 \newacronym[plural={Scheme Requests For Implementation (SRFIs)}]{srfi}{SRFI}{Scheme Request For Implementation}
 \newacronym{pep}{PEP}{Python Enhancement Proposal}
 \newacronym{eep}{EEP}{Erlang Enhancement Proposal}
@@ -732,10 +734,56 @@ closely related to JavaScript to eventually make their way into the browser.
 \subsection{Macros}
 \label{macro}
 
-Macros are a mechanism for rewriting code at compilation time. 
+Macros are a mechanism for rewriting code at compilation time. As discussed in
+\ref{sec:ExistingStandards}, zepto's macros are hygienic, which prevents name collisions
+with code at runtime and eliminates a class of particularly nasty bugs. Macros are
+evaluated in a step between the parser and the actual runnig or compilation of code
+called macro expansion, where they rewrite parts of the source code that reference
+it according to its specifications.
 
-\subsection{continuations}
+Because Scheme macros leverage pattern matching and argument overloading by default,
+they allow for syntactic extensions of the language. An example for a simple yet
+interesting case is made in \ref{fig:listcomp}, where a simple syntactic rule set
+for list comprehensions is defined, not unlike a \gls{dsl}, albeit a very small one.
+This particular list comprehension is syntactically close to the same construct in
+Haskell, although the semantics should be relatively clear at a close inspection and
+are, for the sake of example, a bit simple than in the language it is inspired by.
+
+\begin{listing}[H]
+\caption{Defining \& using a macro in zepto}
+\begin{minted}[]{scheme}
+; this defines a macro of the name listcomp
+(define-syntax listcomp ; the name
+  (syntax-rules (<- |) ; the set of rules and special tokens to respect
+    ((_ expr | elem <- elems) ; the pattern to match where
+                                   ; the underscore character is a wildcard
+      (map (lambda (elem) expr) elems)))) ; the pattern is simply rewritten to a call to the map function
+
+; add1 to every x in the list
+(listcomp (add1 x) | x <- [1 2 3 4]) ; => [2 3 4 5]
+(listcomp (add1 x) | x <- (range 4)) ; => [1 2 3 4]
+\end{minted}
+\end{listing}
+\label{fig:listcomp}
+
+It should be noted that zepto supports list comprehensions by default and they are
+both a bit more concise and more powerful - as they allow for the filtering of
+elements from the source list - than the version defined here.
+
+\subsection{Continuations}
 \label{continuation}
+
+Continuations are a datatype representing the state of a program at the time of
+request, including environments, definitions and execution path. By manipulating
+it and injecting it into different contexts, it becomes a powerful tool to switch
+back and forth between multiple threads of execution, without actually creating
+or managing threads. A practical application of coroutines was for instance
+presented in \parencite{COR}, where it was used to implement a fully formed
+coroutine system that was capable of starting, stopping and pausing execution
+of multiple coroutines at once without the need for actual threading.
+
+An exhaustive explanation of continuations cannot possibly be given in the scope
+of this thesis, for further information about this concept refer to \parencite{CONT}.
 
 \section{Additional Features}
 
@@ -749,6 +797,22 @@ Zepto implements a custom module system that is completely defined in terms of t
 itself. A small code example of different actions in zepto's module space are given in \ref{fig:zepmod}.
 This allows for namespaced, conditional and renaming imports, a feature missing from standard
 Scheme\footnote{Although the upcoming R7RS standard will most likely include such a mechanism.}.
+This approach has a few upsides that all boil down to the module system being available in the
+user namespace; monkey-pacthing and mocking objects is possible very easily, easing for instance
+testing and fixing flaws in the program at runtime. It is also relatively small and simple,
+at about 130 lines of macro-backed code, which makes it fairly maintainable.
+
+However, this approach comes not without its drawbacks. Most notably, relying on a module
+system that works at runtime requires more complex compilation and a dispatch system to
+be present while the program is running. It also requires global data in the form of a
+special variable \texttt{*modules*} holding the mapping of names to values, a concept that is
+unusual for a functional programming language and might hinder the compilation into other
+representations. Of course global data is also normally either not thread-safe or relatively
+slow to use if it requires some sort of synchronization mechanism - which is currently not
+a feature that zepto implements.
+
+It has been decided that this is an acceptable tradeoff for zepto as it currently stands,
+but the system might be changed in the future.
 
 \begin{listing}[H]
 \caption{Defining \& using a zepto module}
@@ -786,6 +850,64 @@ Scheme\footnote{Although the upcoming R7RS standard will most likely include suc
 \end{listing}
 \label{fig:zepmod}
 
+For the case of JavaScript, this part of zepto's implementation proved not
+to be a problem and worked without further tweaking.
+
+\subsection{The standard library}
+
+Zepto comes with a fairly extensive standard library that includes a wide
+variety of utilities spanning such diverse topics as cryptography\footnote{As found
+in the \texttt{rsa} module, which implements RSA key generation, signing,
+validating and en- and decryption.}, testing, monads, parsing command line
+arguments and a parser combinator. An exhaustive list of the modules found
+in the zepto standard library at the time of writing can be found in \ref{app:stdlib}.
+
+This is fairly unusual for Scheme implementations insofar as many of them
+come with a fairly minimalistic set of libraries that is often largely based
+on SRFIs exclusively. Two notable exceptions are Chibi Scheme\footnote{The source
+code for Chibi Scheme and its standard library can be found on Github under
+https://github.com/ashinn/chibi-scheme.}, and Racket, the distributions of which
+are bundled with an even bigger standard library. This might be due to the fact
+that Alex Shinn, the main developer behind Chibi Scheme, is very active in the
+Scheme community and authored a few SRFIs of his own and Racket is a language
+supported by the Computer Science faculties of multiple universities  and is
+the result of over 20 years of research.
+
+The stability of the libraries that come bundled with zepto varies and is not
+ensured until the reference implementation reaches version 1.0.0. However, many
+of these libraries have at least been used by other libraries in the zepto
+ecosystem and are thus the subject of continuous scrutiny.
+
+The standard library as a concept in zepto is thought to be a rather minimal,
+but usable set of primitives to get the developer started. Once they feel
+comfortable in the programming environment, it is suggested they start working
+with \gls{zeps}.
+
+\subsection{\gls{zeps}}
+
+\gls{zeps} is the package manager for zepto. It is capable of installing and
+managing packages from Github and the \gls{zpr} through the command line. It
+is undoubitably the biggest coherent piece of code written entirely in zepto
+and it is capable of intalling and updating itself. At the time of writing,
+at least 40 packages have been published with \gls{zeps}, including a framework
+for writing web servers and a Redis database client. It is only able to run
+on Unix-like systems or systems exposing at least a Unix-like shell.
+
+The authentication system of \gls{zeps} on the \gls{zpr} is RSA-backed, which
+also allows for the signing of packages for the user's convenience. This feature
+is not available when installing from Github.
+
+The package system aims to be a cohesive, intuitive entity for installing,
+removing, creating, managing, testing and updating packages\footnote{A list of
+all the available commands is given in \ref{app:zepscmds}.}. It includes
+facilities for creating sandboxed environments, making dependency management
+of multiple systems with possibly conflicting dependency trees possible.
+It can also be used to distribute zepto-based command line tools and its
+ability to bootstrap packages is scriptable, allowing for plugins to
+decide what files should be generated on the creation of a new package.
+
+It has proved to be useful in workshops and user feedback sessions to make
+sure all of the attendees can easily manage their first projects.
 
 \setchapterpreamble[u]{%
   \dictum[\emph{T. Peters}---The Zen of Python]{Practicality beats purity.}
@@ -802,7 +924,7 @@ Scheme\footnote{Although the upcoming R7RS standard will most likely include suc
 \chapter{Implementation}
 \label{chap:Implementation}
 
-The implementation  philosophy of the port presented in this thesis has always been to
+The implementation philosophy of the port presented in this thesis has always been to
 reuse as much code from the reference implementation as possible. This guided the flow of design
 choices down a rather natural path and kept the implementation described here fairly short and trivial.
 
@@ -1075,10 +1197,6 @@ unique about zepto\footnote{The code was salvaged for posteriority and can be
 found on \href{https://github.com/hellerve/js-parse-dispatch}{Github under the
 name of \texttt{js-parse-dispatch}}.}.
 
-
-
-\clearpage
-
 \setchapterpreamble[u]{%
   \dictum[\emph{R. Buckminster Fuller}]{When I'm working on a problem, I never think about beauty. I think only how to solve the problem. But when I have finished, if the solution is not beautiful, I know it is wrong.}
   \bigskip}
@@ -1101,13 +1219,42 @@ name of \texttt{js-parse-dispatch}}.}.
 \chapter{Summary and Outlook}
 \label{chap:outlook}
 
-* porting efforts
+The prototype presented in this thesis was never expected to be a replacement
+for technologies that are currently making the web what it is. It is a simple
+experiment that happens to work well enough to power less than a handful
+actual production systems, a blessing for the development of zepto. The
+use cases provided real insight into the descripancy of how the program
+works and how it should work. It is also a liability going forward, as users
+do not generally appreciate breaking changes.
 
-* compiler efforts
+The software system certainly proved that it is possible to make other
+languages work on the web, an idea that is nasceant but, by the hopes of
+those involved in the production of zepto-js, one that might become a trend
+going forward.
 
-* zeps
+Other developments in the zepto ecosystem are just as exciting. There have
+been efforts to port zepto to a few different platforms, all of which are
+far from finished, but interesting to follow along nonetheless. The compiler
+and parser have both gained languages, some of them usable - the aforementioned
+compiler backends for LLVM and Erlang come to mind, and the web server framework
+that uses a \gls{dsl} to simplify writing request handlers - , some of them born
+purely out of the desire to toy around with the language - parsers and cross-compilers
+for a handful of esoteric programming languages have been written, including Brainfuck,
+Io and Iota.
 
-* classes
+The development of \gls{zeps} has surely contributed to the growth of zepto and
+it has fueled the development of zepto-js. It is tested on real systems and has
+withstood the scrutiny of colleagues and contributors. By the definition of the
+development team, however, it is not yet ready for a big public release, hence
+the timid version number of 0.0.7. The road to go might be not as long as this
+number suggests, but it certainly is long enough to merit a healthy dose of
+defensiveness.
+
+Another big development in the zepto community has certainly been a series of
+classes and workshops. They, too, helped route the development of zepto down
+a path of usability, self-awareness and constant reevaluation.
+
+**TODO**
 
 \chapter{Conclusion}
 \label{chap:conclusion}
@@ -1151,6 +1298,87 @@ that is zepto.
 %============================================
 %============================================
 % end matter
+
+\appendix
+
+\chapter{List of Modules in the Zepto Standard Library}
+\label{app:stdlib}
+
+Libraries that are loaded by default are denoted by \textit{(dflt.)}.
+
+\begin{description}
+\item [argparse] A command line argument parser
+\item [ascii] An ASCII art modul
+\item [bench] A simple benchmarking and timing library
+\item [calculus] A library that implements combinators of the lambda calculus
+\item [char\textit{(dflt.)}] A library of functions for working with characters
+\item [cl] A library that exports standard Common Lisp functions
+\item [data] A library that exports lazy data types, such as queues, deques and streams
+\item [datetime] A library for working with and formatting dates and times
+\item [delay\textit{(dflt.)}] A utility library for delaying computations
+\item [infix] A library that translates infix mathematical expressions to the appropriate
+prefix form
+\item [io\textit{(dflt.)}] A library of functions for Input and Output
+\item [json] A JSON parser and renderer
+\item [keywords\textit{(dflt.)}] A library that allows for keyword arguments as found in Python
+\item [marsaglia] A library of functions for cryptographically strong Pseudo-Random Number Generators
+\item [math\textit{(dflt.)}] A library of functions for mathematical purposes
+\item [minitest] A testing library
+\item [module\textit{(dflt.)}] Zepto's module system
+\item [monads] A library of monads and monadic computations
+\item [parsecomb] A parser combinator library
+\item [pointfree] A library for defining functions in point-free style
+\item [querystring] A querystring parser and renderer
+\item [random\textit{(dflt.)}] A library of functions for cryptographically insecure random number
+and data generation
+\item [rsa] A RSA library
+\item [slugify] A library for generations slugs
+\item [sort\textit{(dflt.)}] A sorting library
+\item [srfi\textit{(dflt.)}] A library of SRFIs
+\item [statistics] A statistics library
+\item [struct\textit{(dflt.)}] A library for generating structs with the appropriate functions
+declaratively
+\item [zpbash] A BASH library
+\item [zpcllections\textit{(dflt.)}] A library of functions for defining and working with collections
+\item [zpcont\textit{(dflt.)}] A library of functions for working with continuations
+\item [zpconversion\textit{(dflt.)}] A library of functions for converting between datatypes
+\item [zperror\textit{(dflt.)}] A library of functions for working with errors
+\item [zpfile\textit{(dflt.)}] A library of functions for working with files
+\item [zpgenerics\textit{(dflt.)}] A library of functions for defining and working with
+generic functions
+\item [zphash\textit{(dflt.)}] A library of functions for working with hash maps
+\item [zplist\textit{(dflt.)}] A library of functions for working with lists
+\item [zpnumbers\textit{(dflt.)}] A library of functions for working with numerical values
+\item [zpstring\textit{(dflt.)}] A library of functions for working with strings
+\item [zpvector\textit{(dflt.)}] A library of functions for working with vector
+\item [zpversion\textit{(dflt.)}] A library of functions for working with the current zepto version
+\end{description}
+
+\chapter{List of \gls{zeps} commands}
+\label{app:zepscmds}
+
+This list can also be found in the README of zeps under
+\texttt{https://github.com/zeps-system/zeps}.
+
+\begin{description}
+\item [test] Runs the module tests.
+\item [t] shortcut for test.
+\item [search] Search for packages matching a search term (on the ZPR).
+\item [sandbox] Create/destroy a sandboxed zeps environment
+\item [run] Run the module entry-point, without installing it
+\item [repl] Launches an interactive shell with a certain module preloaded.
+\item [remove] Removes a package.
+\item [rm] shortcut for remove.
+\item [register] Registers a package.
+\item [r] shortcut for register.
+\item [new] Bootstraps a new package.
+\item [n] Shortcut for new.
+\item [keygen] Generates a new RSA key for zeps.
+\item [install] Installs a package.
+\item [i] Shortcut for install.
+\item [help] Interactive help on getting started
+\item [readme] Prints zeps' README
+\end{description}
 
 \backmatter
 
