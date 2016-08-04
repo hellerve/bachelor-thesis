@@ -373,9 +373,9 @@ zepto, both the desktop and the JavaScript version, in the future.
 \label{chap:RelatedWork}
 
 This section aims to give a quick overview of work that has already been done in the
-field of transpilation to and language implementations on top of JavaScript. A few
+field of transpilation to and language implementations on top of JavaScript.**think about rephrasing to put prepositions together** A few
 of the most important specimens have already been mentioned briefly in \ref{pretrans},
-although their relationship to this thesis have not yet been discussed.
+although their relationship to this thesis has not yet been discussed.
 
 \section{Existing Projects}
 
@@ -384,9 +384,9 @@ transpilers from existing programming languages to and languages explicitly
 acting as a layer of abstraction over JavaScript shall be presented.
 
 The aim of this section is not to present the reader with the syntax and semantics
-of every single language that is discussed, but rather equip them with a general
+of every single language is discussed, but rather equip them with a general
 overview of the ecosystem at the time of writing and how it correlates to the
-work presented in this thesis.
+work presented in this thesis.**cut down?**
 
 \subsection{Transpilers}
 \label{trans}
@@ -405,16 +405,16 @@ kind of system in the context of this thesis.
 GHCJS - often hyphenated as GHC-JS - is a transpiler from the Haskell language
 to JavaScript. It is currently maintained by Luite Stegeman. It aims to "solve
 the JavaScript problem"\footnote{A talk given by Stegeman bore this title, see
-\parencite{STEG}.}. It enables the user to compile any Haskell program to JavaScript
+\parencite{STEG}.}, in that it enables the user to compile any Haskell program to JavaScript
 instead of machine code by the means of inserting a custom compiler backend into
-the \gls{ghc} toolchain.
+the \gls{ghc} toolchain.**I tend to integrate quotes into a sentence on both sides if they are short like that, but this is a stylistic choice**
 
 GHCJS is the compiler used in this thesis to transpile the existing zepto codebase
-to JavaScript. Its plug-and-play design, complete enough implementation of the
-Haskell programming langauge and relative maturity all played a role in the choice
+to JavaScript. Its plug-and-play design, complete enough **rephrase: near-complete** implementation of the
+Haskell programming langauge, and relative maturity all played a role in the choice
 to use it as an implementation language\footnote{Further discussion of the design
 and decision process can be found in \ref{chap:ConceptDesign} and
-\ref{chap:SystemDesign}.}.
+\ref{chap:SystemDesign}.}. **possibly reword: all contributed to the decision to use it as an implementation language**
 
 \subsubsection{Emscripten}
 
@@ -422,19 +422,19 @@ Emscripten as discussed in \parencite{ZAKA} aims to be a transpiler from \gls{ll
 JavaScript. Its primary focus is the translation of C and C++ source code
 to JavaScript.
 
-Its use case is similar to that of GHC-JS, enabling the user to both "(1)
+Its **specify what** use case is similar to that of GHC-JS, enabling the user to both "(1)
 Compile code directly into LLVM assembly, and then compile that into JavaScript
 using Emscripten, or (2) Compile a language’s entire runtime into LLVM and then
 JavaScript, as in the previous approach, and then use the compiled runtime to
 run code written in that language" (\cite{ZAKA}), the latter of which sounding
-suspiciously like what zepto-js tries to achieve. There has been efforts to
-make the PyPy \gls{jit}\footnote{A \gls{jit} aimed to speed up Python programs
+suspiciously like what zepto-js tries to achieve. **run-on, think about describing list items in second sentence** There have been efforts to
+make the PyPy \gls{jit}\footnote{A \gls{jit} designed to speed up Python programs
 by analyzing and compiling them, described in \parencite{PYPY}.} work in the
-browser, and while it seems to have gained a fair bit of traction and work
+browser. While this seems to have gained a fair bit of traction and work
 reasonably well\footnote{A live demonstration of how it works can be found on
 its \href{https://pypyjs.org}{website, accessible under https://pypyjs.org}.},
 documentation on it is sparse and there is seemingly no academically viable
-source detailing its development and architecture.
+source detailing its development and architecture. **watch out for qualifying words like "reaonsably" and "fair"; they call into question scientific (read: objective) integrity**
 
 \subsubsection{ClojureScript}
 \label{sec:ClojureScript}
@@ -468,7 +468,7 @@ Zepto's design is quite different, as is discussed in \ref{sec:ffi}.
 
 \subsection{Abstraction Languages}
 
-The languages mentioned here are languages that purely abstract over JavaScript,
+The languages mentioned here are languages that abstract purely over JavaScript,
 choosing it as their primary backend. This differs from the languages discussed
 in \ref{trans}, which are general purpose languages with the option to compile
 to JavaScript if desired by the developer.
@@ -478,12 +478,11 @@ recent developments in web programming.
 
 \subsubsection{CoffeeScript}
 
-As mentioned int \ref{pretrans}, CoffeeScript was one of the first transpilers
-that targetted JavaScript when it first appeared\footnote{The first git commit
+As mentioned int \ref{pretrans}, when it first appeared, CoffeeScript was one of the first transpilers that targeted JavaScript.\footnote{The first git commit
 dates back to
 \href{https://github.com/jashkenas/coffeescript/commit/8e9d637985d2dc9b44922076ad54ffef7fa8e9c2}{December 13th, 2009}.
-The first public release happened shortly after that.}. Many of the constructs
-have been adopted by JavaScript by now, both in terms of syntax and semantics.
+The first public release happened shortly after that.}. Many of the constructs, both relating to syntax and semantics
+have been adopted by JavaScript.
 CoffeeScript is similar to JavaScript in that it is a procedural, prototypal
 language. No semantic features have been added or removed from JavaScript,
 making it relatively dissimilar to the programming system presented in this
@@ -506,7 +505,7 @@ a functional language for the Web. However, it compiles to JavaScript, HTML
 and CSS, once again falling short of actually getting the code to the
 browser. It is also very centered around the aforementioned \gls{frp},
 whereas the runtime presented in this thesis aims to be a general-purpose
-programming environment.
+programming environment.**this paragraph could be beautified: add some fluidity**
 
 \subsubsection{PureScript}
 
@@ -545,37 +544,37 @@ head (Cons x _) = Just x
 \label{sec:ExistingStandards}
 
 When developing a programming language derived from the Lisp family, one builds on
-top of almost 70 years of development, formalization and research. Of course
-many of the standards that were formed during that time are now obsolete.
+top of almost 70 years of development, formalization, and research. Of course
+many of the standards formed during this time are now obsolete.
 Nonetheless, the effort of standardizing the many languages and implementations
-is still thriving.
+is still thriving. **strengthen transition sentence**
 
 Over the years, two main categories of languages have developed: Common Lisp
-and Scheme. While the syntactic proximity remains, they differ widely in
+and Scheme. While the syntactic proximity remains, the categories differ widely in
 concepts. \ref{fig:lispcomp} shows the differences between those language families.
 
 Zepto is a Scheme derivative loosely based on \gls{r5rs} \parencite{R5RS}, the most
-widely implemented standard of Scheme. It takes from it a lot of stnadard library
+widely implemented standard of Scheme. It draws from a lot of standard library
 functions, syntax definitions and continuations, but aims to introduce custom namespaces
 to provide a cleaner, more modular way of defining software libraries\footnote{This module
 system will be explained in \ref{chap:ConceptDesign} in depth.}.
 
 The reason why a Scheme derivative was chosen over an implementation of Common Lisp can be
-found in the feature set: hygienic macros and continuations are valuable abstractions that
+found in the feature set; hygienic macros and continuations are valuable abstractions that
 guarantee that components work together more seamlessly. An example of code that works as
-expected in Scheme but not in Common Lisp can be found in \ref{fig:schemevscomlisp}. It
-implements a simple if a bit contrived version of binary \texttt{or}, in Common Lisp and
+expected in Scheme but not in Common Lisp can be found in \ref{fig:schemevscomlisp}. **make this a footnote** It
+implements a simple – if a bit contrived – version of binary \texttt{or} in Common Lisp and
 in Scheme. In Common Lisp, the variables defined in regular code will potentially be
 shadowed by the ones generated during macro expansion where in Scheme they reside in
 different contexts and thus are hygienic. This makes the system more intuitive and eliminates
-a class of potential bugs and is thus more desirable.
+a class of potential bugs, making it more desirable.
 
 While \gls{r5rs} is certainly a valuable standard and provided a lot of very useful information
 for the development for zepto, the language is not as closely tied to the standard as most other
 implementations. This allowed for the development of zepto-js to progress relatively unencumbered
 by incompatibilities, although one goal of the development effort was not to break any existing
 syntactic or semantic ties with \gls{r5rs}, as this might potentially have broken a big part of
-the standard library, one of the major arguments for zepto as a language.
+the standard library, one of the major arguments for zepto as a language. **run-on sentence, suggested rewrite: This allowed for the development of zepto-js to progress mostly unencumbered by incompatibilities, although one goal of the development effort was not to break any existing syntactic or semantic ties with \gls{r5rs}. Breaking these links could potentially have broken a big part of the standard library, with the library being one of the major arguments for zepto's existence as a language. *Feel free to edit this more so that it jives technically, but it most definitely needs to be multiple sentences.** 
 
 \begin{center}
 \begin{figure}
@@ -595,19 +594,18 @@ the standard library, one of the major arguments for zepto as a language.
 
 \subsection{\glspl{srfi}}
 
-An important argument for adhering to the \gls{r5rs} standard are \glspl{srfi}. They are proposals
-of the Scheme programmer community to enhance the standard libraries of the implementations through
+An important argument for adhering to the \gls{r5rs} standard are \glspl{srfi}. **I can't read this quite right, but there is a subject/verb agreement error** These **specify what these are** are standard library enhancement proposals
+from the Scheme programmer community that propose implementations through
 the additions of features, much like \glspl{pep} for the Python programming languages and \glspl{eep}
-for Erlang. However, the differences that sets the former apart from the latter two is the inclusion
+for Erlang. **still awkward, reword** However, the differences that set the former apart from the latter two is the inclusion
 of a reference implementation\footnote{This is not required, but part of the "good tone" of the community
-and \gls{srfi}s lacking them are relatively rare.}. Zepto currently supports 5 of these requests by default,
-one of which implements a core feature of the language, descriptive custom data types.
+and \gls{srfi}s lacking them are relatively rare.}.**subject-verb agreement error** Zepto currently supports five of these requests by default,
+one of which implements a core feature of the language: descriptive custom data types. **for numbers smaller than 100, spell out in letters**
 
-It proved to be a major convenience in the past that the implementation of these requests could be
-ported with relative ease. By moving away even more from the Scheme standards, this process would
-undoubitably be affected in a negative manner. Thus, for both the reference implementation and its
+In the past, the relative ease of porting the implementation of these requests was a major convenience. By moving even farther away from the Scheme standards, this process would
+undoubtedly be affected in a negative manner. **add specific consequences** Thus, for both the reference implementation and its
 JavaScript equivalent, it was decided that a core set of primitives must be available under all circumstances
-to allow for the cross-fertilization of Scheme and zepto.
+to allow for the cross-fertilization of Scheme and zepto. **rethink passive voice here "it was decided"**
 
 \begin{listing}[H]
 \caption{Common Lisp Macros vs. Scheme Macros}
