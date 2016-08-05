@@ -121,6 +121,8 @@ toc=true]{glossaries}
 \usepackage{cleveref}
 
 \newacronym{ast}{AST}{Abstract Syntax Tree}
+\newacronym{html}{HTML}{Hypertext Markup Language}
+\newacronym{css}{CSS}{Cascading Stylesheets}
 \newacronym{dsl}{DSL}{Domain-Specific Language}
 \newacronym{bsd}{BSD}{Berkeley Software Distribution}
 \newacronym{zeps}{zeps}{Zepto Package System}
@@ -373,7 +375,7 @@ zepto, both the desktop and the JavaScript version, in the future.
 \label{chap:RelatedWork}
 
 This section aims to give a quick overview of work that has already been done in the
-field of transpilation to and language implementations on top of JavaScript.**think about rephrasing to put prepositions together** A few
+field of transpilation to and language implementations on top of JavaScript. A few
 of the most important specimens have already been mentioned briefly in \ref{pretrans},
 although their relationship to this thesis has not yet been discussed.
 
@@ -410,11 +412,11 @@ instead of machine code by the means of inserting a custom compiler backend into
 the \gls{ghc} toolchain.**I tend to integrate quotes into a sentence on both sides if they are short like that, but this is a stylistic choice**
 
 GHCJS is the compiler used in this thesis to transpile the existing zepto codebase
-to JavaScript. Its plug-and-play design, complete enough **rephrase: near-complete** implementation of the
-Haskell programming langauge, and relative maturity all played a role in the choice
+to JavaScript. Its plug-and-play design, near-complete implementation of the
+Haskell programming langauge, and relative maturity all contributed to the decision
 to use it as an implementation language\footnote{Further discussion of the design
 and decision process can be found in \ref{chap:ConceptDesign} and
-\ref{chap:SystemDesign}.}. **possibly reword: all contributed to the decision to use it as an implementation language**
+\ref{chap:SystemDesign}.}.
 
 \subsubsection{Emscripten}
 
@@ -422,7 +424,7 @@ Emscripten as discussed in \parencite{ZAKA} aims to be a transpiler from \gls{ll
 JavaScript. Its primary focus is the translation of C and C++ source code
 to JavaScript.
 
-Its **specify what** use case is similar to that of GHC-JS, enabling the user to both "(1)
+Emscripten's use case is similar to that of GHC-JS, enabling the user to both "(1)
 Compile code directly into LLVM assembly, and then compile that into JavaScript
 using Emscripten, or (2) Compile a language’s entire runtime into LLVM and then
 JavaScript, as in the previous approach, and then use the compiled runtime to
@@ -434,7 +436,7 @@ browser. While this seems to have gained a fair bit of traction and work
 reasonably well\footnote{A live demonstration of how it works can be found on
 its \href{https://pypyjs.org}{website, accessible under https://pypyjs.org}.},
 documentation on it is sparse and there is seemingly no academically viable
-source detailing its development and architecture. **watch out for qualifying words like "reaonsably" and "fair"; they call into question scientific (read: objective) integrity**
+source detailing its development and architecture.
 
 \subsubsection{ClojureScript}
 \label{sec:ClojureScript}
@@ -445,9 +447,9 @@ now maintained under David Nolen's lead \parencite{CLJS}.
 
 Being a Lisp, there are obvious syntactic similarites to zepto. Yet, as it is
 transpiled rather than interpreted directly in the browser, programming against
-it is quite difficult. Specifically, the way the \gls{ffi} works is quite apparently** 
+it is quite difficult. Specifically, the way the \gls{ffi} works is quite
 different, as ClojureScript has a lot of syntactic integrations that help embed
-JavaScript within it. **new sentence** all functions prefixed with a period are assumed to
+JavaScript within it. All functions prefixed with a period are assumed to
 be JavaScript functions on the prototype of the object provided as first argument.
 JavaScript values can be directly accessed through the \texttt{js} namespace.
 Zepto's design is quite different, as is discussed in \ref{sec:ffi}.
@@ -501,8 +503,8 @@ as a "time-traveling" debugger that caches the state of a program
 at any given time, allowing for rewinding, forwarding and jumping.
 
 Elm's sole similarity to the language discussed in this thesis is that it is
-a functional language for the Web. However, it compiles to JavaScript, HTML
-and CSS, once again falling short of actually getting the code to the
+a functional language for the Web. However, it compiles to JavaScript, \gls{html}
+and \gls{css}, once again falling short of actually getting the code to the
 browser. It is also very centered around the aforementioned \gls{frp},
 whereas the runtime presented in this thesis aims to be a general-purpose
 programming environment.**this paragraph could be beautified: add some fluidity**
@@ -594,13 +596,13 @@ the standard library, one of the major arguments for zepto as a language. **run-
 
 \subsection{\glspl{srfi}}
 
-An important argument for adhering to the \gls{r5rs} standard are \glspl{srfi}. **I can't read this quite right, but there is a subject/verb agreement error** These **specify what these are** are standard library enhancement proposals
-from the Scheme programmer community that propose implementations through
+An important argument for adhering to the \gls{r5rs} standard are \glspl{srfi}. They are standard
+library enhancement proposals from the Scheme programmer community that propose implementations through
 the additions of features, much like \glspl{pep} for the Python programming languages and \glspl{eep}
 for Erlang. **still awkward, reword** However, the differences that set the former apart from the latter two is the inclusion
 of a reference implementation\footnote{This is not required, but part of the "good tone" of the community
 and \gls{srfi}s lacking them are relatively rare.}.**subject-verb agreement error** Zepto currently supports five of these requests by default,
-one of which implements a core feature of the language: descriptive custom data types. **for numbers smaller than 100, spell out in letters**
+one of which implements a core feature of the language: descriptive custom data types.
 
 In the past, the relative ease of porting the implementation of these requests was a major convenience. By moving even farther away from the Scheme standards, this process would
 undoubtedly be affected in a negative manner. **add specific consequences** Thus, for both the reference implementation and its
@@ -913,8 +915,107 @@ sure all of the attendees can easily manage their first projects.
 \chapter{System Design}
 \label{chap:SystemDesign}
 
+The prototype described in this thesis, while from a programming language
+implementation standpoint very close to the reference implementation of
+zepto, required a few modifications to the way it integrates with its'
+environment.
+
+Zepto as an interpreter is a closed-off program that does not interact
+with its surroundings save for program input. Zepto-js on the other hand
+has to integrate with technologies and \glspl{api} to make programming
+a web application not only possible, but also convenient. A solid model of
+interaction had to be found as a consequence.
+
 \section{Integration into the Web Ecosystem}
 
+To make zepto-js fit into the web and its components, a few design decisions
+for the interpreter startup had to be done. Rather than make it \gls{repl} and
+file-based as in the reference implementation, a tag-based approach was pursued.
+This ensures that programming in zepto-js would not differ drastically from
+programming in JavaScript from the viewpoint of an application\footnote{An example
+of those tags is given in \ref{fig:zpjs}.}.
+
+There are multiple ways to implement this interface. An initial design idea was to
+bundle a zepto executable in the form of a browser extension that would parse the
+\gls{html} code on the page. This would not require the user to download a big JavaScript
+file every time they visit a page that leverages zepto-js. With the ubiquity of
+smart caching mechanisms in modern browsers it is, however, unclear how big of
+a gain this would be. On the other hand it would limit the userbase of the website
+to the setof people who have the extension installed, a major drawback for possible
+language users.
+
+It was thus determined that he prerequisite for being able to embed zepto code into
+a website should be to include the zepto-js distribution in the website. To make
+this more attractive, zepto-js can be loaded asynchronously onto the web page as it
+is required to also work if the \gls{dom} was already built. An explanation of how
+zepto is loaded and identifies the tags it should interpret is given in \ref{sec:MutObs}.
+
+\begin{listing}[H]
+\caption{The interface of zepto-js within a \gls{html} page.}
+\begin{minted}[linenos,frame=single]{html}
+<script type="text/zepto">
+  (define (fact n) "a tail-recursive version of the factorial function"
+      (define (internal acc n)
+        (if (<= n 0)
+          acc
+          (internal (* acc n) (sub1 n))))
+      (internal 1 n))
+</script>
+<script type="text/zepto">
+\end{minted}
+\end{listing}
+\label{fig:zpjs}
+
+\subsection{Integration with Web \glspl{api}}
+
+**TODO**
+
+\subsection{Integration with build tools}
+
+A big part of modern web development is the availability of tools that automate
+the process of shipping JavaScript code. There are tools that cross-compile, minify
+and optimize JavaScript in a matter of seconds\footnote{A few of those tools have been
+mentioned in the chapters \ref{sec:Motivation} and \ref{chap:RelatedWork}.}. There are
+also utilities that simplify the definition of pipelines in which the code is passed
+through various of those tools for greater composability, such as Grunt or Gulp.
+
+These tools can be used to write zepto-js-backed websites as well. While many of
+the optimizations, minifications and cross-compilers become unusable once the switch
+from JavaScript to another language is made, the facilities of those tools to collect
+and merge multiple source files, for instance, can be used without bigger modifications.
+Furthermore, as those tools are agnostic not only to the types of files they deal with
+but also to the types of tools they are to run on the source files, zepto-js-specific
+optimizers can be run on those files should they emerge.
+
+Many of the preprocessed languages discussed in \ref{chap:RelatedWork} use these
+technologies to compile their source files to JavaScript before shipping them.
+While zepto-js has no regular \gls{api} that can be plugged into those build tools
+at the moment, a simple integration with existing tasks is possible as shown in
+\ref{fig:gulp}.
+
+\begin{listing}[H]
+\caption{A gulp task that collects and merges zepto files.}
+\begin{minted}[linenos,frame=single]{javascript}
+'use strict';
+
+var gulp   = require('gulp');
+var concat = require('gulp-concat');
+
+global.buildEnv = 'development';
+
+gulp.task('bundle', function(){
+  // Process scripts
+  var files = "zepto/*.zp";
+  gulp.src(files)
+      .pipe(concat('app.zp'))
+      .pipe(gulp.dest('build'))
+});
+// == Register default task
+gulp.task('default', ['bundle'], function() {
+});
+\end{minted}
+\end{listing}
+\label{fig:gulp}
 
 \setchapterpreamble[u]{%
   \dictum[\emph{Hofstadter’s Law}]{It always takes longer than you expect, even when you take into account Hofstadter’s Law.}
@@ -951,14 +1052,14 @@ be.**wordy**
 All these conveniences do not spare the programmer from the actual programming process, of course.
 While GHCJS seems like a well-maintained project one has to keep in mind that it is not backed
 by a consortium as \gls{ghc} is, and the current maintainer seems to do this work completely
-in his spare time. This leaves us with the notion that the project could be abandoned at any point
-and being too dependent on its' more unusual features could lead to a product that is unnecessarily
-hard to maintain. **Suggested rewrite: This gives users the impression that the project could be abandoned at any given moment. Therefore, being too dependent upon its more unusual features could lead to a product that is unnecessarily difficult to maintain.**
+in his spare time. This gives users the impression that the project could be abandoned at any given
+moment. Therefore, being too dependent upon its more unusual features could lead to a product that
+is unnecessarily difficult to maintain.
 
-All of this considered, a preliminary analysis revealed that the two main conditions for the success
-of this thesis were given: the code emitted by GHCJS is fast, solid and reasonably compact and the
-newest features of both JavaScript and Haskell were supported\footnote{The newest version of \gls{ghc}
-at the time of writing, version 8.0, gained support while this thesis was in the works.}. **Suggested rewrite: Taking all of this into consideration, a preliminary analysis revealed two main conditions for the success of this thesis: 1) the code emitted by FHCJS is fast, solid, and reasonably compact, and 2) the newest features of both JavaScript and Haskell were supported.**
+Taking all of this into consideration, a preliminary analysis revealed two main conditions for
+the success of this thesis: 1) the code emitted by FHCJS is fast, solid, and reasonably compact,
+and 2) the newest features of both JavaScript and Haskell were supported\footnote{The newest version
+of \gls{ghc} at the time of writing, version 8.0, gained support while this thesis was in the works.}.
 
 \section{Description of the Implementation}
 
@@ -980,9 +1081,10 @@ firstly, it introduced a layer of complexity from within JavaScript code that wo
 it brittle and hardly portable. Secondly, it would require a walk of the nodes every time a \gls{dom}
 element is inserted or replaced, which is a common occurence in modern interactive web applications.
 
-In November 2015, the \gls{w3c} specified **word choice?** an \gls{api} that simplified this process for the programmer.
-Within their specification of the \href{https://www.w3.org/TR/dom/#mutationobserver}{DOM4} \parencite{DOM4}, the
-fourth specification of \gls{api}s for the Web, an object called \texttt{MutationObserver} is included which
+In November 2015, the \gls{w3c} released **word choice?** an \gls{api} that simplified this process
+for the programmer. Within their specification of the
+\href{https://www.w3.org/TR/dom/#mutationobserver}{DOM4} \parencite{DOM4} , the fourth
+specification of \gls{api}s for the Web, an object called \texttt{MutationObserver} is included which
 is able to register for \gls{dom} manipulations. Its main function will be triggered whenever a change
 occurs within the \gls{dom} part, to which it is registered to listen. **rephrase as you wish, but to should not be at the end of the sentence**
 
@@ -1048,8 +1150,8 @@ Of course this is unusable. **word choice, see above** The missing return value 
 \gls{api} impossible, as one could never yield any results.**rephrase clause 2** A different kind of return
 value is needed.
 
-The obvious but most challenging to implement solution would be to infer a fitting zepto
-type for every return value in JavaScript and return a result depending on that.**Suggested rewrite: The most obvious solution – albeit the most challenging – would be to infer a fitting zepto type for every return value in JavaScript and return a result depending on these paramaters.** While
+The most obvious solution – albeit the most challenging – would be to infer a fitting zepto type
+for every return value in JavaScript and return a result depending on these paramaters. While
 this could be seen as a rather elegant solution, it comes with its own set of caveats
 and exceptions, as the mapping between JavaScript and zepto values is not always obvious.
 A JavaScript object has too many properties that get lost in the process of translating
@@ -1069,7 +1171,7 @@ it to zepto as to make it intuitive.
 \end{minted}
 \end{listing}
 
-Another problematic point is the implementation of JavaScript values in GHCJS.**Suggested rewrite: The implementation of JavaScript values in GHCJS is another point of complication.** They
+The implementation of JavaScript values in GHCJS is another point of complication. They
 are opaque datatypes, aliases for addresses and byte vectors. While zepto supports
 byte vectors and pointers, they are hardly a good representation for semantically rich
 prototypes as they only offer a glance into the underlying implementation of the
@@ -1077,7 +1179,7 @@ JavaScript engine. While it is true that GHCJS itself provides methods for type
 coercion, these methods are crude and possibly error-prone.
 
 A simpler method but still mostly sensible arose: returning the string
-values of all of the values returned.** While this places the burden of coercion
+values of all of the values returned. While this places the burden of coercion
 on the programmer, it also gives them the power to make their own 
 decisions of how to deserialize values. Functions for deserializing the most
 common datatypes are included in the standard library of the JavaScript
@@ -1195,11 +1297,15 @@ unique about zepto\footnote{The code was salvaged for posteriority and can be
 found on \href{https://github.com/hellerve/js-parse-dispatch}{Github under the
 name of \texttt{js-parse-dispatch}}.}.
 
+**TODO**
+
 \setchapterpreamble[u]{%
   \dictum[\emph{R. Buckminster Fuller}]{When I'm working on a problem, I never think about beauty. I think only how to solve the problem. But when I have finished, if the solution is not beautiful, I know it is wrong.}
   \bigskip}
 \chapter{Evaluation of the Prototype}
 \label{chap:evaluation}
+
+**TODO**
 
 \section{Seamlessness of Integration}
 
@@ -1207,7 +1313,7 @@ name of \texttt{js-parse-dispatch}}.}.
 
 * added: ffi
 
-* removed load statement, REPL functionality
+* removed load statement, REPL functionality, language definitions
 
 * inserting libraries?
 
@@ -1250,9 +1356,22 @@ defensiveness.
 
 Another big development in the zepto community has certainly been a series of
 classes and workshops. They, too, helped route the development of zepto down
-a path of usability, self-awareness and constant reevaluation.
+a path of usability, self-awareness and constant reevaluation. Targetted at an
+audience of diverse people with mostly little to no experience with functional
+programming or Lisp, they have shown to not only wake an interest in those concepts
+but also led to the development of a few projects for zepto and its' JavaScript-backed
+counterpart that now have become part of the standard toolset, such as the plugins for
+the Atom and Vim plugins.
 
-**TODO**
+In regard to tooling for zepto-js, a newly formed development team comprised of
+people experienced in web development is building plugins for zepto-js to integrate
+with Gulp\footnote{One of the tools mentioned in \ref{sec:IntegrationTooling}.} for
+such tasks as minification and dependency resolution. Integration of \gls{zeps} with
+Gulp is a subject for the near future, too.
+
+All of these developments start to hint at a community in its nascence. It might
+be too quick to judge whether this is true, but it would certainly be a welcome
+development for zepto and its maintainers.
 
 \chapter{Conclusion}
 \label{chap:conclusion}
