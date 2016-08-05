@@ -24,7 +24,6 @@
   bibliography=totoc,
   listof=totoc}
 
-%\usepackage{libertineotf}
 \usepackage{amsmath}
 \newcommand{\argmax}[1]{\underset{#1}{\operatorname{argmax}}}
 
@@ -35,8 +34,6 @@
 \usepackage{tabu}
 \usepackage{listings}
 \usepackage{minted}
-% if you want colour tables
-% \usepackage{colortbl}
 
 \usepackage[svgnames,hyperref]{xcolor}
 
@@ -153,46 +150,31 @@ toc=true]{glossaries}
 
 \begin{document}
 
-
-\title{Beyond .*Script}
-\subtitle{Implementing A Language For The Web}
-
-\author{Veit Heller}
-
-\date{\today}
-
-\publishers{%
-  \normalsize{%
+\begin{titlepage}
+	\centering
+	{\scshape\LARGE Beyond .*Script \par}
+	\vspace{1cm}
+	{\scshape\Large Implementing A Language For The Web\par}
+	\vspace{2cm}
+	{\Large\itshape Veit Heller\par}
+	\vfill
   A thesis submitted for the degree of \\
-  B.Sc. of Applied Computer Science of \\
-  The University of Applied Sciences Berlin}}
+  B.Sc. of Applied Computer Science (Fachbereich II) \\
+  of the University of Applied Sciences (HTW) Berlin
+	\vfill
 
-\uppertitleback{%
-  \textbf{Institutional Address}\\
-  HTW Berlin\\
-  Campus Treskowallee\\
-  Treskowallee 8\\
-  10318 Berlin\\
-  \textsc{Germany}\\
-  \bigskip\\
   \textbf{Supervisory Panel}\\
 
-  Prof. Hendrik Gärtner\\
-  HTW Berlin\\
+  Prof. Dr.-Ing. Hendrik \textsc{Gärtner}\\
 
-  Prof. Henrick Lochmann\\
-  Prof. Henrik Lochmann\\
-  HTW Berlin\\
-  \bigskip\\
-  Set with the help of {\KOMAScript} and
-  \XeLaTeX.\\
+  Prof. Dr.-Ing. Henrik \textsc{Lochmann}\\
+	\vfill
 
-  \copyright~\the\year. All rights reserved.}
+\end{titlepage}
 
 \dedication{\small{\emph{For Meredith, Tobias and all the people who cope with me. Your undying support will not be forgotten.}}}
 
 \pdfbookmark{Title Page}{Title Page}
-\maketitle
 
 \frontmatter
 
@@ -456,7 +438,7 @@ Zepto's design is quite different, as is discussed in \ref{sec:ffi}.
 
 \begin{listing}[H]
 \caption{A comparison of the \gls{ffi} of JavaScript in zepto and ClojureScript.}
-\begin{minted}[linenos,frame=single]{clojure}
+\begin{minted}[linenos]{clojure}
 ; ClojureScript provides syntactic abstractions over
 ; the embedding of foreign code.
 (.getElementById js/document "body")
@@ -525,7 +507,7 @@ differences to the system presented in this thesis.
 
 \begin{listing}[H]
 \caption{A juxtaposition of a simple function in Haskell and PureScript.}
-\begin{minted}[linenos,frame=single]{haskell}
+\begin{minted}[linenos]{haskell}
 -- | Extract the first element of a list (as implemented in the language standard library).
 -- | The Haskell version is unsafe and will throw an error
 -- | if it encounters an empty list.
@@ -539,8 +521,8 @@ head :: forall a. List a -> Maybe a
 head Nil = Nothing
 head (Cons x _) = Just x
 \end{minted}
-\end{listing}
 \label{fig:ps}
+\end{listing}
 
 \section{Existing Standards}
 \label{sec:ExistingStandards}
@@ -611,7 +593,7 @@ to allow for the cross-fertilization of Scheme and zepto. **rethink passive voic
 
 \begin{listing}[H]
 \caption{Common Lisp Macros vs. Scheme Macros}
-\begin{minted}[]{scheme}
+\begin{minted}[linenos]{scheme}
 ; the Common Lisp version
 (defmacro my-or (x y)
   `(let ((tmp x))
@@ -629,7 +611,7 @@ to allow for the cross-fertilization of Scheme and zepto. **rethink passive voic
 (let ((tmp #t)) ((tmp #f)) (if #f #f tmp))
 
 ; the Scheme version
-; it will work as expected in both versions
+; it will work as expected in both examples
 (define-syntax
   (syntax-rules
     ((my-or x y)
@@ -699,6 +681,8 @@ A simple Lisp can be implemented in less than one hundred lines of code if no
 intermediate representation is generated. This is made possible by the unique property
 of Lisp of enclosing every statement in parentheses, where the first element within
 those parentheses is the statement name and the other elements are the arguments.
+Each of these units is called an S-Expression - a shorthand for "symbolic expression" -
+and they are often represented as nested lists, although this is an implementation detail.
 It can be evaluated straight from a textual level, because things such as operator precedence
 and statement amiguity do not exist. In regular Lisp as specified in the initial paper by
 John McCarthy \parencite{JCM} only a handful special forms exist to allow not only for
@@ -751,7 +735,7 @@ are, for the sake of example, a bit simple than in the language it is inspired b
 
 \begin{listing}[H]
 \caption{Defining \& using a macro in zepto}
-\begin{minted}[]{scheme}
+\begin{minted}[linenos]{scheme}
 ; this defines a macro of the name listcomp
 (define-syntax listcomp ; the name
   (syntax-rules (<- |) ; the set of rules and special tokens to respect
@@ -763,8 +747,8 @@ are, for the sake of example, a bit simple than in the language it is inspired b
 (listcomp (add1 x) | x <- [1 2 3 4]) ; => [2 3 4 5]
 (listcomp (add1 x) | x <- (range 4)) ; => [1 2 3 4]
 \end{minted}
-\end{listing}
 \label{fig:listcomp}
+\end{listing}
 
 It should be noted that zepto supports list comprehensions by default and they are
 both a bit more concise and more powerful - as they allow for the filtering of
@@ -816,7 +800,7 @@ but the system might be changed in the future.
 
 \begin{listing}[H]
 \caption{Defining \& using a zepto module}
-\begin{minted}[]{scheme}
+\begin{minted}[linenos]{scheme}
 ; this defines a module of the name "mathematics"
 (module "mathematics"
   (export
@@ -847,8 +831,8 @@ but the system might be changed in the future.
 ; import all under the namespace "mt"
 (import-all "mathematics" "mt")
 \end{minted}
-\end{listing}
 \label{fig:zepmod}
+\end{listing}
 
 For the case of JavaScript, this part of zepto's implementation proved not
 to be a problem and worked without further tweaking.
@@ -952,7 +936,7 @@ zepto is loaded and identifies the tags it should interpret is given in \ref{sec
 
 \begin{listing}[H]
 \caption{The interface of zepto-js within a \gls{html} page.}
-\begin{minted}[linenos,frame=single]{html}
+\begin{minted}[linenos]{html}
 <script type="text/zepto">
   (define (fact n) "a tail-recursive version of the factorial function"
       (define (internal acc n)
@@ -963,8 +947,8 @@ zepto is loaded and identifies the tags it should interpret is given in \ref{sec
 </script>
 <script type="text/zepto">
 \end{minted}
-\end{listing}
 \label{fig:zpjs}
+\end{listing}
 
 \subsection{Integration with Web \glspl{api}}
 
@@ -995,7 +979,7 @@ at the moment, a simple integration with existing tasks is possible as shown in
 
 \begin{listing}[H]
 \caption{A gulp task that collects and merges zepto files.}
-\begin{minted}[linenos,frame=single]{javascript}
+\begin{minted}[linenos]{javascript}
 'use strict';
 
 var gulp   = require('gulp');
@@ -1014,8 +998,8 @@ gulp.task('bundle', function(){
 gulp.task('default', ['bundle'], function() {
 });
 \end{minted}
-\end{listing}
 \label{fig:gulp}
+\end{listing}
 
 \setchapterpreamble[u]{%
   \dictum[\emph{Hofstadter’s Law}]{It always takes longer than you expect, even when you take into account Hofstadter’s Law.}
@@ -1099,11 +1083,12 @@ same filter/evaluation function to all of them.**verb tenses** This also ensures
 additional code (and possibly dependent) is passed into the zepto object.
 
 The code was then included in the \texttt{zepto} singleton, which is the global interpreter object
-used for the management and interactivity of the zepto interpreter.
+used for the management and interactivity of the zepto interpreter. A simplified version of this
+code is presented in \ref{fig:mutobs}.
 
 \begin{listing}[H]
 \caption{The final mutation observer code (simplified)}
-\begin{minted}[]{javascript}
+\begin{minted}[linenos]{javascript}
 // the initial observer and the function it takes
 zepto.observer = new MutationObserver(zepto.handleMutation);
 
@@ -1130,6 +1115,7 @@ window.onload = () => {
 // the extra arguments signify recursive listening
 zepto.observer.observe(document, {childList: true, subtree: true});
 \end{minted}
+\label{fig:mutobs}
 \end{listing}
 
 \subsection{The \gls{ffi}}
@@ -1151,15 +1137,16 @@ Of course this is unusable. **word choice, see above** The missing return value 
 value is needed.
 
 The most obvious solution – albeit the most challenging – would be to infer a fitting zepto type
-for every return value in JavaScript and return a result depending on these paramaters. While
-this could be seen as a rather elegant solution, it comes with its own set of caveats
-and exceptions, as the mapping between JavaScript and zepto values is not always obvious.
-A JavaScript object has too many properties that get lost in the process of translating
-it to zepto as to make it intuitive.
+for every return value in JavaScript and return a result depending on these
+paramaters\footnote{This approach is shown in \ref{fig:idealffi}.}. While is arather elegant
+solution, it comes with its own set of caveats and exceptions, as the mapping between JavaScript
+and zepto values is not always obvious. A JavaScript object has too many properties that get
+lost in the process of translating it to zepto as to make it intuitive, as at least functions
+do not work in the exact same way.
 
 \begin{listing}[H]
 \caption{The ideal FFI}
-\begin{minted}[]{clojure}
+\begin{minted}[linenos]{clojure}
 ; this would return an integer
 (js "1 + 1")
 
@@ -1169,6 +1156,7 @@ it to zepto as to make it intuitive.
 ; this is problematic, because it will return an object
 (js "new Error()")
 \end{minted}
+\label{fig:idealffi}
 \end{listing}
 
 The implementation of JavaScript values in GHCJS is another point of complication. They
@@ -1179,7 +1167,8 @@ JavaScript engine. While it is true that GHCJS itself provides methods for type
 coercion, these methods are crude and possibly error-prone.
 
 A simpler method but still mostly sensible arose: returning the string
-values of all of the values returned. While this places the burden of coercion
+values of all of the values returned\footnote{The interface of this version
+of the \gls{ffi} is shown in \ref{fig:finalffi}.}. While this places the burden of coercion
 on the programmer, it also gives them the power to make their own 
 decisions of how to deserialize values. Functions for deserializing the most
 common datatypes are included in the standard library of the JavaScript
@@ -1197,7 +1186,7 @@ was used for yet.
 
 \begin{listing}[H]
 \caption{The final form of the FFI}
-\begin{minted}[]{clojure}
+\begin{minted}[linenos]{clojure}
 ; the function string->number is a standard zepto function
 (string->number (js "Math.pow(2, 32)"))
 
@@ -1206,6 +1195,7 @@ was used for yet.
 (js "Error.prototype.toString = function() { return this.message; }")
 (error (js "new Error(\"fatal error occured\")"))
 \end{minted}
+\label{fig:finalffi}
 \end{listing}
 
 Implementing the JavaScript to zepto \gls{ffi} was much simpler, as the
@@ -1223,14 +1213,25 @@ and the parsing of their return values. This allows for a stable library,
 because it is unintrusive and does not interfer with existing JavaScript
 constructs.
 
-Existing zepto-js projects often find it convenient to write a hybrid mix
-of JavaScript and zepto code that calls each other at certain points.
-This is, however, probably not advisable at the layer of libraries or
-utilities, because it is at risk of getting in the way of the job.
+While wrapping the entire \gls{dom} \gls{api} would be a big task, making
+the most integral features of the \gls{w3c}'s specifications work turned
+out to be a rather simple task. A minimalistic example of a zepto module
+that implements the creation, insertion and retrieval of elements into
+and from the \gls{dom} is presented in \ref{fig:dom}. A production-ready
+module would require a host of other features, some of which are already
+implemented in a library geared toward zepto-js.
+
+The \gls{dom} module is not included in the standard library of zepto-js,
+as it was deemed too prototypical as to include it in a base of stable
+functions. It is, however, available as a third-party \gls{zeps} package
+simply called \textit{dom}\footnote{Should \gls{zeps} be installed on
+the target system, it can be installed by issuing \textit{zeps install
+hellerve/dom}.}. Due to its alpha status it has not yet been registered
+to the \gls{zpr} at the time of writing.
 
 \begin{listing}[H]
-\caption{A minimal DOM module}
-\begin{minted}[]{clojure}
+\caption{A minimal DOM module.}
+\begin{minted}[linenos]{racket}
 (module "dom"
   (export
     `("create" ,create)
@@ -1254,35 +1255,44 @@ utilities, because it is at risk of getting in the way of the job.
     ((import "html:parse")
        (js (++ "document.getElementById('" node "');"))))))
 \end{minted}
+\label{fig:dom}
 \end{listing}
 
 \subsection{Language definitions}
 
-One of the most advanced features is language definitions, inspired by
-the parser macro system in Racket \parencite{RPM}. While this is handled
-fairly differently in zepto than in Racket, the syntax of the resulting
-language is compatible. Zepto handles the custom parser step with a dispatch
+One of zepto's most advanced features is language definitions, inspired by
+the parser macro system in Racket \parencite{RPM}. Language definitions allow
+for a custom parser to be injected into the loading of source files that replaces
+zepto's standard parser. These parsers are regular functions that take a string
+representing the program as input and emit regular S-Expressions that can be evaluated
+as output\footnote{An example language implementing JSON is presented in \ref{fig:json}.}.
+This allows for the creation of \glspl{dsl} and other abstractions.
+While this is handled fairly differently in zepto than in Racket, the syntax of the
+resulting language is compatible. Zepto handles the custom parser step with a dispatch
 at the time of file loading, which enabled the system to be implemented without
-changes to the core language, completely in zepto itself. While this was 
+changes to the core language, completely in zepto itself. While this was
 designed with portability in mind and thought to ease the transition to
 different backends, it actually proved to complicate matters in the case
 of the JavaScript port. Here, the module loading system is not present due
-to the absence of files in the traditional sense.
+to the absence of files in the traditional sense, which made determining where to
+plug in the parser dispatcher a problem.
 
 \begin{listing}[H]
 \caption{An example language definition that allows for inlining of JSON code.}
-\begin{minted}[]{clojure}
+\begin{minted}[linenos]{racket}
 ; json-lang.zp
 (load "json/json")
 
 (zepto:implements-lang json:parse "json")
 
-; an example for a file that can now be normally loaded
+; an example for a file that can now be loaded normally
+; it will return a hashmap type
 #lang json
 {
   "hello": "json"
 }
 \end{minted}
+\label{fig:json}
 \end{listing}
 
 As the detection of what to parse is handled from within JavaScript - by the
@@ -1297,7 +1307,13 @@ unique about zepto\footnote{The code was salvaged for posteriority and can be
 found on \href{https://github.com/hellerve/js-parse-dispatch}{Github under the
 name of \texttt{js-parse-dispatch}}.}.
 
-**TODO**
+It was finally decided to drop this feature alltogether from the initial prototype,
+as this would either require the impure soultion described above or extensive rewrites
+of the zepto system - at least the \texttt{load} statement would require hijacking -,
+both of which were deemed too high a maintenance cost for a feature that is
+mostly of importance in the context of file-based systems. At the time of writing it
+was determined that the implementation of this feature should be deferred to the point
+where the need for other languages or \glspl{dsl} within zepto-js arises.
 
 \setchapterpreamble[u]{%
   \dictum[\emph{R. Buckminster Fuller}]{When I'm working on a problem, I never think about beauty. I think only how to solve the problem. But when I have finished, if the solution is not beautiful, I know it is wrong.}
@@ -1402,7 +1418,7 @@ of its design goals has been made.
 Many questions that this thesis has addressed remain unanswered.
 Even with that in mind, I hope that my work on it has asked
 questions that are worth being asked and that the technologies
-presented in this thesis will allow for more technologies that
+presented in this thesis will allow for more technologies to
 come to the web, so that an even more heterogeneous,
 expressive and inclusive system can emerge, one that
 caters to different aesthetics, philosophies and mindsets.
