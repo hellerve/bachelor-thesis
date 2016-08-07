@@ -117,6 +117,7 @@ toc=true]{glossaries}
 \usepackage{cleveref}
 
 \newacronym{ast}{AST}{Abstract Syntax Tree}
+\newacronym{midi}{MIDI}{Musical Instrument Digital Interface}
 \newacronym{html}{HTML}{Hypertext Markup Language}
 \newacronym{css}{CSS}{Cascading Stylesheets}
 \newacronym{dsl}{DSL}{Domain-Specific Language}
@@ -436,7 +437,9 @@ now maintained under David Nolen's lead \parencite{CLJS}.
 
 Being a Lisp, it has obvious syntactic similarites to zepto. Yet, as it is
 transpiled rather than interpreted directly in the browser, programming against
-it is quite difficult. Specifically, the way the \gls{ffi} works is quite
+it is quite difficult. Specifically, the way the \gls{ffi}\footnote{A \gls{ffi}
+is a facility that provides an interface for calling function defined in another
+language, often the target or host language of the implementation.} works is quite
 different from zepto-js, as ClojureScript has a lot of syntactic integrations
 that help embed JavaScript within it. All functions prefixed with a period are
 assumed to be JavaScript functions on the prototype of the object provided as
@@ -991,23 +994,52 @@ zepto is loaded and identifies the tags it should interpret is given in Section 
 
 \subsection{Integration with Web \glspl{api}}
 
-**TODO**
+A language that tries to provide a convenient programming interface for the Web must
+naturally include bindings for its existing \glspl{api}. Browsers provide big libraries
+for developers to tap into, for a host of different use cases in the realm of multimedia.
+The most convenient and least implementation-intensive way of providing bindings for
+these \glspl{api} is probably the exposure through a \gls{ffi}.
+
+As it was planned to include a \gls{ffi} to JavaScript from the beginning, this decision
+did not burden the implementation with more custom code. Instead, lightweight and minimal
+abstractions that fit into the existing zepto ecosystems were planned. An abstraction
+over the \gls{dom} \gls{api} that implements a small subset of what is described in
+the \gls{dom} Level 4 specification \parencite{DOM4} is probably enough to showcase how to
+write such libraries with the \gls{ffi} if needed. An example library that provides the
+user with the capability of adding and removing nodes from the \gls{dom}, an integral
+part of the interactivity of modern web development, is presented in \ref{sec:DOM}.
+
+Other, more advanced multimedia libraries were not integrated at the time of writing.
+Planning and implementing the right abstraction interfaces for big \glspl{api} such as
+the WebAudio, WebMIDI or WebGL\footnote{These libraries provide audio, \gls{midi} and
+graphical functionality to their user. \gls{midi} is a standard for the communication
+of musical devices \parencite{MIDI}.}. By providing a simplistic example as a proof
+of concept, the possibility of this undertaking should, however, be demonstrated.
+
+It should also be noted that after the prototype is finished and released to the
+public, which is expected to happen shortly after the completion of this thesis,
+a development team comprised of members of the zepto community will be formed
+to write these libraries.
 
 \subsection{Integration with build tools}
 \label{sec:IntegrationTooling}
 
 A big part of modern web development is the availability of tools that automate
-the process of shipping JavaScript code. There are tools that cross-compile,
-minify\footnote{Minification is the process of removing extraneous characters from
-a program that have no syntactic meaning and only add to the readability of the
-code at hand. In the case of JavaScript, this includes newline characters, comments,
-and some spaces. The first JavaScript minifier was written by Douglas Crockford \parencite{JSMIN}.},
-and optimize JavaScript in a matter of seconds.\footnote{A few of those tools have been
-mentioned in the Chapters \ref{sec:Motivation} and \ref{chap:RelatedWork}.} There are
-also utilities that simplify the definition of pipelines in which the code is passed
-through various of those tools for greater composability, such as Grunt\footnote{Grunt
-is a JavaScript build tool \parencite{GRUNT}.} or Gulp\footnote{Gulp is a JavaScript build
+the process of preparing and shipping JavaScript code. There are tools that
+cross-compile, minify\footnote{Minification is the process of removing extraneous
+characters from a program that have no syntactic meaning and only add to the readability
+of the code at hand. In the case of JavaScript, this includes newline characters,
+comments, and some spaces. The first JavaScript minifier was written by Douglas
+Crockford \parencite{JSMIN}.}, and optimize JavaScript in a matter of
+seconds.\footnote{A few of those tools have been mentioned in the Chapters
+\ref{sec:Motivation} and \ref{chap:RelatedWork}.} There are also utilities that
+simplify the definition of pipelines in which the code is passed through various
+of those tools for greater composability, such as Grunt\footnote{Grunt is a JavaScript
+build tool \parencite{GRUNT}.} or Gulp\footnote{Gulp is a JavaScript build
 tool akin to Grunt, but younger and, by its own accounts, faster \parencite{GULP}.}.
+The latter of these tools is used for the management of JavaScript dependencies of
+zepto-js and the collection of the zepto standard library, through a task that is
+similar to the one presented in Listing \ref{fig:gulp}.
 
 These tools can be used to write zepto-js-backed websites as well. While many of
 the optimizations, minifications, and cross-compilers become unusable once the switch
@@ -1021,7 +1053,10 @@ Many of the preprocessed languages discussed in Chapter \ref{chap:RelatedWork} u
 technologies to compile their source files to JavaScript before shipping them.
 While zepto-js has no regular \gls{api} that can be plugged into those build tools
 at the moment, a simple integration with existing tasks is possible as shown in
-Listing \ref{fig:gulp}.
+Listing \ref{fig:gulp}, which leverages gulp tasks to collect and merge zepto
+files into a single distribution file to minimize the number of requests.
+This provides a valuable basis for building zepto-js tooling around existing
+tools, created for JavaScript.
 
 \begin{listing}[H]
 \caption{A gulp task that collects and merges zepto files.}
@@ -1070,6 +1105,7 @@ dependency relations more manageable.
 
 GHCJS itself provides zepto-js with aforementioned quasi-quoting\footnote{A description
 of quasi-quoting is provided in Section \label{ququ}.}, which powers the JavaScript \gls{ffi}.
+
 
 The management of pure JavaScript sources is another important feature. As in regular \gls{ghc},
 where the management of bits of C code that should interface with Haskell is provided, GHCJS
@@ -1286,6 +1322,7 @@ in Figure \ref{fig:graph}.
 \end{listing}
 
 \subsection{The \gls{dom}}
+\label{sec:DOM}
 
 After building the \gls{ffi}, it was possible to implement the entire
 communication with the \gls{dom} in terms of calls to foreign functions
