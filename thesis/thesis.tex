@@ -26,6 +26,7 @@
 
 \usepackage{amsmath}
 \newcommand{\argmax}[1]{\underset{#1}{\operatorname{argmax}}}
+\usepackage{tikz}
 
 \usepackage{fontspec}
 \setmonofont[Scale=MatchLowercase,Mapping=tex-text]{Tahoma}
@@ -34,8 +35,6 @@
 \usepackage{tabu}
 \usepackage{listings}
 \usepackage{minted}
-
-\usepackage[svgnames,hyperref]{xcolor}
 
 \DeclareGraphicsExtensions{.pdf,.png,.jpg}
 \graphicspath{{./figures/}}
@@ -122,8 +121,8 @@ toc=true]{glossaries}
 \newacronym{css}{CSS}{Cascading Stylesheets}
 \newacronym{dsl}{DSL}{Domain-Specific Language}
 \newacronym{bsd}{BSD}{Berkeley Software Distribution}
-\newacronym{zeps}{zeps}{Zepto Package System}
-\newacronym{zpr}{ZPR}{Zepto Package Registry}
+\newacronym{zeps}{zeps}{zepto Package System}
+\newacronym{zpr}{ZPR}{zepto Package Registry}
 \newacronym[plural={Scheme Requests For Implementation (SRFIs)}]{srfi}{SRFI}{Scheme Request For Implementation}
 \newacronym{pep}{PEP}{Python Enhancement Proposal}
 \newacronym{eep}{EEP}{Erlang Enhancement Proposal}
@@ -198,16 +197,16 @@ toc=true]{glossaries}
 This thesis presents and evaluates a port of the zepto programming language to the web. It aims to
 work as seamlessly with existing technologies as possible and is largely influenced by \gls{r5rs},
 a standard of the Lisp derivative Scheme.\footnote{A deeper introduction into \gls{r5rs} can be found
-in section \ref{sec:ExistingStandards}.}
+in Section \ref{sec:ExistingStandards}.}
 
 It is the result of over a year of independent research on zepto, a new programming language
 targetting various environments. The prototype described here and implemented for this
 thesis runs on JavaScript, a language found natively in many web browsers.
 
 The central problem addressed by this thesis is the incoporation of a language runtime
-into the web ecosystem. without the need for extensive code rewrites while supporting
-most features of the reference implementation of zepto, including large parts of the
-standard library. This also includes interoperability between the two languages.
+into the web ecosystem. This is achieved without the need for extensive code rewrites
+while supporting most features of the reference implementation of zepto, including large
+parts of the standard library. This also includes interoperability between the two languages.
 
 It is also discussed in which ways tooling for both JavaScript and zepto, most specifically
 their respective package managers, interoperate to build larger scale web applications.
@@ -330,9 +329,9 @@ This is especially true for those features of the base language that are not
 present in JavaScript and non-trivial to add to it from a user perspective.
 The features present in the target language implemented in this thesis but not
 present in JavaScript most notably include Macros\footnote{The ability to rewrite
-code at parse or compile time, see section \ref{macro}.} and Continuations\footnote{The
+code at parse or compile time, see Section \ref{macro}.} and Continuations\footnote{The
 control state of a program represented as a data structure within the code, see
-section \ref{continuation}.}. These features were chosen especially because they are
+Section \ref{continuation}.}. These features were chosen especially because they are
 extremely foreign to JavaScript programming.
 
 \section{Structure of this Thesis}
@@ -357,9 +356,9 @@ both the desktop and the JavaScript versions of zepto in the future.
 \chapter{Related Work}
 \label{chap:RelatedWork}
 
-This section aims to give a quick overview of work that has already been done in the
+This chapter aims to give a quick overview of work that has already been done in the
 field of transpilation to and language implementations on top of JavaScript. A few
-of the most important specimens have already been mentioned briefly in section \ref{pretrans}.
+of the most important specimens have already been mentioned briefly in Section \ref{pretrans}.
 
 \section{Existing Projects}
 
@@ -399,7 +398,7 @@ GHCJS is the compiler used in this thesis to transpile the existing zepto codeba
 to JavaScript. Its plug-and-play design, near-complete implementation of the
 Haskell programming language, and relative maturity all contributed to the decision
 to use it as a development platform.\footnote{Further discussion of the design
-and decision process can be found in chapters \ref{chap:ConceptDesign} and
+and decision process can be found in Chapters \ref{chap:ConceptDesign} and
 \ref{chap:SystemDesign}.}
 
 \subsubsection{Emscripten}
@@ -442,11 +441,11 @@ different from zepto-js, as ClojureScript has a lot of syntactic integrations
 that help embed JavaScript within it. All functions prefixed with a period are
 assumed to be JavaScript functions on the prototype of the object provided as
 first argument. JavaScript values can be directly accessed through the \texttt{js}
-namespace. Zepto's design is discussed in section \ref{sec:ffi}.
+namespace. zepto's design is discussed in Section \ref{sec:ffi}.
 
 \begin{listing}[H]
 \caption{A comparison of the \gls{ffi} of JavaScript in zepto and ClojureScript.}
-\begin{minted}[linenos]{clojure}
+\begin{minted}[linenos]{racket}
 ; ClojureScript provides syntactic abstractions over
 ; the embedding of foreign code.
 (.getElementById js/document "body")
@@ -462,12 +461,12 @@ namespace. Zepto's design is discussed in section \ref{sec:ffi}.
 
 The languages mentioned here are languages that abstract purely over JavaScript,
 choosing it as their primary backend. This differs from the languages discussed
-in section \ref{trans}, which are general purpose languages with the option to compile
+in Section \ref{trans}, which are general purpose languages with the option to compile
 to JavaScript if desired by the developer.
 
 \subsubsection{CoffeeScript}
 
-As mentioned in section \ref{pretrans}, when it first appeared, CoffeeScript was one of the first transpilers that targeted JavaScript.\footnote{The first git commit
+As mentioned in Section \ref{pretrans}, when it first appeared, CoffeeScript was one of the first transpilers that targeted JavaScript.\footnote{The first git commit
 dates back to
 \href{https://github.com/jashkenas/coffeescript/commit/8e9d637985d2dc9b44922076ad54ffef7fa8e9c2}{December 13th, 2009} as seen in the
 commit history of \texttt{https://github.com/jashkenas/coffeescript}.
@@ -515,7 +514,7 @@ for the web in a strongly typed, functional style.
 
 It is different from GHCJS in that it does not provide compatibility
 with Haskell code, although many libraries and functions are relatively
-similar.\footnote{See figure \ref{fig:ps} for an example.}
+similar.\footnote{See Listing \ref{fig:ps} for an example.}
 
 As it shares a lot of features with Elm, it also largely shares its
 differences to zepto-js.
@@ -553,17 +552,17 @@ and Scheme. While the syntactic proximity remains, the categories differ
 widely conceptually. Figure \ref{fig:lispcomp} shows the differences between
 those language families.
 
-Zepto is a Scheme derivative loosely based on \gls{r5rs} \parencite{R5RS}, the most
+zepto is a Scheme derivative loosely based on \gls{r5rs} \parencite{R5RS}, the most
 widely implemented standard of Scheme. It draws from a lot of standard library
 functions, syntax definitions, and continuations, but aims to introduce custom namespaces
 to provide a cleaner, more modular way of defining software libraries.\footnote{This module
-system will be explained in chapter \ref{chap:ConceptDesign} in depth.}
+system will be explained in Chapter \ref{chap:ConceptDesign} in depth.}
 
 The reason for which a Scheme derivative was chosen over an implementation of Common Lisp
-can be found in the feature set (see figure \ref{fig:lispcomp}); hygienic macros and
+can be found in the feature set (see Figure \ref{fig:lispcomp}); hygienic macros and
 continuations are valuable abstractions that guarantee that components work
 together.\footnote{An example of code that works as expected in Scheme but not in
-Common Lisp is presented in figure \ref{fig:schemevscomlisp}.} It
+Common Lisp is presented in Listing \ref{fig:schemevscomlisp}.} It
 implements a simple – if a bit contrived – version of binary \texttt{or} in Common Lisp and
 in Scheme. In Common Lisp, the variables defined in regular code will potentially be
 shadowed by the ones generated during macro expansion, whereas in Scheme they reside in
@@ -602,13 +601,15 @@ enahcements through the addition of features, much like \glspl{pep} for the Pyth
 programming language and \glspl{eep} for Erlang. However, the difference that sets SRFIs
 apart from the latter two is the inclusion of a reference implementation.\footnote{This
 is not required, but part of the "good tone" of the community and \gls{srfi}s lacking them
-are relatively rare.} Zepto currently supports five of these requests by default,
+are relatively rare.} zepto currently supports five of these requests by default,
 one of which implements a core feature of the language: descriptive custom data types, better
 known as smart structs.
 
 In the past, the relative ease of porting the implementation of these requests was a major
 convenience. By moving even uurther away from the Scheme standards, this process would
-undoubtedly be affected in a negative manner. **TODO: add specific consequences** Thus, for both the reference implementation and its
+undoubtedly be affected in a negative manner. Even mere renaming incurs the cost of finding
+and replacing all occurrences of the affected name, which leads to a new class of potential
+bugs. Thus, for both the reference implementation and its
 JavaScript equivalent, a core set of primitives must be available under all circumstances
 to allow for the cross-fertilization of Scheme and zepto.
 
@@ -666,12 +667,12 @@ concept language. Concurrently to the work on a nanopass compiler that
 targets \gls{llvm} and Erlang but supports pluggable backends by design, efforts
 have been made to bring the language into the browser setting. After preliminary
 work on a compiler backend that emits JavaScript was discarded in the
-early stages of its development for the reasons stated in section \ref{sec:Motivation},
+early stages of its development for the reasons stated in Section \ref{sec:Motivation},
 the idea presented in this thesis emerged.
 
 In the following, a brief overview of the design of the concepts used
 in the port and how they impacted the construction of the system will be
-discussed. A system-based design overview is presented in chapter \ref{chap:SystemDesign}.
+discussed. A system-based design overview is presented in Chapter \ref{chap:SystemDesign}.
 
 \section{Construction Design}
 \label{sec:ConstructionDesign}
@@ -694,7 +695,7 @@ their own implementation of Lisp.\footnote{The README of the femtolisp project e
 far as to claim "Some programmers' dogs and cats probably have their own lisp implementations
 as well." \parencite{BEZL}.} There are a lot of different implementations of Lisp
 in the wild, even ones that compile to JavaScript, such as ClojureScript, the
-backend for Clojure referenced in section \ref{sec:ClojureScript}.
+backend for Clojure referenced in Section \ref{sec:ClojureScript}.
 
 The language's simplicity on a parsing level contributes to its popularity as
 a language to implement.
@@ -711,20 +712,20 @@ as expressiveness and elegance \parencite{JCM}.
 
 \subsection{zepto}
 
-As explained in section \ref{sec:ExistingStandards}, Zepto is a new Scheme implementation. It seeks
+As explained in Section \ref{sec:ExistingStandards}, zepto is a new Scheme implementation. It seeks
 to be as small as possible, to be able to target a lot of different backends and simplify the
 process of writing new backend code. Currently, \gls{llvm} and Erlang Core\footnote{Erlang Core 
 is the \gls{ir} of Erlang code before it is complied. Resources and documentation
 about it are sparse, it mostly seems to exist inside the BEAM's implementation. A small
 paper \parencite{ERL} that describes its' basics was used to implement the compiler from
-zepto.} bindings are under development. Zepto's reference implementation is a simple interpreter
+zepto.} bindings are under development. zepto's reference implementation is a simple interpreter
 that evaluates code directly from the \gls{ast}. This is slow but ensures a small
 interpreter size.\footnote{The entire codebase is only about 4000 lines of Haskell code.}
 The compilers are written directly in zepto itself.
 
 The small code base makes zepto a good target for porting it to the web. Furthermore, because
 it is written in Haskell the code base was expected to be almost entirely compilable
-to JavaScript using GHCJS\footnote{GHCJS is the transpiler mentioned in section \ref{sec:GHCJS},
+to JavaScript using GHCJS\footnote{GHCJS is the transpiler mentioned in Section \ref{sec:GHCJS},
 a backend for the \gls{ghc} targetting JavaScript instead of native code.}. It offers many
 advanced compilation features such as inlining of JavaScript into the Haskell code
 base using a technique called quasi-quoting, wherein a special character sequence delimits the
@@ -740,7 +741,7 @@ closely related to JavaScript to eventually make their way into the browser.
 \label{macro}
 
 Macros are a mechanism for rewriting code at compile time. As discussed in
-section \ref{sec:ExistingStandards}, zepto's macros are hygienic, which prevents name collisions
+Section \ref{sec:ExistingStandards}, zepto's macros are hygienic, which prevents name collisions
 with code at runtime and eliminates a class of particularly nasty bugs. Macros are
 evaluated in a step between the parser and the actual compilation of code
 called macro expansion, in which the compiler rewrites parts of the source code that reference
@@ -748,7 +749,7 @@ it according to its specifications.
 
 Because Scheme macros leverage pattern matching and argument overloading by default,
 they allow for syntactic extensions of the language. An example for a simple yet
-interesting case is made in Figure \ref{fig:listcomp}, where a simple syntactic rule set
+interesting case is made in Listing \ref{fig:listcomp}, where a simple syntactic rule set
 for list comprehensions is defined, not unlike a \gls{dsl}, albeit a very small one.
 This particular list comprehension is syntactically close to the same construct in
 Haskell, although the semantics should be relatively clear at a close inspection and
@@ -795,31 +796,29 @@ of continuations" \parencite{CONT}.
 
 There are features in zepto that are not present in Scheme as specified by \gls{r5rs}, such
 as the module system and the extensive standard library. In this section, a brief list of
-the features and libraries that discriminate zepto from "regular" Scheme shall be given.
+the features and libraries that discriminate zepto from "regular" Scheme shall be examined.
 
 \subsection{The module system}
 
-Zepto implements a custom module system that is completely defined in terms of the language
-itself. A small code example of different actions in zepto's module space are given in
-figure \ref{fig:zepmod}.
-This allows for namespaced, conditional and renaming imports, a feature missing from standard
-Scheme.\footnote{Although the upcoming R7RS standard will most likely include such a mechanism.}
+zepto implements a custom module system that is completely defined in terms of the language
+itself. A small code example of different actions in zepto's module space is presented in
+Listing \ref{fig:zepmod}.
+This allows for namespaced, conditional, and renaming imports, a feature missing from standard
+Scheme.\footnote{Although the latest Scheme standard R7RS included such a mechanism \parencite{R7RS},
+it is not widely implemented.}
 This approach has a few upsides that all boil down to the module system being available in the
-user namespace; monkey-pacthing and mocking objects is possible very easily, easing for instance
-testing and fixing flaws in the program at runtime. It is also relatively small and simple,
-at about 130 lines of macro-backed code, which makes it fairly maintainable.
+user namespace; monkey-patching and mocking objects is possible, simplifying for instance
+testing and fixing flaws in the program at runtime. The module system is also relatively small
+and simple, at about 130 lines of macro-backed code, which makes it fairly maintainable.
 
 However, this approach comes not without its drawbacks. Most notably, relying on a module
 system that works at runtime requires more complex compilation and a dispatch system to
 be present while the program is running. It also requires global data in the form of a
-special variable \texttt{*modules*} holding the mapping of names to values, a concept that is
-unusual for a functional programming language and might hinder the compilation into other
-representations. Of course global data is also normally either not thread-safe or relatively
-slow to use if it requires some sort of synchronization mechanism - which is currently not
-a feature that zepto implements.
-
-It has been decided that this is an acceptable tradeoff for zepto as it currently stands,
-but the system might be changed in the future.
+special variable --- named \texttt{*modules*} --- holding the mapping of names to values,
+a concept that is unusual for a functional programming language and might hinder the
+compilation into other representations. Global data is also normally either not thread-safe
+or relatively slow to use if it requires some sort of synchronization mechanism --- which is
+not currently a feature that zepto implements.
 
 \begin{listing}[H]
 \caption{Defining \& using a zepto module}
@@ -857,65 +856,77 @@ but the system might be changed in the future.
 \label{fig:zepmod}
 \end{listing}
 
-For the case of JavaScript, this part of zepto's implementation proved not
+This is an acceptable tradeoff for the current version of zepto, as all of the
+target languages of zepto's compiler support modules. They therefore provide a
+suitable representation for the semantics of zepto's system.
+
+In the case of JavaScript, this part of zepto's implementation proved not
 to be a problem and worked without further tweaking.
 
 \subsection{The standard library}
 
-Zepto comes with a fairly extensive standard library that includes a wide
+zepto comes with a fairly extensive standard library. It includes a wide
 variety of utilities spanning such diverse topics as cryptography\footnote{As found
 in the \texttt{rsa} module, which implements RSA key generation, signing,
-validating and en- and decryption.}, testing, monads, parsing command line
-arguments and a parser combinator. An exhaustive list of the modules found
-in the zepto standard library at the time of writing can be found in appendix
-\ref{app:stdlib}.
+validating, and en- and decryption.}, testing, monads, parsing command line
+arguments, and a parser combinator.\footnote{An exhaustive list of the modules
+found in the zepto standard library at the time of writing can be found in appendix
+\ref{app:stdlib}.}
 
-This is fairly unusual for Scheme implementations insofar as many of them
-come with a fairly minimalistic set of libraries that is often largely based
-on SRFIs exclusively. Two notable exceptions are Chibi Scheme\footnote{The source
-code for Chibi Scheme and its standard library can be found on Github under
-https://github.com/ashinn/chibi-scheme.}, and Racket, the distributions of which
+This is reasonably unusual for Scheme implementations in that many of them
+come with a fairly minimalistic set of libraries that are often based almost
+exclusively on SRFIs. Two notable exceptions are Chibi Scheme\footnote{The source
+code for Chibi Scheme and its standard library can be found under
+https://github.com/ashinn/chibi-scheme.} and Racket, the distributions of which
 are bundled with an even bigger standard library. This might be due to the fact
 that Alex Shinn, the main developer behind Chibi Scheme, is very active in the
-Scheme community and authored a few SRFIs of his own and Racket is a language
-supported by the Computer Science faculties of multiple universities  and is
-the result of over 20 years of research.
+Scheme community and has authored a few SRFIs\footnote{\gls{srfi} 56 \parencite{SRFI56}
+and 115 \parencite{SRFI115} were both proposed by him.} of his own. He has also served
+as one of the editors of the upcoming standard of Scheme \parencite{R7RS}.
+Additionally, Racket is a language supported by the Computer Science faculties of
+multiple universities and is the result of over twenty years of research.
 
 The stability of the libraries that come bundled with zepto varies and is not
 ensured until the reference implementation reaches version 1.0.0. However, many
 of these libraries have at least been used by other libraries in the zepto
 ecosystem and are thus the subject of continuous scrutiny.
 
-The standard library as a concept in zepto is thought to be a rather minimal,
-but usable set of primitives to get the developer started. Once they feel
-comfortable in the programming environment, it is suggested they start working
-with \gls{zeps}.
+The standard library as a concept in zepto is designed to be a rather minimal,
+but usable set of primitives to get the developer started. Once the programmer
+feels comfortable in the programming environment, starting to work with \gls{zeps}
+is suggested.
 
 \subsection{\gls{zeps}}
 
 \gls{zeps} is the package manager for zepto. It is capable of installing and
-managing packages from Github and the \gls{zpr} through the command line. It
-is undoubitably the biggest coherent piece of code written entirely in zepto
+managing packages from Github\footnote{Github.com, often abbreviated to Github,
+is a website for hosting Git repositories. Git is a distributed versioning system
+\parencite{GIT}.} and the \gls{zpr} through the command line. It
+is undoubtedly the biggest coherent piece of code written entirely in zepto,
 and it is capable of intalling and updating itself. At the time of writing,
-at least 40 packages have been published with \gls{zeps}, including a framework
+at least forty packages have been published with \gls{zeps}, including a framework
 for writing web servers and a Redis database client. It is only able to run
 on Unix-like systems or systems exposing at least a Unix-like shell.
 
-The authentication system of \gls{zeps} on the \gls{zpr} is RSA-backed, which
+The authentication system of \gls{zeps} on the \gls{zpr} is RSA-backed\footnote{RSA,
+named after its inventors Ron Rivest, Adi Shamir, and Leonard Ableton, is a public-key
+cryptosystem that was first described in the article "A Method for Obtaining Digital
+Signatures and Public-Key Cryptosystems" \parencite{RSA}.}, which
 also allows for the signing of packages for the user's convenience. This feature
 is not available when installing from Github.
 
 The package system aims to be a cohesive, intuitive entity for installing,
-removing, creating, managing, testing and updating packages.\footnote{A list of
+removing, creating, managing, testing, and updating packages.\footnote{A list of
 all the available commands is given in appendix \ref{app:zepscmds}.} It includes
 facilities for creating sandboxed environments, making dependency management
 of multiple systems with possibly conflicting dependency trees possible.
-It can also be used to distribute zepto-based command line tools and its
+It can also be used to distribute zepto-based command line tools. Furthermore, its
 ability to bootstrap packages is scriptable, allowing for plugins to
 decide what files should be generated on the creation of a new package.
 
-It has proved to be useful in workshops and user feedback sessions to make
-sure all of the attendees can easily manage their first projects.
+It has proven useful in workshops and user feedback sessions, where it helped
+to ensure that all of the attendees were able to easily manage their first
+projects.
 
 \setchapterpreamble[u]{%
   \dictum[\emph{T. Peters}---The Zen of Python]{Practicality beats purity.}
@@ -923,13 +934,12 @@ sure all of the attendees can easily manage their first projects.
 \chapter{System Design}
 \label{chap:SystemDesign}
 
-The prototype described in this thesis, while from a programming language
-implementation standpoint very close to the reference implementation of
-zepto, required a few modifications to the way it integrates with its'
-environment.
+zepto-js required a few modifications to the way it integrates with its
+environment, although from a programming language implementation standpoint
+it is very close to the reference implementation of zepto.
 
-Zepto as an interpreter is a closed-off program that does not interact
-with its surroundings save for program input. Zepto-js on the other hand
+zepto as an interpreter is a closed-off program that does not interact
+with its surroundings, save for program input. zepto-js, on the other hand,
 has to integrate with technologies and \glspl{api} to make programming
 a web application not only possible, but also convenient. A solid model of
 interaction had to be found as a consequence.
@@ -939,9 +949,13 @@ interaction had to be found as a consequence.
 To make zepto-js fit into the web and its components, a few design decisions
 for the interpreter startup had to be done. Rather than make it \gls{repl} and
 file-based as in the reference implementation, a tag-based approach was pursued.
-This ensures that programming in zepto-js would not differ drastically from
-programming in JavaScript from the viewpoint of an application.\footnote{An example
-of those tags is given in figure \ref{fig:zpjs}.}
+This means that instead of either launching the interpreter in an interactive
+mode, where every expression is immediately evaluated after the user enters it,
+or providing a file to the interpreter to evaluate, the programs are provided
+to the user through \gls{html} \texttt{script} tags, which is the approach
+taken by JavaScript as well. This ensures that programming in zepto-js would
+not differ drastically from programming in JavaScript from an application's
+viewpoint.\footnote{An example of those tags is given in Listing \ref{fig:zpjs}.}
 
 There are multiple ways to implement this interface. An initial design idea was to
 bundle a zepto executable in the form of a browser extension that would parse the
@@ -949,14 +963,14 @@ bundle a zepto executable in the form of a browser extension that would parse th
 file every time they visit a page that leverages zepto-js. With the ubiquity of
 smart caching mechanisms in modern browsers it is, however, unclear how big of
 a gain this would be. On the other hand it would limit the userbase of the website
-to the setof people who have the extension installed, a major drawback for possible
+to the set of people who have the extension installed, a major drawback for possible
 language users.
 
-It was thus determined that he prerequisite for being able to embed zepto code into
+It was thus determined that the prerequisite for being able to embed zepto code into
 a website should be to include the zepto-js distribution in the website. To make
 this more attractive, zepto-js can be loaded asynchronously onto the web page as it
 is required to also work if the \gls{dom} was already built. An explanation of how
-zepto is loaded and identifies the tags it should interpret is given in section \ref{sec:MutObs}.
+zepto is loaded and identifies the tags it should interpret is given in Section \ref{sec:MutObs}.
 
 \begin{listing}[H]
 \caption{The interface of zepto-js within a \gls{html} page.}
@@ -979,27 +993,34 @@ zepto is loaded and identifies the tags it should interpret is given in section 
 **TODO**
 
 \subsection{Integration with build tools}
+\label{sec:IntegrationTooling}
 
 A big part of modern web development is the availability of tools that automate
-the process of shipping JavaScript code. There are tools that cross-compile, minify
+the process of shipping JavaScript code. There are tools that cross-compile,
+minify\footnote{Minification is the process of removing extraneous characters from
+a program that have no syntactic meaning and only add to the readability of the
+code at hand. In the case of JavaScript, this includes newline characters, comments,
+and some spaces. The first JavaScript minifier was written by Douglas Crockford \parencite{JSMIN}.},
 and optimize JavaScript in a matter of seconds.\footnote{A few of those tools have been
-mentioned in the chapters \ref{sec:Motivation} and \ref{chap:RelatedWork}.} There are
+mentioned in the Chapters \ref{sec:Motivation} and \ref{chap:RelatedWork}.} There are
 also utilities that simplify the definition of pipelines in which the code is passed
-through various of those tools for greater composability, such as Grunt or Gulp.
+through various of those tools for greater composability, such as Grunt\footnote{Grunt
+is a JavaScript build tool \parencite{GRUNT}.} or Gulp\footnote{Gulp is a JavaScript build
+tool akin to Grunt, but younger and, by its own accounts, faster \parencite{GULP}.}.
 
 These tools can be used to write zepto-js-backed websites as well. While many of
-the optimizations, minifications and cross-compilers become unusable once the switch
+the optimizations, minifications, and cross-compilers become unusable once the switch
 from JavaScript to another language is made, the facilities of those tools to collect
 and merge multiple source files, for instance, can be used without bigger modifications.
 Furthermore, as those tools are agnostic not only to the types of files they deal with
 but also to the types of tools they are to run on the source files, zepto-js-specific
 optimizers can be run on those files should they emerge.
 
-Many of the preprocessed languages discussed in chapter \ref{chap:RelatedWork} use these
+Many of the preprocessed languages discussed in Chapter \ref{chap:RelatedWork} use these
 technologies to compile their source files to JavaScript before shipping them.
 While zepto-js has no regular \gls{api} that can be plugged into those build tools
 at the moment, a simple integration with existing tasks is possible as shown in
-\ref{fig:gulp}.
+Listing \ref{fig:gulp}.
 
 \begin{listing}[H]
 \caption{A gulp task that collects and merges zepto files.}
@@ -1031,9 +1052,9 @@ gulp.task('default', ['bundle'], function() {
 \chapter{Implementation}
 \label{chap:Implementation}
 
-The implementation philosophy of the port presented in this thesis has always been to
-reuse as much code from the reference implementation as possible. This guided the flow of design
-choices down a rather natural path and kept the implementation described here fairly short and trivial.
+The implementation philosophy of the prototype of zepto-js has been to reuse as much
+code from the reference implementation as possible. This guided the flow of design choices
+down a rather natural path and kept the implementation described here fairly short and trivial.
 
 \section{Description of the Toolchain}
 
@@ -1046,37 +1067,39 @@ base using a technique called quasi-quoting, in which a special character sequen
 inlined code, much like regular quotes. This tool set was expected to simplify rewriting the code
 bits that needed adjustment.**verb tense: does it no longer simplify rewriting code?**
 
-The management of pure JavaScript sources is another important feature. GHCJS provides management
-of these sources akin to the management of bits of C code that should interface with Haskell in a
-regular \gls{ghc} project.**wordy** The build file includes a segment called \texttt{js-sources}, which ensures
-that the JavaScript in those sources will be included in the final compilation. The informal convention
-seems to be to put the files that should be included into a directory called \texttt{jsbits} (a hat-tip
-to the \gls{ghc} convention of putting C sources into cbits).
+The management of pure JavaScript sources is another important feature. As in regular \gls{ghc},
+where the management of bits of C code that should interface with Haskell is provided, GHCJS
+provides management of JavaScript sources. The build file includes a segment called
+\texttt{js-sources}, which ensures that the JavaScript in those sources will be included in the
+final compilation while still separating them from the rest of the codebase. The informal convention
+seems to be to put the files to be included into a directory called \texttt{jsbits} --- a hat-tip
+to the \gls{ghc} convention of putting C sources into the \texttt{cbits} directory.
 
-The code emitted by GHCJS is conservative in feature use. This is an important feature if older clients
-with possibly even obsolete browsers want to access web pages supported by zepto code, rare as they might
-be.**wordy**
+The code emitted by GHCJS is conservative in feature use. This is an important feature for
+older clients with possibly even obsolete browsers wanting to access web pages supported by
+zepto code, rare as they might be. In these cases, emitting JavaScript that adheres to older
+standards is a prudent idea.
 
 All these conveniences do not spare the programmer from the actual programming process, of course.
-While GHCJS seems like a well-maintained project one has to keep in mind that it is not backed
-by a consortium as \gls{ghc} is, and the current maintainer seems to do this work completely
-in his spare time. This gives users the impression that the project could be abandoned at any given
+While GHCJS seems like a well-maintained project one has to keep in mind that, unlike \gls{ghc},
+it is not backed by a consortium, and the current maintainer seems to do this work completely
+in his spare time. This leaves the impression that the project could be abandoned at any given
 moment. Therefore, being too dependent upon its more unusual features could lead to a product that
 is unnecessarily difficult to maintain.
 
 Taking all of this into consideration, a preliminary analysis revealed two main conditions for
-the success of this thesis: 1) the code emitted by FHCJS is fast, solid, and reasonably compact,
+the success of this thesis: 1) the code emitted by GHCJS is fast, solid, and reasonably compact,
 and 2) the newest features of both JavaScript and Haskell were supported.\footnote{The newest version
 of \gls{ghc} at the time of writing, version 8.0, gained support while this thesis was in the works.}
 
 \section{Description of the Implementation}
 
-As predicted in section \ref{sec:Motivation}, the code base of zepto could be reused almost in its entirety.
+As predicted in Section \ref{sec:Motivation}, the code base of zepto could be reused almost in its entirety.
 What had to be rewritten was mostly related to the startup of the interpreter, because the regular
 paths into the code - either via a script being passed into it or launching an interactive
 \gls{repl}\footnote{A \gls{repl} is an interactive code evaluation environment. Code is typed into
 a prompt and immediately evaluated. The convenience of such a short feedback loop is often used
-in the context of scripting languages and shells.} - were unavailable in the browser context.
+in the context of scripting languages and shells.} --- were unavailable in the browser context.
 Instead, a way of passing the sources from within \texttt{script} tags needed to be found. Further
 customizations include a \gls{ffi} to enable better cross-evaluation of JavaScript and the adaptation
 of existing \gls{api}s, such as the \gls{dom}.
@@ -1089,26 +1112,28 @@ firstly, it introduced a layer of complexity from within JavaScript code that wo
 it brittle and hardly portable. Secondly, it would require a walk of the nodes every time a \gls{dom}
 element is inserted or replaced, which is a common occurence in modern interactive web applications.
 
-In November 2015, the \gls{w3c} released **word choice?** an \gls{api} that simplified this process
+In November 2015, the \gls{w3c} released an \gls{api} that simplified this process
 for the programmer. Within their specification of the
 \href{https://www.w3.org/TR/dom/#mutationobserver}{DOM4} \parencite{DOM4} , the fourth
-specification of \gls{api}s for the Web, an object called \texttt{MutationObserver} is included which
-is able to register for \gls{dom} manipulations. Its main function will be triggered whenever a change
-occurs within the \gls{dom} part, to which it is registered to listen. **rephrase as you wish, but to should not be at the end of the sentence**
+specification of \gls{api}s for the Web, an object called \texttt{MutationObserver}, which is
+able to register for notificiations of \gls{dom} manipulations, is included. Its main function
+will be triggered whenever a change occurs within the \gls{dom} part to which it is registered
+to listen.
 
 This simplifies the implementation of a listener to DOM events a great deal. Only minimal programming
 is required to configure the listener and to filter out all the nodes that are not \texttt{script} nodes
 of the type \texttt{text/zepto}.\footnote{This was chosen in analogy to the existing \texttt{text/javascript}
 node type.}
 
-A problem left ignored with this method was that nodes inserted before the listener started.**awkward, rephrase** This was resolved by
-singling out all the \texttt{script} tags present before the listener starts and applying the
-same filter/evaluation function to all of them.**verb tenses** This also ensures that they are executed before any
-additional code (and possibly dependent) is passed into the zepto object.
+A problem with this method was that nodes inserted before the listener started were ignored.
+This was resolved by singling out all the \texttt{script} tags present before the listener
+starts and applying the same filter/evaluation function to all of them. This also ensures
+that they are executed before any additional --- and possibly interdependent --- code is
+passed into the zepto object.
 
 The code was then included in the \texttt{zepto} singleton, which is the global interpreter object
 used for the management and interactivity of the zepto interpreter. A simplified version of this
-code is presented in figure \ref{fig:mutobs}.
+code is presented in Listing \ref{fig:mutobs}.
 
 \begin{listing}[H]
 \caption{The final mutation observer code (simplified)}
@@ -1151,31 +1176,33 @@ the browser effectively useless. The \gls{api}s of the Web are a big part of wha
 program for the browser, after all.
 
 An initial sketch of the programming interface was extremely simplistic: a call to the
-function \texttt{js} could be called with a string as argument, representing the textual
-representation of the JavaScript program that should be run. It was piped to the JavaScript
-function \texttt{eval} and the function returned an affirmative truth value. Quasi-quoting
-larger blocks of JavaScript was also possible.
+function \texttt{js} could be made with a string as argument, representing the code to
+be run as text. It was piped to the JavaScript function
+\texttt{eval}, and the function always returned an affirmative truth value, regardless of
+what happened within JavaScript. Quasi-quoting larger blocks of JavaScript was also possible.
 
-Of course this is unusable. **word choice, see above** The missing return value makes any effort of talking to an
-\gls{api} impossible, as one could never yield any results.**rephrase clause 2** A different kind of return
-value is needed.
+This version worked, but was suboptimal. The missing return value renders any effort of talking to
+an \gls{api} useless. Oftentimes, it is necessary to chain multiple calls to an \gls{api} together,
+as, for instance, when getting and manipulating a node within the \gls{dom}. This is highly
+inconvenient when the option of binding a value to a variable is not available in the \gls{ffi}.
+A different kind of return value is needed.
 
-The most obvious solution – albeit the most challenging – would be to infer a fitting zepto type
-for every return value in JavaScript and return a result depending on these
-paramaters.\footnote{This approach is shown in figure \ref{fig:idealffi}.} While is arather elegant
+The most obvious solution --- albeit the most challenging --- would be to infer a fitting zepto
+type for every return value in JavaScript and return a result depending on these
+parameters.\footnote{This approach is shown in Listing \ref{fig:idealffi}.} While is a rather elegant
 solution, it comes with its own set of caveats and exceptions, as the mapping between JavaScript
 and zepto values is not always obvious. A JavaScript object has too many properties that get
-lost in the process of translating it to zepto as to make it intuitive, as at least functions
+lost in the process of translating it to zepto to make it intuitive, because at least functions
 do not work in the exact same way.
 
 \begin{listing}[H]
 \caption{The ideal FFI}
-\begin{minted}[linenos]{clojure}
+\begin{minted}[linenos]{racket}
 ; this would return an integer
 (js "1 + 1")
 
 ; this would return a hashmap
-(js "{key: \"val\""})
+(js "{key: \"val\"}")
 
 ; this is problematic, because it will return an object
 (js "new Error()")
@@ -1184,33 +1211,33 @@ do not work in the exact same way.
 \end{listing}
 
 The implementation of JavaScript values in GHCJS is another point of complication. They
-are opaque datatypes, aliases for addresses and byte vectors. While zepto supports
+are opaque datatypes, in this case aliases for addresses and byte vectors. While zepto supports
 byte vectors and pointers, they are hardly a good representation for semantically rich
 prototypes as they only offer a glance into the underlying implementation of the
 JavaScript engine. While it is true that GHCJS itself provides methods for type
 coercion, these methods are crude and possibly error-prone.
 
-A simpler method but still mostly sensible arose: returning the string
+A simpler, but still mostly sensible method arose: returning the string
 values of all of the values returned.\footnote{The interface of this version
-of the \gls{ffi} is shown in figure \ref{fig:finalffi}.} While this places the burden of coercion
-on the programmer, it also gives them the power to make their own 
+of the \gls{ffi} is shown in Listing \ref{fig:finalffi}.} While this places the burden of coercion
+on the programmer, it also gives the developer the power to make autonomous
 decisions of how to deserialize values. Functions for deserializing the most
-common datatypes are included in the standard library of the JavaScript
-implementation of zepto, to aid the programmer in the process of finding
+common datatypes are included in the standard library of zepto --- and, therefore,
+zepto-js --- to aid the programmer in the process of finding
 the right methods of getting a value out of the \gls{ffi}.
 
 This still does not solve the problem of helping manage classes. It does, though, empower
-the programmer to find their own ways of serializing on the JavaScript side
-and deserializing on the zepto side to preserve the information they need in
-their specific programming context.
+the programmer to find appropriate ways of serializing on the JavaScript side
+and deserializing on the zepto side to preserve the information needed in
+specific programming contexts.
 
 All of this needs an additional layer of abstraction to avoid unnecessary
-boilerplate, but it is stable enough for most purposes that zepto in JavaScript
-was used for yet.
+boilerplate, but it is stable enough to support most applications for which zepto-js
+has yet been used.
 
 \begin{listing}[H]
 \caption{The final form of the FFI}
-\begin{minted}[linenos]{clojure}
+\begin{minted}[linenos]{racket}
 ; the function string->number is a standard zepto function
 (string->number (js "Math.pow(2, 32)"))
 
@@ -1222,36 +1249,53 @@ was used for yet.
 \label{fig:finalffi}
 \end{listing}
 
-Implementing the JavaScript to zepto \gls{ffi} was much simpler, as the
+Implementing the JavaScript-to-zepto \gls{ffi} was much simpler, as the
 interpreter is defined within the JavaScript environment. A call to the
 \texttt{eval} function of the \texttt{zepto} object with a string as argument
-will return in the execution of this piece of code and the return the textual
-representation of the zepto object so that the entire communication between
-the languages is string-based.**rephrase; missing verb? make two sentences w/ break after "piece of code".**
+will return the evaluation's result of that string as zepto code. This result
+will then be coerced to a text, so that the entirety of the communication between
+the two languages is string-based. The pipeline of operations is presented
+in Figure \ref{fig:graph}.
+
+\begin{listing}[H]
+\caption{The FFI stack}
+\begin{tikzpicture}
+[->,scale=.8,auto=left,every node/.style={rectangle,fill=gray!20}]
+  \node (n3) at (5,5)   {Coerce to JavaScript String};
+  \node (n2) at (5,4)   {Evaluate Zepto Code};
+  \node (n1) at (5,3)   {Parse Zepto Code};
+  \node (n0) at (5,2)   {Call \texttt{zepto.eval}};
+  \node (descrip0) at (5,0)   {JavaScript-to-zepto FFI};
+
+  \foreach \from/\to in {n0/n1,n1/n2,n2/n3}
+    \draw (\from) -> (\to);
+
+  \node (n6) at (15,5)   {Coerce to Zepto String};
+  \node (n5) at (15,4)   {Call \texttt{eval} internally};
+  \node (n4) at (15,3)   {Call \texttt{js}};
+  \node (descrip1) at (15,0)   {zepto-to-JavaScript FFI};
+
+  \foreach \from/\to in {n4/n5,n5/n6}
+    \draw (\from) -> (\to);
+\end{tikzpicture}
+\label{fig:graph}
+\end{listing}
 
 \subsection{The \gls{dom}}
 
 After building the \gls{ffi}, it was possible to implement the entire
 communication with the \gls{dom} in terms of calls to foreign functions
 and the parsing of their return values. This allows for a stable library,
-because it is unintrusive and does not interfer with existing JavaScript
+because it is unintrusive and does not interfere with existing JavaScript
 constructs.
 
 While wrapping the entire \gls{dom} \gls{api} would be a big task, making
 the most integral features of the \gls{w3c}'s specifications work turned
-out to be a rather simple task. A minimalistic example of a zepto module
-that implements the creation, insertion and retrieval of elements into
-and from the \gls{dom} is presented in figure \ref{fig:dom}. A production-ready
+out to be rather simple. A minimalistic example of a zepto module
+that implements the creation, insertion, and retrieval of elements into
+and from the \gls{dom} is presented in Listing \ref{fig:dom}. A production-ready
 module would require a host of other features, some of which are already
 implemented in a library geared toward zepto-js.
-
-The \gls{dom} module is not included in the standard library of zepto-js,
-as it was deemed too prototypical as to include it in a base of stable
-functions. It is, however, available as a third-party \gls{zeps} package
-simply called \textit{dom}.\footnote{Should \gls{zeps} be installed on
-the target system, it can be installed by issuing \textit{zeps install
-hellerve/dom}.} Due to its alpha status it has not yet been registered
-to the \gls{zpr} at the time of writing.
 
 \begin{listing}[H]
 \caption{A minimal DOM module.}
@@ -1282,6 +1326,14 @@ to the \gls{zpr} at the time of writing.
 \label{fig:dom}
 \end{listing}
 
+The \gls{dom} module is not included in the standard library of zepto-js,
+as it was too prototypical to be included in a base set of stable
+functions. It is, however, available as a third-party \gls{zeps} package
+simply called \textit{dom}.\footnote{Should \gls{zeps} be installed on
+the target system, it can be installed by issuing \textit{zeps install
+hellerve/dom}.} Due to its alpha status it had not yet been registered
+to the \gls{zpr} at the time of writing.
+
 \subsection{Language definitions}
 
 One of zepto's most advanced features is language definitions, inspired by
@@ -1289,10 +1341,10 @@ the parser macro system in Racket \parencite{RPM}. Language definitions allow
 for a custom parser to be injected into the loading of source files that replaces
 zepto's standard parser. These parsers are regular functions that take a string
 representing the program as input and emit regular S-Expressions that can be evaluated
-as output.\footnote{An example language implementing JSON is presented in figure \ref{fig:json}.}
+as output.\footnote{An example language implementing JSON is presented in Listing \ref{fig:json}.}
 This allows for the creation of \glspl{dsl} and other abstractions.
 While this is handled fairly differently in zepto than in Racket, the syntax of the
-resulting language is compatible. Zepto handles the custom parser step with a dispatch
+resulting language is compatible. zepto handles the custom parser step with a dispatch
 at the time of file loading, which enabled the system to be implemented without
 changes to the core language, completely in zepto itself. While this was
 designed with portability in mind and thought to ease the transition to
@@ -1319,22 +1371,22 @@ plug in the parser dispatcher a problem.
 \label{fig:json}
 \end{listing}
 
-As the detection of what to parse is handled from within JavaScript - by the
-MutationObserver mentioned in section \ref{sec:MutObs} - the first implementation
-of the dispatch mechanism was written entirely in JavaScript. This proved
-to make the dispatch mechanism relatively clumsy, because registering
+As the detection of what to parse is handled from within JavaScript --- by the
+MutationObserver mentioned in Section \ref{sec:MutObs} --- the first implementation
+of the dispatch mechanism was written entirely in JavaScript. This rendered
+the dispatch mechanism relatively clumsy, because registering
 additional languages had to be done in JavaScript, making this feature
 a JavaScript rather than a zepto feature. While building a parser dispatch
 mechanism for JavaScript would certainly also make for an interesting experiment,
-it is out of the scope of this thesis and would not really qualify as something
-unique about zepto.\footnote{The code was salvaged for posteriority and can be
-found on \href{https://github.com/hellerve/js-parse-dispatch}{Github under the
-name of \texttt{js-parse-dispatch}}.}
+it is outside  of the scope of this thesis and would not be a unique feature
+to zepto.\footnote{The code for the JavaScript version was salvaged for posteriority
+and can be found on \href{https://github.com/hellerve/js-parse-dispatch}{Github under
+the name of \texttt{js-parse-dispatch}}.}
 
-It was finally decided to drop this feature alltogether from the initial prototype,
-as this would either require the impure soultion described above or extensive rewrites
-of the zepto system - at least the \texttt{load} statement would require hijacking -,
-both of which were deemed too high a maintenance cost for a feature that is
+This feature was finally dropped altogether from the initial prototype,
+as it would either require the impure solution described above or extensive rewrites
+of the zepto system --- at least the \texttt{load} statement would require hijacking.
+Both of these options incurred too high a maintenance cost for a feature that is
 mostly of importance in the context of file-based systems. At the time of writing it
 was determined that the implementation of this feature should be deferred to the point
 where the need for other languages or \glspl{dsl} within zepto-js arises.
@@ -1349,7 +1401,7 @@ where the need for other languages or \glspl{dsl} within zepto-js arises.
 
 \section{Seamlessness of Integration}
 
-\section{Test Against Standard Implementation of Zepto}
+\section{Test Against Standard Implementation of zepto}
 
 * added: ffi
 
@@ -1365,62 +1417,69 @@ where the need for other languages or \glspl{dsl} within zepto-js arises.
 
 The prototype presented in this thesis was never expected to be a replacement
 for technologies that are currently making the web what it is. It is a simple
-experiment that happens to work well enough to power less than a handful
+experiment that happens to work well enough to power fewer than a handful of
 actual production systems, a blessing for the development of zepto. The
-use cases provided real insight into the descripancy of how the program
+use cases provided real insight into the discrepancy of how the program
 works and how it should work. It is also a liability going forward, as users
 do not generally appreciate breaking changes.
 
 The software system certainly proved that it is possible to make other
-languages work on the web, an idea that is nasceant but, by the hopes of
+languages work on the web, an idea that is nascent but, by the hopes of
 those involved in the production of zepto-js, one that might become a trend
 going forward.
 
 Other developments in the zepto ecosystem are just as exciting. There have
 been efforts to port zepto to a few different platforms, all of which are
-far from finished, but interesting to follow along nonetheless. The compiler
-and parser have both gained languages, some of them usable - the aforementioned
-compiler backends for LLVM and Erlang come to mind, and the web server framework
-that uses a \gls{dsl} to simplify writing request handlers - , some of them born
-purely out of the desire to toy around with the language - parsers and cross-compilers
-for a handful of esoteric programming languages have been written, including Brainfuck,
-Io and Iota.
+far from finished. Nonetheless, it has been interesting to follow their development.
+The compiler and parser have both gained language implementations, some of
+them usable --- the aforementioned compiler backends for LLVM and Erlang come to
+mind, as well as a web server framework that uses a \gls{dsl} to simplify writing
+request handlers ---, some of them borne purely out of the desire to toy around
+with the language; parsers and cross-compilers have been written for a handful of
+esoteric programming languages, including Brainfuck\footnote{Brainfuck is a language
+that aims to reduce programming to its most minimal and tries to emulate a Turing
+machine \parencite{BFK}.}, Io, and Iota\footnote{Io and Iota are conceptually similar
+to Brainfuck, although they try to reduce programming to the lambda calculus described
+by Alonzo Church \parencite{IOT}.}.
 
 The development of \gls{zeps} has surely contributed to the growth of zepto and
-it has fueled the development of zepto-js. It is tested on real systems and has
+fueled the development of zepto-js. It is tested on real systems and has
 withstood the scrutiny of colleagues and contributors. By the definition of the
 development team, however, it is not yet ready for a big public release, hence
-the timid version number of 0.0.7. The road to go might be not as long as this
-number suggests, but it certainly is long enough to merit a healthy dose of
-defensiveness.
+the timid version number of 0.0.7. A stable version might not be as far in the
+distance as this number suggests, but it certainly is far enough away to merit
+a healthy dose of defensiveness.
 
 Another big development in the zepto community has certainly been a series of
-classes and workshops. They, too, helped route the development of zepto down
-a path of usability, self-awareness and constant reevaluation. Targetted at an
+classes and workshops. They too helped route the development of zepto down
+a path of usability, self-awareness, and constant reevaluation. Targeted at an
 audience of diverse people with mostly little to no experience with functional
-programming or Lisp, they have shown to not only wake an interest in those concepts
-but also led to the development of a few projects for zepto and its' JavaScript-backed
-counterpart that now have become part of the standard toolset, such as the plugins for
-the Atom and Vim plugins.
+programming or Lisp, the workshops have shown to not only awaken an interest in those
+concepts. They also led to the development of a few projects for zepto and its
+JavaScript-backed counterpart that now have become part of the standard toolset,
+such as the plugins for the Atom\footnote{Atom is an editor that was developed by
+the Github team as a lightweight, powerful, and pluggable development environment
+\parencite{ATOM}.} and Vim\footnote{Vim is the standard editor for the command line
+of most Linux distributions \parencite{VIM}.} editors.
 
-In regard to tooling for zepto-js, a newly formed development team comprised of
-people experienced in web development is building plugins for zepto-js to integrate
-with Gulp\footnote{One of the tools mentioned in section \ref{sec:IntegrationTooling}.} for
-such tasks as minification and dependency resolution. Integration of \gls{zeps} with
-Gulp is a subject for the near future, too.
+In regard to tooling for zepto-js, a newly formed development team, comprised of
+people experienced in web development, is building plugins for zepto-js to integrate
+with Gulp\footnote{One of the tools mentioned in Section \ref{sec:IntegrationTooling}.} for
+tasks like minification and dependency resolution. Integration of \gls{zeps} with
+Gulp is a subject for the near future too.
 
 All of these developments start to hint at a community in its nascence. It might
-be too quick to judge whether this is true, but it would certainly be a welcome
+be too soon to judge whether or not this is true, but it would certainly be a welcome
 development for zepto and its maintainers.
 
 \chapter{Conclusion}
 \label{chap:conclusion}
 
-There have been voices that insisted that the web need be fixed
+There have been voices that have insisted that the web need be fixed
 since its inception. Most disagreements over its inner workings
 have been philosophical and are a matter of ongoing dispute.
-While the web certainly can be improved - like any system,
-at any time - I do not believe it is fundamentally flawed. The
+While the web certainly can be improved --- like any system,
+at any time --- I do not believe it is fundamentally flawed. The
 technologies that power the current World Wide Web, from switches
 and cable technologies to protocols and development frameworks,
 have shown to be robust enough for a large part of the world
@@ -1430,25 +1489,25 @@ as trends and paradigms emerge and evolve.
 One of the major redeeming qualities of the fundamental
 philosophies of the World Wide Web has certainly been
 its ability to adapt to changes. Standardization of web
-technologies has a reputation of being slow, but in terms
-of design processes on a global scale, it is actually a
-reasonably fast process.
+technologies has a reputation for being slow, but in terms
+of design processes on a global scale, it is actually reasonably
+fast.
 
-Zepto is a young language that has adapted this mindset -
-changes rapidly and a stable release is yet to be announced.
+zepto is a young language that has adopted this mindset ---
+it changes rapidly and a stable release has yet to be announced.
 With this thesis, an important step towards reaching a fulfillment
-of its design goals has been made.
+of its design goals has been taken.
 
-Many questions that this thesis has addressed remain unanswered.
-Even with that in mind, I hope that my work on it has asked
+Many questions addressed by this thesis remain unanswered.
+Even with that in mind, I hope that my work has asked
 questions that are worth being asked and that the technologies
 presented in this thesis will allow for more technologies to
 come to the web, so that an even more heterogeneous,
-expressive and inclusive system can emerge, one that
-caters to different aesthetics, philosophies and mindsets.
+expressive, and inclusive system can emerge, one that
+caters to different aesthetics, philosophies, and mindsets.
 
 I would happily welcome any contributions towards that
-end, both related to and unencumbered by the technology
+end, both related and unrelated to the technology
 that is zepto.
 
 
@@ -1458,7 +1517,7 @@ that is zepto.
 
 \appendix
 
-\chapter{List of Modules in the Zepto Standard Library}
+\chapter{List of Modules in the zepto Standard Library}
 \label{app:stdlib}
 
 Libraries that are loaded by default are denoted by \textit{(dflt.)}.
@@ -1481,7 +1540,7 @@ prefix form
 \item [marsaglia] A library of functions for cryptographically strong Pseudo-Random Number Generators
 \item [math\textit{(dflt.)}] A library of functions for mathematical purposes
 \item [minitest] A testing library
-\item [module\textit{(dflt.)}] Zepto's module system
+\item [module\textit{(dflt.)}] zepto's module system
 \item [monads] A library of monads and monadic computations
 \item [parsecomb] A parser combinator library
 \item [pointfree] A library for defining functions in point-free style
