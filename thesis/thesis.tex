@@ -711,6 +711,7 @@ John McCarthy, only a of handful special forms are required for Turing-completen
 as expressiveness and elegance \parencite{JCM}.
 
 \subsection{zepto}
+\label{ququ}
 
 As explained in Section \ref{sec:ExistingStandards}, zepto is a new Scheme implementation. It seeks
 to be as small as possible, to be able to target a lot of different backends and simplify the
@@ -1058,14 +1059,17 @@ down a rather natural path and kept the implementation described here fairly sho
 
 \section{Description of the Toolchain}
 
-The tooling uses GHCJS, which is a backend for the \gls{ghc} compiler that targets JavaScript rather
-than native code (TODO: remove this from introduction). This makes cross-compiling the code base to
-JavaScript a rather simple undertaking.
+The build infrastructure is centered around GHCJS, the compiler mentioned in Section \ref{sec:GHCJS}.
+This means that the usual build infrastructure for Haskell is supported, which zepto-js partially
+makes use of, through Cabal and Stackage. Cabal is Haskell's standard package utility
+system\footnote{It does not claim to be a full-fledged package manager.}, through which
+zepto-js' dependencies, installation and builds are configured. Stackage is an acronym
+for \textit{st}able h\textit{ackage}, wherein hackage is the Haskell package registry.
+It provides lists of packages and their versions that work with each other, making
+dependency relations more manageable.
 
-GHCJS offers many advanced features such as inlining of JavaScript into the code
-base using a technique called quasi-quoting, in which a special character sequence delimits the
-inlined code, much like regular quotes. This tool set was expected to simplify rewriting the code
-bits that needed adjustment.**verb tense: does it no longer simplify rewriting code?**
+GHCJS itself provides zepto-js with aforementioned quasi-quoting\footnote{A description
+of quasi-quoting is provided in Section \label{ququ}.}, which powers the JavaScript \gls{ffi}.
 
 The management of pure JavaScript sources is another important feature. As in regular \gls{ghc},
 where the management of bits of C code that should interface with Haskell is provided, GHCJS
@@ -1112,29 +1116,6 @@ firstly, it introduced a layer of complexity from within JavaScript code that wo
 it brittle and hardly portable. Secondly, it would require a walk of the nodes every time a \gls{dom}
 element is inserted or replaced, which is a common occurence in modern interactive web applications.
 
-In November 2015, the \gls{w3c} released an \gls{api} that simplified this process
-for the programmer. Within their specification of the
-\href{https://www.w3.org/TR/dom/#mutationobserver}{DOM4} \parencite{DOM4} , the fourth
-specification of \gls{api}s for the Web, an object called \texttt{MutationObserver}, which is
-able to register for notificiations of \gls{dom} manipulations, is included. Its main function
-will be triggered whenever a change occurs within the \gls{dom} part to which it is registered
-to listen.
-
-This simplifies the implementation of a listener to DOM events a great deal. Only minimal programming
-is required to configure the listener and to filter out all the nodes that are not \texttt{script} nodes
-of the type \texttt{text/zepto}.\footnote{This was chosen in analogy to the existing \texttt{text/javascript}
-node type.}
-
-A problem with this method was that nodes inserted before the listener started were ignored.
-This was resolved by singling out all the \texttt{script} tags present before the listener
-starts and applying the same filter/evaluation function to all of them. This also ensures
-that they are executed before any additional --- and possibly interdependent --- code is
-passed into the zepto object.
-
-The code was then included in the \texttt{zepto} singleton, which is the global interpreter object
-used for the management and interactivity of the zepto interpreter. A simplified version of this
-code is presented in Listing \ref{fig:mutobs}.
-
 \begin{listing}[H]
 \caption{The final mutation observer code (simplified)}
 \begin{minted}[linenos]{javascript}
@@ -1166,6 +1147,29 @@ zepto.observer.observe(document, {childList: true, subtree: true});
 \end{minted}
 \label{fig:mutobs}
 \end{listing}
+
+In November 2015, the \gls{w3c} released an \gls{api} that simplified this process
+for the programmer. Within their specification of the
+\href{https://www.w3.org/TR/dom/#mutationobserver}{DOM4} \parencite{DOM4} , the fourth
+specification of \gls{api}s for the Web, an object called \texttt{MutationObserver}, which is
+able to register for notificiations of \gls{dom} manipulations, is included. Its main function
+will be triggered whenever a change occurs within the \gls{dom} part to which it is registered
+to listen.
+
+This simplifies the implementation of a listener to DOM events a great deal. Only minimal programming
+is required to configure the listener and to filter out all the nodes that are not \texttt{script} nodes
+of the type \texttt{text/zepto}.\footnote{This was chosen in analogy to the existing \texttt{text/javascript}
+node type.}
+
+A problem with this method was that nodes inserted before the listener started were ignored.
+This was resolved by singling out all the \texttt{script} tags present before the listener
+starts and applying the same filter/evaluation function to all of them. This also ensures
+that they are executed before any additional --- and possibly interdependent --- code is
+passed into the zepto object.
+
+The code was then included in the \texttt{zepto} singleton, which is the global interpreter object
+used for the management and interactivity of the zepto interpreter. A simplified version of this
+code is presented in Listing \ref{fig:mutobs}.
 
 \subsection{The \gls{ffi}}
 \label{sec:ffi}
