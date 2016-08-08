@@ -104,11 +104,8 @@ URLDATE={2016-15-07},
 @INPROCEEDINGS{PYPY,
 address = {Genova, Italy},
 title = {Tracing the meta-level: {PyPy's} tracing {JIT} compiler},
-isbn = {978-1-60558-541-3},
 shorttitle = {Tracing the meta-level},
 url = {http://portal.acm.org/citation.cfm?id=1565827},
-doi = {10.1145/1565824.1565827},
-abstract = {We attempt to apply the technique of Tracing {JIT} Compilers in the context of the {PyPy} project, i.e., to programs that are interpreters for some dynamic languages, including Python. Tracing {JIT} compilers can greatly speed up programs that spend most of their time in loops in which they take similar code paths. However, applying an unmodified tracing {JIT} to a program that is itself a bytecode interpreter results in very limited or no speedup. In this paper we show how to guide tracing {JIT} compilers to greatly improve the speed of bytecode interpreters. One crucial point is to unroll the bytecode dispatch loop, based on two kinds of hints provided by the implementer of the bytecode interpreter. We evaluate our technique by applying it to two {PyPy} interpreters: one is a small example, and the other one is the full Python interpreter.},
 booktitle = {Proceedings of the 4th workshop on the Implementation, Compilation, Optimization of {Object-Oriented} Languages and Programming Systems},
 publisher = {{ACM}},
 author = {Carl Friedrich Bolz and Antonio Cuni and Maciej Fijalkowski and Armin Rigo},
@@ -122,7 +119,6 @@ URL={https://github.com/JeffBezanson/femtolisp},
 URLDATE={2016-01-08},
 }
 @article{R5RS,
-    abstract = {{Programming languages should be designed not by piling feature on top of feature, but by removing the weaknesses and restrictions that make additional features appear necessary. Scheme demonstrates that a very small number of rules for forming expressions, with no restrictions on how they are composed, suffice to form a practical and efficient programming language that is flexible enough to support most of the major programming paradigms in use today.}},
     author = {Kelsey, Richard and Clinger, William and Editors, Jonathan R.},
     editor = {Kelsey, Richard and Clinger, William and Rees, Jonathan},
     journal = {ACM SIGPLAN Notices},
@@ -191,7 +187,7 @@ URLDATE={2016-01-08},
     year = {2001}
 }
 @MISC{R7RS,
-    author = {Alex Shinn and John Cowan and Arthur A. Gleckler (editors and Steven Ganz and Alexey Radul and Olin Shivers and Aaron W. Hsu and Jeffrey T. Read and Alaric Snell-pym and Bradley Lucier and David Rush and Gerald J. Sussman and Emmanuel Medernach and Benjamin L. Russel and Richard Kelsey and William Clinger and Jonathan Rees and Michael Sperber},
+    author = {Alex Shinn and John Cowan and Arthur A. Gleckler (editors) and Steven Ganz and Alexey Radul and Olin Shivers and Aaron W. Hsu and Jeffrey T. Read and Alaric Snell-pym and Bradley Lucier and David Rush and Gerald J. Sussman and Emmanuel Medernach and Benjamin L. Russel and Richard Kelsey and William Clinger and Jonathan Rees and Michael Sperber},
     title = {Revised 7 Report on the Algorithmic Language Scheme},
     year = {2013},
 }
@@ -252,4 +248,23 @@ URLDATE={2016-01-08},
     title = {{MIDI 1.0 Detailed Specification}},
     year = {1998}
 }
-
+@INPROCEEDINGS{SECR,
+    author = {Simon Peyton Jones and Simon Marlow},
+    title = {Secrets of the Glasgow Haskell Compiler inliner},
+    booktitle = {JOURNAL OF FUNCTIONAL PROGRAMMING},
+    year = {1999},
+    pages = {2002},
+}
+@article{CORE,
+    author = {Simon Peyton Jones and Simon Marlow},
+    title = {The Glasgow Haskell Compiler},
+    journal = "The Architecture of Open Source Applications",
+    year = 2012,
+    volume = 2
+}
+@inproceedings{USBL,
+    author = {Nigel Bevan and Ian Curson},
+    title = {Methods for Measuring Usability},
+    booktitle = {Proceedings of the sixth IFIP conference on human-computer interaction},
+    year = {1997}
+}

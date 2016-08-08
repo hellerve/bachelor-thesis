@@ -27,6 +27,7 @@
 \usepackage{amsmath}
 \newcommand{\argmax}[1]{\underset{#1}{\operatorname{argmax}}}
 \usepackage{tikz}
+\usepackage{pgfplots}
 
 \usepackage{fontspec}
 \setmonofont[Scale=MatchLowercase,Mapping=tex-text]{Tahoma}
@@ -255,7 +256,7 @@ know name of the revision. For an up-to-date version of that revision please
 refer to \parencite{ECMA6}.} and ECMAScript 7\footnote{Now ECMAScript 2017. For
 an up-to-date version of the current draft please refer to \parencite{ECMA7}.}, a
 lot of conveniences from third-party libraries have been adopted by the
-"vanilla"\footnote{A common name for JavaScript that refrains from leveraging
+``vanilla''\footnote{A common name for JavaScript that refrains from leveraging
 paradigm-altering libraries.} JavaScript canon.
 Among these features is the widely controversial introduction of a \texttt{class}
 notation for JavaScript that makes prototypes feel more like classes without
@@ -389,8 +390,8 @@ kinds of systems in the context of this thesis.
 \label{sec:GHCJS}
 
 GHCJS --- often hyphenated as GHC-JS --- is a transpiler from the Haskell language
-to JavaScript. It is currently maintained by Luite Stegeman. It aims to "solve
-the JavaScript problem"\footnote{A talk given by Stegeman bore this title, see
+to JavaScript. It is currently maintained by Luite Stegeman. It aims to ``solve
+the JavaScript problem''\footnote{A talk given by Stegeman bore this title, see
 \parencite{STEG}.}, in that it enables the user to compile any Haskell program to JavaScript.
 GHCJS does so by insterting a custom compiler backend into the \gls{ghc} toolchain
 that emits JavaScript instead of machine code.
@@ -489,15 +490,15 @@ the development process.
 
 \subsubsection{Elm}
 
-Elm as it is presented in "Elm: Concurrent FRP for Functional GUIs"
+Elm as it is presented in ``Elm: Concurrent FRP for Functional GUIs''
 is a language centered around \gls{frp}\footnote{An in-depth
 explanation of \gls{frp} is outside of the scope of this thesis,
 but it is a programming style for user-centric programs first described
-in Paul Hudak's and Conald Elliott's 1997 paper "Functional Reactive
-Programming" \parencite{FRP}.} with a special regard to browser-based
+in Paul Hudak's and Conald Elliott's 1997 paper ``Functional Reactive
+Programming'' \parencite{FRP}.} with a special regard to browser-based
 \glspl{gui} \parencite{CPL}. It borrows its syntax largely from Haskell
 and is a pure, functional programming language. Notable features include
-\gls{gui}-centric tooling, such as a "time-traveling" debugger that caches
+\gls{gui}-centric tooling, such as a ``time-traveling'' debugger that caches
 the state of a program at any given time, allowing for rewinding, forwarding,
 and jumping.
 
@@ -603,7 +604,7 @@ standard library enhancement proposals from the Scheme programmer community that
 enahcements through the addition of features, much like \glspl{pep} for the Python
 programming language and \glspl{eep} for Erlang. However, the difference that sets SRFIs
 apart from the latter two is the inclusion of a reference implementation.\footnote{This
-is not required, but part of the "good tone" of the community and \gls{srfi}s lacking them
+is not required, but part of the ``good tone'' of the community and \gls{srfi}s lacking them
 are relatively rare.} zepto currently supports five of these requests by default,
 one of which implements a core feature of the language: descriptive custom data types, better
 known as smart structs.
@@ -695,8 +696,8 @@ zepto --- shall be given in the following.
 
 A common saying among programming language designers is that every programmer has written
 their own implementation of Lisp.\footnote{The README of the femtolisp project even goes so
-far as to claim "Some programmers' dogs and cats probably have their own lisp implementations
-as well." \parencite{BEZL}.} There are a lot of different implementations of Lisp
+far as to claim ``Some programmers' dogs and cats probably have their own lisp implementations
+as well.'' \parencite{BEZL}.} There are a lot of different implementations of Lisp
 in the wild, even ones that compile to JavaScript, such as ClojureScript, the
 backend for Clojure referenced in Section \ref{sec:ClojureScript}.
 
@@ -706,7 +707,7 @@ A simple Lisp can be implemented in fewer than one hundred lines of code if no
 intermediate representation is generated. This is made possible by Lisp's unique property
 of enclosing every statement in parentheses, in which the first element within
 those parentheses is the statement name and the other elements are the arguments.
-Each of these units is called an S-Expression --- a shorthand for "symbolic expression" ---
+Each of these units is called an S-Expression --- a shorthand for ``symbolic expression'' ---
 and they are often represented as nested lists, although this is an implementation detail.
 It can be evaluated straight from a textual level, because problems such as operator precedence
 and statement ambiguity do not exist. In regular Lisp, as specified in the initial paper by
@@ -788,19 +789,58 @@ request, including environments, definitions, and execution path. By manipulatin
 it and injecting it into different contexts, it becomes a powerful tool to switch
 back and forth between multiple threads of execution, without actually creating
 or managing threads. A practical application of coroutines was for instance
-presented in "Continuations and Coroutines", where it was used to implement a fully formed
+presented in ``Continuations and Coroutines'', where it was used to implement a fully formed
 coroutine system that was capable of starting, stopping, and pausing execution
 of multiple coroutines at once without the need for actual threading \parencite{COR}.
 
 An exhaustive explanation of continuations cannot possibly be given in the scope
-of this thesis, for further information about this concept refer to "The discoveries
-of continuations" \parencite{CONT}.
+of this thesis, for further information about this concept refer to ``The discoveries
+of continuations'' \parencite{CONT}.
+
+\subsection{The numerical tower}
+\label{numbers}
+
+Scheme --- and, for that matter, zepto --- is also known for providing a ``numeric
+tower'' to the programmer. It represents a stack of numerical types, each building
+on top of the other. Scheme provides infinte precision integers, which means that
+these numbers will never overflow; rationals, which are fractions represented by
+two integers, a numerator and a denominator; floating point numbers, which normally
+wrap the biggest floating point number type representable by the hardware; and, finally,
+complex numbers, which are represented by two floating point numbers, one representing
+the real part and the other the imaginary part. zepto includes an additional numerical
+type called \texttt{small}, which wraps the biggest hardware type for integer numbers,
+for speed reasons. It is only advised to use them in performance-critical applications.
+The numerical tower is presented graphically in Figure \ref{fig:numtower}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+[->,scale=.8,auto=left,every node/.style={rectangle,fill=gray!20}]
+  \node (n4) at (14,0)   {Complex};
+  \node (n3) at (10,0)   {Floating Point};
+  \node (n2) at (6,0)    {Rational};
+  \node (n1) at (3,0)    {Integer};
+  \node (n0) at (0,0)    {Small};
+
+  \foreach \from/\to in {n0/n1,n1/n2,n2/n3,n3/n4}
+    \draw (\from) -> (\to);
+
+\end{tikzpicture}
+\caption{zepto's numerical tower}
+\label{fig:numtower}
+\end{figure}
+
+The coercion between these types is always safe when done into the direction denoted
+by the arrows in Figure \ref{fig:numtower}. When doing in the other direction, information
+is lost or, in the case of coercion from floating point numbers to rationals, the meaning
+of the statement is ambiguous\footnote{This is due to any finite floating point number
+having an infinite number of representations as fractional values.}.
 
 \section{Additional Features}
 
 There are features in zepto that are not present in Scheme as specified by \gls{r5rs}, such
 as the module system and the extensive standard library. In this section, a brief list of
-the features and libraries that discriminate zepto from "regular" Scheme shall be examined.
+the features and libraries that discriminate zepto from ``regular'' Scheme shall be examined.
 
 \subsection{The module system}
 
@@ -823,6 +863,13 @@ a concept that is unusual for a functional programming language and might hinder
 compilation into other representations. Global data is also normally either not thread-safe
 or relatively slow to use if it requires some sort of synchronization mechanism --- which is
 not currently a feature that zepto implements.
+
+This is an acceptable tradeoff for the current version of zepto, as all of the
+target languages of zepto's compiler support modules. They therefore provide a
+suitable representation for the semantics of zepto's system.
+
+In the case of JavaScript, this part of zepto's implementation proved not
+to be a problem and worked without further tweaking.
 
 \begin{listing}[H]
 \caption{Defining \& using a zepto module}
@@ -859,13 +906,6 @@ not currently a feature that zepto implements.
 \end{minted}
 \label{fig:zepmod}
 \end{listing}
-
-This is an acceptable tradeoff for the current version of zepto, as all of the
-target languages of zepto's compiler support modules. They therefore provide a
-suitable representation for the semantics of zepto's system.
-
-In the case of JavaScript, this part of zepto's implementation proved not
-to be a problem and worked without further tweaking.
 
 \subsection{The standard library}
 
@@ -914,8 +954,8 @@ on Unix-like systems or systems exposing at least a Unix-like shell.
 
 The authentication system of \gls{zeps} on the \gls{zpr} is RSA-backed\footnote{RSA,
 named after its inventors Ron Rivest, Adi Shamir, and Leonard Ableton, is a public-key
-cryptosystem that was first described in the article "A Method for Obtaining Digital
-Signatures and Public-Key Cryptosystems" \parencite{RSA}.}, which
+cryptosystem that was first described in the article ``A Method for Obtaining Digital
+Signatures and Public-Key Cryptosystems'' \parencite{RSA}.}, which
 also allows for the signing of packages for the user's convenience. This feature
 is not available when installing from Github.
 
@@ -1297,7 +1337,7 @@ will then be coerced to a text, so that the entirety of the communication betwee
 the two languages is string-based. The pipeline of operations is presented
 in Figure \ref{fig:graph}.
 
-\begin{listing}[H]
+\begin{figure}[H]
 \caption{The FFI stack}
 \begin{tikzpicture}
 [->,scale=.8,auto=left,every node/.style={rectangle,fill=gray!20}]
@@ -1319,7 +1359,7 @@ in Figure \ref{fig:graph}.
     \draw (\from) -> (\to);
 \end{tikzpicture}
 \label{fig:graph}
-\end{listing}
+\end{figure}
 
 \subsection{The \gls{dom}}
 \label{sec:DOM}
@@ -1376,6 +1416,7 @@ hellerve/dom}.} Due to its alpha status it had not yet been registered
 to the \gls{zpr} at the time of writing.
 
 \subsection{Language definitions}
+\label{sec:LangDef}
 
 One of zepto's most advanced features is language definitions, inspired by
 the parser macro system in Racket \parencite{RPM}. Language definitions allow
@@ -1438,17 +1479,214 @@ where the need for other languages or \glspl{dsl} within zepto-js arises.
 \chapter{Evaluation of the Prototype}
 \label{chap:evaluation}
 
+zepto has a small, but active user base. Most of these user utilitze zepto
+not in production systems, but as a test environment in which they rapidly
+prototype and develop architectures before switching to more mature programming
+languages.
+
+This means that developer productivity is more important in the evaluation of
+zepto-js than execution speed. Nonetheless, both usability and efficiency
+were measured and evaluated. The results are presented in the following.
+
+\section{Usability}
+
+There are many ways to measure usability\footnote{For a comparison of ways
+to measure usability of designs, please refer to ``Methods for Measuring
+Usability'' \parencite{USBL}.}. All of them come with their unqiue set of
+conveniences and drawbacks. For zepto-js, a classical approach from the
+field of user-centered software design was chosen --- an alpha test
+followed by user feedback.
+
 **TODO**
 
-\section{Seamlessness of Integration}
+\section{Efficiency}
 
-\section{Test Against Standard Implementation of zepto}
+As detailed in Chapter \ref{chap:Implementation}, a lot of adjustments have been made
+to make zepto-js as similar to zepto as possible while still providing a sensible \gls{api}
+for web development.
 
-* added: ffi
+In the following, the performance of zepto-js against zepto will be measured.
+To this end, we first summarize what has changed and then run a few different
+benchmarks to determine how the port affects the speed of zepto code.
 
-* removed load statement, REPL functionality, language definitions
+\subsection{Additions and Removals}
 
-* inserting libraries?
+The \gls{ffi} is a useful addition to bridge the gap between zepto-js and its
+environment. It is, however, not present in the reference implementation of zepto.
+This is largely due to protability issues with a native foreign function interface;
+programs relying on the structure of the underlying execution engine are inherently
+unportable unless the architectures of the source and target engine are similar to
+each other. The addition of the \gls{ffi} in zepto-js incurs the cost of having to
+maintain two very similar, but disparate code bases, but without it, the value of
+a JavaScript implementation of zepto would not be as apparent.
+
+Features that were removed include the \texttt{load} statement, \gls{repl} functionality,
+and language definitions as described in Section \ref{sec:LangDef}. These features
+are all interrelated and were dropped because zepto-js does not work on a file-based
+system\footnote{This matter was discussed in the Section \ref{sec:LangDef}.}. Zepto-js
+uses the tag-based approach presented in Section \ref{sec:MutObs} to fit into the web
+ecosystem.
+
+These changes should not affect the performance of zepto-js. The internals of the
+interpreters have largely remained the same.
+
+\subsection{Performance measurements}
+
+The largest deciding factor over the performance was expected to be the difference
+between a statically compiled binary and a \gls{jit}-compiled or interpreted
+JavaScript system. As GHCJS is merely a backend to the \gls{ghc} compiler, the
+same optimizations are in place for both.\footnote{Optimizations in \gls{ghc} happen
+before the final code generation step. \gls{ghc} utilizes a custom \gls{ir} called
+CoreSyn --- described in \cite{CORE} --- on which it performs a lot of optimizations,
+for instance inlining as described in \cite{SECR}.} Thus, any noticable speed
+difference should not be due to zepto.
+
+A small testbench of test programs was written, testing operations on
+different data types and of different complexity, from integer addition and
+the generation of lists to the calculation of Fibonacci numbers\footnote{Of interest
+might be that not the usual tree-recursive algorithm was used but rather the
+algorithm that uses the formula \(f(n) = \lfloor{((1 + \sqrt{5}) / 2)^n / \sqrt{5} + 1/2)}\rfloor\),
+as found in zepto's standard library. It is of logarithmic time complexity.}.
+The example programs are listed in Appendix \ref{app:testbench}, a graphical
+representation of the results is provided in Figure \ref{fig:benchres}. The
+benchmarking library used is \texttt{bench} from zepto's standard library,
+a simplistic benchmarking library for small code snippets. The time it takes to
+create the fixture data in the tests was not excluded from the benchmark, as
+\texttt{bench} does not include any facility to do so. Even so, the results look
+fairly conclusive.
+
+\begin{figure}[H]
+  \begin{subfigure}{.5\textwidth}
+  \begin{tikzpicture}[font=\small]
+    \begin{axis}[ybar interval,
+                 ymin=0,
+                 xtick style={draw=none},
+                 height=6cm,
+                 width=6cm,
+                 ylabel=Time (In Milliseconds),
+                 xlabel=Integer Addition (100 runs),
+                 symbolic x coords={zepto,zepto-js,1}]
+      \addplot coordinates {
+        (zepto,1.5)
+        (zepto-js,1.7)
+        (1,0)
+      };
+    \end{axis}
+  \end{tikzpicture}
+  \end{subfigure}
+  \begin{subfigure}{.5\textwidth}
+  \begin{tikzpicture}[font=\small]
+    \begin{axis}[ybar interval,
+                 ymin=0,
+                 xtick style={draw=none},
+                 height=6cm,
+                 width=6cm,
+                 ylabel=Time (In Milliseconds),
+                 xlabel=List Creation (100 Elements),
+                 symbolic x coords={zepto,zepto-js,1}]
+      \addplot coordinates {
+        (zepto,1.1)
+        (zepto-js,1.3)
+        (1,0)
+      };
+    \end{axis}
+  \end{tikzpicture}
+  \end{subfigure}
+  \begin{subfigure}{.5\textwidth}
+  \begin{tikzpicture}[font=\small]
+    \begin{axis}[ybar interval,
+                 ymin=0,
+                 xtick style={draw=none},
+                 height=6cm,
+                 width=6cm,
+                 ylabel=Time (In Milliseconds),
+                 xlabel=Hashmap access (100 runs),
+                 symbolic x coords={zepto,zepto-js,1}]
+      \addplot coordinates {
+        (zepto,1.2)
+        (zepto-js,1.1)
+        (1,0)
+      };
+    \end{axis}
+  \end{tikzpicture}
+  \end{subfigure}
+  \begin{subfigure}{.5\textwidth}
+  \begin{tikzpicture}[font=\small]
+    \begin{axis}[ybar interval,
+                 ymin=0,
+                 xtick style={draw=none},
+                 height=6cm,
+                 width=6cm,
+                 ylabel=Time (In Milliseconds),
+                 xlabel=Calculation of Fibonacci(100),
+                 symbolic x coords={zepto,zepto-js,1}]
+      \addplot coordinates {
+        (zepto,27.5)
+        (zepto-js,30.3)
+        (1,0)
+      };
+    \end{axis}
+  \end{tikzpicture}
+  \end{subfigure}
+  \caption{Benchmark comparisons of zepto and zepto-js}
+  \label{fig:benchres}
+\end{figure}
+
+The benchmarks hint at a small difference in speed, where the reference
+in zepto usually takes the lead. Even so, the difference is never bigger
+than eighteen percent, more often than not even under ten percent.
+
+It was thus concluded to tackle a more-computation-intensive problem:
+encoding four Megabytes of random data in Base64\footnote{Base64 is a scheme
+for encoding binary as text. It restricts the set of output characters to
+sixty-four characters that are both human-readable and URL-safe.}. This
+process requires a lot of bitwise operations and string concatentations,
+providing a good complement to the benchmarks presented in Figure
+\ref{fig:benchres} above.
+
+The tests use zepto's \texttt{base64} library, which is not part of the
+standard distribution, but can be installed using \gls{zeps}. This library
+is written purely in unoptimized zepto and thus relatively slow. Encoding four
+megabytes of binary data takes around one minute in both zepto implementations.
+Using the \gls{dom} function \texttt{window.btoa}, however, a standardized function
+to encode data in Base64, the execution time  can be dramatically reduced, as shown
+in Figure \ref{fig:base64}\footnote{It is denoted as ``zepto-js \gls{ffi}''.}.
+
+\begin{figure}
+\centering
+  \begin{tikzpicture}[font=\small]
+    \begin{axis}[ybar interval,
+                 ymin=0,
+                 xtick style={draw=none},
+                 height=6cm,
+                 width=9cm,
+                 ylabel=Time (In Milliseconds),
+                 xlabel=Base64 Encoding,
+                 symbolic x coords={zepto,zepto-js,zepto-js FFI,1}]
+      \addplot coordinates {
+        (zepto,1023.4)
+        (zepto-js,1066.3)
+        (zepto-js FFI, 144.1)
+        (1,0)
+      };
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Measured time when Base64-encoding four Megabytes of data.}
+  \label{fig:base64}
+\end{figure}
+
+This serves as a good example of how the zepto-js \gls{ffi} can be useful while
+also showing that there is room for improvement in the performance of zepto as
+a language.
+
+\subsection{Conclusion}
+
+zepto-js is not a language built for speed. This is rather obvious when looking
+at the benchmarks provided above. However, by deferring performance-critical code
+to the \gls{ffi} and handling tasks that are more easily expressed in zepto ---
+big number arithmetic\footnote{For an explanation of zepto's concept of big number
+artihmetic, please refer to Section \ref{numbers}.} and metaprogramming come to
+mind, among others ---, clean, concise, and fast programs can be generated.
 
 \setchapterpreamble[u]{%
   \dictum[\emph{Isaac Asimov}]{Part of the inhumanity of the computer is that, once it is competently programmed and working smoothly, it is completely honest.}
@@ -1636,6 +1874,102 @@ This list can also be found in the README of zeps under
 \item [help] Interactive help on getting started
 \item [readme] Prints zeps' README
 \end{description}
+
+\chapter{The programs used in zepto-js' benchmarks}
+
+The programs presented here aim to be fairly simple and
+self-contained.
+
+\begin{listing}[H]
+\caption{Integer Addition}
+\begin{minted}[linenos]{racket}
+  (load "bench/bench")
+  (import-all "bench")
+
+  (bench:bench [+ 100 1] 100)
+\end{minted}
+\end{listing}
+
+\begin{listing}[H]
+\caption{List Creation}
+\begin{minted}[linenos]{racket}
+  (load "bench/bench")
+  (import-all "bench")
+
+  (bench:bench [range 100] 1)
+\end{minted}
+\end{listing}
+
+\begin{listing}[H]
+\caption{Hashmap Access}
+\begin{minted}[linenos]{racket}
+  (load "bench/bench")
+  (import-all "bench")
+
+  (bench:bench [#{:x 10 :y 12} :x] 100)
+\end{minted}
+\end{listing}
+
+\begin{listing}[H]
+\caption{Calculation of Fibonacci(100)}
+\begin{minted}[linenos]{racket}
+  (load "bench/bench")
+  (import-all "bench")
+
+  (bench:bench [math:fib 100] 1)
+\end{minted}
+\end{listing}
+
+The following example represents the Base64-encoding of data.
+It assumes that there is a file called ``data.dat'' that holds
+the data to be encoded. It will only work in the reference
+implementation of zepto.
+
+\begin{listing}[H]
+\caption{Base64 for zepto}
+\begin{minted}[linenos]{racket}
+  (load "bench/bench")
+  (load "base64/base64")
+
+  (import-all "bench")
+  (import-all "base64")
+
+  (bench:bench `(base64:encode ,(read-contents-binary "data.dat")) 1)
+\end{minted}
+\end{listing}
+
+The zepto-js version is included below. It assumes the data
+is contained in a HTML tag with the ID ``data''.
+
+\begin{listing}[H]
+\caption{Base64 for zepto-js}
+\begin{minted}[linenos]{racket}
+  (load "bench/bench")
+  (load "base64/base64")
+
+  (import-all "bench")
+  (import-all "base64")
+
+  (define fixture (js "document.getElementById('#data').innerHTML"))
+
+  (bench:bench `(base64:encode ,fixture) 1)
+\end{minted}
+\end{listing}
+
+The version that leverages the \gls{ffi} is presented below.
+
+\begin{listing}[H]
+\caption{Base64 for zepto-js, using the \gls{ffi}}
+\begin{minted}[linenos]{racket}
+  (load "bench/bench")
+  (import-all "bench")
+
+  (define fixture (js "document.getElementById('#data').innerHTML"))
+
+  (bench:bench `(js (++ "window.btoa('" ,fixture "')")) 1)
+\end{minted}
+\end{listing}
+
 
 \backmatter
 
