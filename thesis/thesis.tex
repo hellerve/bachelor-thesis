@@ -118,6 +118,7 @@ toc=true]{glossaries}
 \usepackage{cleveref}
 
 \newacronym{ast}{AST}{Abstract Syntax Tree}
+\newacronym{ajax}{AJAX}{Asynchronous JavaScript and XML}
 \newacronym{midi}{MIDI}{Musical Instrument Digital Interface}
 \newacronym{html}{HTML}{Hypertext Markup Language}
 \newacronym{css}{CSS}{Cascading Stylesheets}
@@ -1497,7 +1498,72 @@ conveniences and drawbacks. For zepto-js, a classical approach from the
 field of user-centered software design was chosen --- an alpha test
 followed by user feedback.
 
-**TODO**
+In a series of rather informal meetings with zepto collaborators, colleagues,
+and friends, the changes and their effects on programming in zepto-js were
+discussed. After a brief introduction, the users were left to their own
+devices and their activity was monitored. An overview over their  familiarity
+with programming for the Web and programming in zepto is given in Figure
+\ref{fig:attendees}. For the sake of anonymity their names have been replaced
+by numbers. The workshop was conducted on two different days with two different
+sets of attendees. On the first day, attendees three, four and seven where present
+and on the second day, attendees one, two, five, and six worked through the
+material.
+
+While a sample size of seven is clearly suboptimal and not representative
+of the diverse background of programmers in general, it provided valuable
+insight into how beginners of different knowledge levels approached
+programming problems and which parts of zepto-js are problematic to approach.
+
+\begin{figure}
+\centering
+  \begin{tabu}{| l | l | l | l | l | l | l | l |}
+  \hline
+  \rowfont{\footnotesize}
+  Attendee                        & 1 & 2 & 3 & 4 & 5 & 6 & 7 \\ \hline
+  \rowfont{\footnotesize}
+  Experience with zepto           & x & x & x & x &   &   &   \\ \hline
+  \rowfont{\footnotesize}
+  Experience with Web Development &   &   &   & x & x & x &   \\ \hline
+  \end{tabu}
+  \caption{An overview of the workshop attendees and their experience with zepto and Web Development}
+\label{fig:attendees}
+\end{figure}
+
+The goal of the workshop was to program an interactive website that would
+render personal information in the browser and provide the user with the means
+to edit them. This required form handling, validation, and, optionally, the
+use of \gls{ajax} technology\footnote{\gls{ajax} is a technique for asynchronous
+web applications. It leverages small, data-driven requests instead of the reload
+of an entire web page.}. The attendees were provided with a minimal development
+template and instructions on how to work with the \gls{ffi} and \gls{dom} in zepto-js.
+
+During the workshops, most questions were asked about tooling and the \gls{ffi}.
+Most questions about tooling were asked by those attendees who did know about
+web programming, but not about zepto. As a conversation with those two attendees
+revealed this might be due to them being used to relying on build tools to make
+their code production-ready, whereas others did not expect that to be included.
+Notable here was that attendee four, who had experience with both zepto and Web
+Development, did not ask many of these questions, due to the attendee's familiarity
+with \gls{zeps} and the zepto ecosystem.
+
+The \gls{ffi} proved to be a recurring source of problems, especially for the
+people who did know about zepto, but not about Web Development, as they did not
+find proper ways to encode and decode values from and to JavaScript. One of the
+goals of further development on zepto-js is thus the inclusion of a library that
+simplifies this process.
+
+Tthe response of the users to the prototype was, in toto, very positive. Some
+of the attendees even suggested they might want to work on it or with it on
+a regular basis, although all of them, except for attendee number seven\footnote{Attendee
+number sevem had no prior programming experience and was thus very hesitant to
+provide comprehensive feedback.}, indicated that it is very obviously a prototypal
+system.
+
+Due to time constraints it was not possible to incorporate all of the feedback into
+the version of zepto-js described in this thesis. It is one of the goals moving forward,
+though, to resolve the issues that were present during the workshops. A comprehensive
+and intuitive set of documentation, which is currently undergoing finalization, should
+also aid in the process of getting started and productive with the language.
 
 \section{Efficiency}
 
@@ -1538,8 +1604,10 @@ JavaScript system. As GHCJS is merely a backend to the \gls{ghc} compiler, the
 same optimizations are in place for both.\footnote{Optimizations in \gls{ghc} happen
 before the final code generation step. \gls{ghc} utilizes a custom \gls{ir} called
 CoreSyn --- described in \cite{CORE} --- on which it performs a lot of optimizations,
-for instance inlining as described in \cite{SECR}.} Thus, any noticable speed
-difference should not be due to zepto.
+for instance inlining as described in \cite{SECR}. There is one caveat, however, which
+is also mentioned in \cite{CORE} and that is the compilation to \gls{llvm}, which will
+then perform optimizations of its own on the compilate.} Thus, any noticable speed difference
+should not be due to zepto.
 
 A small testbench of test programs was written, testing operations on
 different data types and of different complexity, from integer addition and
@@ -1553,7 +1621,32 @@ benchmarking library used is \texttt{bench} from zepto's standard library,
 a simplistic benchmarking library for small code snippets. The time it takes to
 create the fixture data in the tests was not excluded from the benchmark, as
 \texttt{bench} does not include any facility to do so. Even so, the results look
-fairly conclusive.
+fairly conclusive and were thus deemed appropriate for an analysis of the
+prototype.
+
+The benchmarks hint at a small difference in speed, where the reference
+in zepto usually takes the lead. An investigation of the counterexample of
+hashmap access revealed that the higher performance is due to the JavaScript
+engine of the test system --- the most recent version of the Firefox Web browser
+that was available at the time of writing --- optimizing for property access, as
+this is one of the more common operations in the JavaScript setting \parencite{JSPA}.
+As hashmaps compile into a safer version of a data-only JavaScript object, this
+optimization takes full effect. Even so, the difference is never bigger than eighteen
+percent, more often than not even under ten percent, making it not significant enough
+for exhaustive inspection.
+
+These initial tests seemed to hint at a confirmation of the hypothesis: code executed
+in zepto and zepto-js do not vary greatly in performance. Notwithstanding these
+findings, The final confirmation of that assumption was not possible using exclusively
+small and relatively code.
+
+It was thus concluded to tackle a more-computation-intensive problem:
+encoding four Megabytes of random data in Base64\footnote{Base64 is a scheme
+for encoding binary as text. It restricts the set of output characters to
+sixty-four characters that are both human-readable and URL-safe.}. This
+process requires a lot of bitwise operations and string concatentations,
+providing a good complement to the benchmarks presented in Figure
+\ref{fig:benchres} above.
 
 \begin{figure}[H]
   \begin{subfigure}{.5\textwidth}
@@ -1632,25 +1725,16 @@ fairly conclusive.
   \label{fig:benchres}
 \end{figure}
 
-The benchmarks hint at a small difference in speed, where the reference
-in zepto usually takes the lead. Even so, the difference is never bigger
-than eighteen percent, more often than not even under ten percent.
-
-It was thus concluded to tackle a more-computation-intensive problem:
-encoding four Megabytes of random data in Base64\footnote{Base64 is a scheme
-for encoding binary as text. It restricts the set of output characters to
-sixty-four characters that are both human-readable and URL-safe.}. This
-process requires a lot of bitwise operations and string concatentations,
-providing a good complement to the benchmarks presented in Figure
-\ref{fig:benchres} above.
-
 The tests use zepto's \texttt{base64} library, which is not part of the
 standard distribution, but can be installed using \gls{zeps}. This library
 is written purely in unoptimized zepto and thus relatively slow. Encoding four
 megabytes of binary data takes around one minute in both zepto implementations.
 Using the \gls{dom} function \texttt{window.btoa}, however, a standardized function
 to encode data in Base64, the execution time  can be dramatically reduced, as shown
-in Figure \ref{fig:base64}\footnote{It is denoted as ``zepto-js \gls{ffi}''.}.
+in Figure \ref{fig:base64}\footnote{It is denoted as ``zepto-js \gls{ffi}''.}. This
+is partly due to the JavaScript function being a natively implemented function rather
+than part of a JavaScript library. It must be noted, however, that native JavaScript
+code is more often than not faster than its zepto-js equivalent.
 
 \begin{figure}
 \centering
