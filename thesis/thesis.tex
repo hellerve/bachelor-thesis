@@ -250,11 +250,11 @@ and \texttt{superclass}.
 
 These and other libraries have shaped the way JavaScript has developed. In the
 upcoming revisions of ECMAScript\footnote{ECMAscript is the officially trademarked
-name of what application developers and browser vendors most commonly refer to as
-JavaScript.}, ECMAScript 6\footnote{ECMAScript 6 was renamed to ECMAScript 2015
-along the way but for the sake of clarity this thesis uses the more commonly
-know name of the revision. For an up-to-date version of that revision please
-refer to \parencite{ECMA6}.} and ECMAScript 7\footnote{Now ECMAScript 2017. For
+name for the application developers and browser vendors most commonly refer to as
+JavaScript.}, ECMAScript 6\footnote{ECMAScript 6 was renamed ECMAScript 2015
+during the standardization process, but this thesis uses the more commonly known name
+of the revision for the sake of clarity. For an up-to-date version of this revision
+please refer to \parencite{ECMA6}.} and ECMAScript 7\footnote{Now ECMAScript 2017. For
 an up-to-date version of the current draft please refer to \parencite{ECMA7}.}, a
 lot of conveniences from third-party libraries have been adopted by the
 ``vanilla''\footnote{A common name for JavaScript that refrains from leveraging
@@ -374,7 +374,7 @@ The aim of this section is not to present the reader with the syntax and semanti
 of every single language that is discussed. Rather, the idea is to equip them with a
 general overview of the ecosystem at the time of writing and how it correlates to
 the work presented in this thesis.\footnote{The programming language that is described
-in this thesis will be referenced from now on as zepto-js.}
+in this thesis will be henceforth referenced to as zepto-js.}
 
 \subsection{Transpilers}
 \label{trans}
@@ -475,7 +475,7 @@ As mentioned in Section \ref{pretrans}, when it first appeared, CoffeeScript was
 dates back to
 \href{https://github.com/jashkenas/coffeescript/commit/8e9d637985d2dc9b44922076ad54ffef7fa8e9c2}{December 13th, 2009} as seen in the
 commit history of \texttt{https://github.com/jashkenas/coffeescript}.
-The first public release happened shortly after that.} Many of the constructs,
+The first public release took place shortly after that.} Many of the constructs,
 relating both to syntax and semantics, have been adopted by JavaScript.
 CoffeeScript is similar to JavaScript in that it is a procedural, prototypal
 language. No semantic features have been added or removed from JavaScript\footnote{Although
@@ -493,8 +493,8 @@ the development process.
 
 Elm as it is presented in ``Elm: Concurrent FRP for Functional GUIs''
 is a language centered around \gls{frp}\footnote{An in-depth
-explanation of \gls{frp} is outside of the scope of this thesis,
-but it is a programming style for user-centric programs first described
+explanation of \gls{frp} is outside of the scope of this thesis.
+\gls{frp} is a programming style for user-centric programs first described
 in Paul Hudak's and Conald Elliott's 1997 paper ``Functional Reactive
 Programming'' \parencite{FRP}.} with a special regard to browser-based
 \glspl{gui} \parencite{CPL}. It borrows its syntax largely from Haskell
@@ -605,7 +605,7 @@ standard library enhancement proposals from the Scheme programmer community that
 enahcements through the addition of features, much like \glspl{pep} for the Python
 programming language and \glspl{eep} for Erlang. However, the difference that sets SRFIs
 apart from the latter two is the inclusion of a reference implementation.\footnote{This
-is not required, but part of the ``good tone'' of the community and \gls{srfi}s lacking them
+is not required, but part of the ``good tone'' of the community, and \gls{srfi}s lacking them
 are relatively rare.} zepto currently supports five of these requests by default,
 one of which implements a core feature of the language: descriptive custom data types, better
 known as smart structs.
@@ -654,10 +654,11 @@ to allow for the cross-fertilization of Scheme and zepto.
 
 While not necessarily a standard, Unix and its guidelines do indirectly affect zepto. Much of zepto's
 tooling, such as the \gls{zeps} use Unix utilities and system calls internally. This is expected to change
-in the future, but so far all of the developers who have worked on or with zepto\footnote{At least to the knowledge
-of the author.} have used Unix or Unix-like systems such as MacOS X or \gls{bsd}. This is less of a problem in the
-browser context because many of the packaging and versioning tools are run from the command line before the application
-is distributed. It is important to keep in mind, though, that some of the tools rely on a specific Operating System when
+in the future, but so far all of the developers who have worked on or with zepto\footnote{To the
+best of the author's knowledge.} have used Unix or Unix-like systems such as MacOS X or \gls{bsd}.
+This is less of a problem in the browser context because many of the packaging and versioning
+tools are run from the command line before the application is distributed. It is important to
+keep in mind, though, that some of the tools rely on a specific Operating System when
 developing zepto programs.
 
 \setchapterpreamble[u]{%
@@ -686,7 +687,7 @@ The value of integrating zepto into existing web infrastructure lies in
 the addition of a host of new features that are not present natively in
 JavaScript and hard to implement in a stable manner.\footnote{While stability
 is not guaranteed by the current version of zepto, it is tested and deployed
-in production systems and shows to function rather reliably.}  The goal of
+in production systems and seems to function rather reliably.}  The goal of
 the prototype was thus to expose all of the features that define zepto in
 the JavaScript implementation as well.
 
@@ -722,8 +723,8 @@ As explained in Section \ref{sec:ExistingStandards}, zepto is a new Scheme imple
 to be as small as possible, to be able to target a lot of different backends and simplify the
 process of writing new backend code. Currently, \gls{llvm} and Erlang Core\footnote{Erlang Core 
 is the \gls{ir} of Erlang code before it is complied. Resources and documentation
-about it are sparse, it mostly seems to exist inside the BEAM's implementation. A small
-paper \parencite{ERL} that describes its' basics was used to implement the compiler from
+about it are sparse; it mostly seems to exist inside the BEAM's implementation. A small
+paper \parencite{ERL} that describes its basics was used to implement the compiler from
 zepto.} bindings are under development. zepto's reference implementation is a simple interpreter
 that evaluates code directly from the \gls{ast}. This is slow but ensures a small
 interpreter size.\footnote{The entire codebase is only about 4000 lines of Haskell code.}
@@ -801,17 +802,17 @@ of continuations'' \parencite{CONT}.
 \subsection{The numerical tower}
 \label{numbers}
 
-Scheme --- and, for that matter, zepto --- is also known for providing a ``numeric
+Scheme --- and, for that matter, zepto --- is also known for providing a ``numerical
 tower'' to the programmer. It represents a stack of numerical types, each building
 on top of the other. Scheme provides infinte precision integers, which means that
 these numbers will never overflow; rationals, which are fractions represented by
-two integers, a numerator and a denominator; floating point numbers, which normally
+two integers --- a numerator and a denominator; floating point numbers, which normally
 wrap the biggest floating point number type representable by the hardware; and, finally,
 complex numbers, which are represented by two floating point numbers, one representing
 the real part and the other the imaginary part. zepto includes an additional numerical
 type called \texttt{small}, which wraps the biggest hardware type for integer numbers,
-for speed reasons. It is only advised to use them in performance-critical applications.
-The numerical tower is presented graphically in Figure \ref{fig:numtower}.
+for reasons of performance. It is advised to use them only in performance-critical
+applications. The numerical tower is presented graphically in Figure \ref{fig:numtower}.
 
 \begin{figure}[H]
 \centering
@@ -831,9 +832,9 @@ The numerical tower is presented graphically in Figure \ref{fig:numtower}.
 \label{fig:numtower}
 \end{figure}
 
-The coercion between these types is always safe when done into the direction denoted
-by the arrows in Figure \ref{fig:numtower}. When doing in the other direction, information
-is lost or, in the case of coercion from floating point numbers to rationals, the meaning
+COercing between these types is always safe when done in the direction denoted
+by the arrows in Figure \ref{fig:numtower}. When coercing in the other direction, information
+is lost, or, in the case of coercion from floating point numbers to rationals, the meaning
 of the statement is ambiguous\footnote{This is due to any finite floating point number
 having an infinite number of representations as fractional values.}.
 
@@ -926,8 +927,8 @@ https://github.com/ashinn/chibi-scheme.} and Racket, the distributions of which
 are bundled with an even bigger standard library. This might be due to the fact
 that Alex Shinn, the main developer behind Chibi Scheme, is very active in the
 Scheme community and has authored a few SRFIs\footnote{\gls{srfi} 56 \parencite{SRFI56}
-and 115 \parencite{SRFI115} were both proposed by him.} of his own. He has also served
-as one of the editors of the upcoming standard of Scheme \parencite{R7RS}.
+and 115 \parencite{SRFI115} were both proposed by Alex Shinn.} of his own. He has
+also served as one of the editors of the upcoming standard of Scheme \parencite{R7RS}.
 Additionally, Racket is a language supported by the Computer Science faculties of
 multiple universities and is the result of over twenty years of research.
 
@@ -1054,8 +1055,8 @@ Other, more advanced multimedia libraries were not integrated at the time of wri
 Planning and implementing the right abstraction interfaces for big \glspl{api} such as
 the WebAudio, WebMIDI or WebGL\footnote{These libraries provide audio, \gls{midi} and
 graphical functionality to their user. \gls{midi} is a standard for the communication
-of musical devices \parencite{MIDI}.}. By providing a simplistic example as a proof
-of concept, the possibility of this undertaking should, however, be demonstrated.
+of musical devices \parencite{MIDI}.}. By providing a simplistic example as proof
+of the concept, the possibility of this undertaking should, however, be demonstrated.
 
 It should also be noted that after the prototype is finished and released to the
 public, which is expected to happen shortly after the completion of this thesis,
@@ -1145,7 +1146,7 @@ It provides lists of packages and their versions that work with each other, maki
 dependency relations more manageable.
 
 GHCJS itself provides zepto-js with aforementioned quasi-quoting\footnote{A description
-of quasi-quoting is provided in Section \label{ququ}.}, which powers the JavaScript \gls{ffi}.
+of quasi-quoting is provided in Section \ref{ququ}.}, which powers the JavaScript \gls{ffi}.
 
 
 The management of pure JavaScript sources is another important feature. As in regular \gls{ghc},
@@ -1234,9 +1235,9 @@ will be triggered whenever a change occurs within the \gls{dom} part to which it
 to listen.
 
 This simplifies the implementation of a listener to DOM events a great deal. Only minimal programming
-is required to configure the listener and to filter out all the nodes that are not \texttt{script} nodes
-of the type \texttt{text/zepto}.\footnote{This was chosen in analogy to the existing \texttt{text/javascript}
-node type.}
+is required to configure the listener and to filter out all the nodes that are not \texttt{script}
+nodes of the type \texttt{text/zepto}.\footnote{This was chosen as an analogy to the existing
+\texttt{text/javascript} node type.}
 
 A problem with this method was that nodes inserted before the listener started were ignored.
 This was resolved by singling out all the \texttt{script} tags present before the listener
@@ -1252,9 +1253,9 @@ code is presented in Listing \ref{fig:mutobs}.
 \label{sec:ffi}
 
 The \gls{ffi} is a central part of the port. If it were unusable, none of the browser's
-capabilities could be used from within zepto, thus rendering the effort of bringing zepto into
-the browser effectively useless. The \gls{api}s of the Web are a big part of what it means to
-program for the browser, after all.
+capabilities could be worked with from within zepto, thus rendering the effort of bringing zepto
+into the browser effectively useless. The \gls{api}s of the Web play a big role in
+programming for the browser, after all.
 
 An initial sketch of the programming interface was extremely simplistic: a call to the
 function \texttt{js} could be made with a string as argument, representing the code to
@@ -1472,7 +1473,7 @@ of the zepto system --- at least the \texttt{load} statement would require hijac
 Both of these options incurred too high a maintenance cost for a feature that is
 mostly of importance in the context of file-based systems. At the time of writing it
 was determined that the implementation of this feature should be deferred to the point
-where the need for other languages or \glspl{dsl} within zepto-js arises.
+at which the need for other languages or \glspl{dsl} within zepto-js arises.
 
 \setchapterpreamble[u]{%
   \dictum[\emph{R. Buckminster Fuller}]{When I'm working on a problem, I never think about beauty. I think only how to solve the problem. But when I have finished, if the solution is not beautiful, I know it is wrong.}
@@ -1480,7 +1481,7 @@ where the need for other languages or \glspl{dsl} within zepto-js arises.
 \chapter{Evaluation of the Prototype}
 \label{chap:evaluation}
 
-zepto has a small, but active user base. Most of these user utilitze zepto
+zepto has a small but active user base. Most of these users work with zepto
 not in production systems, but as a test environment in which they rapidly
 prototype and develop architectures before switching to more mature programming
 languages.
@@ -1493,26 +1494,25 @@ were measured and evaluated. The results are presented in the following.
 
 There are many ways to measure usability\footnote{For a comparison of ways
 to measure usability of designs, please refer to ``Methods for Measuring
-Usability'' \parencite{USBL}.}. All of them come with their unqiue set of
-conveniences and drawbacks. For zepto-js, a classical approach from the
-field of user-centered software design was chosen --- an alpha test
+Usability'' \parencite{USBL}.}. All of them come with their own unqiue set
+of conveniences and drawbacks. A classical approach from the field of
+user-centered software design was chosen for zepto-js --- an alpha test
 followed by user feedback.
 
-In a series of rather informal meetings with zepto collaborators, colleagues,
-and friends, the changes and their effects on programming in zepto-js were
-discussed. After a brief introduction, the users were left to their own
-devices and their activity was monitored. An overview over their  familiarity
+The changes and their effects on programming in zepto-js were discussed in
+a series of rather informal meetings with zepto collaborators, colleagues,
+and friends. After a brief introduction, the users were left to their own
+devices and their activity was monitored. An overview of their familiarity
 with programming for the Web and programming in zepto is given in Figure
 \ref{fig:attendees}. For the sake of anonymity their names have been replaced
 by numbers. The workshop was conducted on two different days with two different
-sets of attendees. On the first day, attendees three, four and seven where present
-and on the second day, attendees one, two, five, and six worked through the
-material.
+sets of attendees. On the first day, attendees three, four, and seven were present;
+on the second day, attendees one, two, five, and six worked through the material.
 
 While a sample size of seven is clearly suboptimal and not representative
 of the diverse background of programmers in general, it provided valuable
-insight into how beginners of different knowledge levels approached
-programming problems and which parts of zepto-js are problematic to approach.
+insight into how beginners of different knowledge levels approach
+programming problems and which parts of zepto-js are cause for confusion.
 
 \begin{figure}
 \centering
@@ -1537,10 +1537,10 @@ web applications. It leverages small, data-driven requests instead of the reload
 of an entire web page.}. The attendees were provided with a minimal development
 template and instructions on how to work with the \gls{ffi} and \gls{dom} in zepto-js.
 
-During the workshops, most questions were asked about tooling and the \gls{ffi}.
+During the workshops, most questions asked were about tooling and the \gls{ffi}.
 Most questions about tooling were asked by those attendees who did know about
-web programming, but not about zepto. As a conversation with those two attendees
-revealed this might be due to them being used to relying on build tools to make
+web programming, but not about zepto. A conversation with those two attendees
+revealed this might be due to them typically relying on build tools to make
 their code production-ready, whereas others did not expect that to be included.
 Notable here was that attendee four, who had experience with both zepto and Web
 Development, did not ask many of these questions, due to the attendee's familiarity
@@ -1552,16 +1552,16 @@ find proper ways to encode and decode values from and to JavaScript. One of the
 goals of further development on zepto-js is thus the inclusion of a library that
 simplifies this process.
 
-Tthe response of the users to the prototype was, in toto, very positive. Some
-of the attendees even suggested they might want to work on it or with it on
-a regular basis, although all of them, except for attendee number seven\footnote{Attendee
-number sevem had no prior programming experience and was thus very hesitant to
+Tthe users' response to the prototype was, in toto, very positive. Some
+of the attendees even suggested they might want to work on it, or with it, on
+a regular basis. All, however, except for attendee number seven\footnote{Attendee
+number seven had no prior programming experience and was thus very hesitant to
 provide comprehensive feedback.}, indicated that it is very obviously a prototypal
 system.
 
 Due to time constraints it was not possible to incorporate all of the feedback into
-the version of zepto-js described in this thesis. It is one of the goals moving forward,
-though, to resolve the issues that were present during the workshops. A comprehensive
+the version of zepto-js described in this thesis. One of the goals moving forward, though,
+is to resolve the issues that were present during the workshops. A comprehensive
 and intuitive set of documentation, which is currently undergoing finalization, should
 also aid in the process of getting started and productive with the language.
 
@@ -1571,9 +1571,10 @@ As detailed in Chapter \ref{chap:Implementation}, a lot of adjustments have been
 to make zepto-js as similar to zepto as possible while still providing a sensible \gls{api}
 for web development.
 
-In the following, the performance of zepto-js against zepto will be measured.
-To this end, we first summarize what has changed and then run a few different
-benchmarks to determine how the port affects the speed of zepto code.
+Rhe performance of zepto-js against zepto will be measured in the following.
+To this end, it  changes will first be summarized and then a few different
+benchmarks will be run to determine how the port affects the speed of zepto
+code.
 
 \subsection{Additions and Removals}
 
@@ -1583,8 +1584,8 @@ This is largely due to portability issues with a native foreign function interfa
 programs relying on the structure of the underlying execution engine are inherently
 unportable unless the architectures of the source and target engine are similar to
 each other. The addition of the \gls{ffi} in zepto-js incurs the cost of having to
-maintain two very similar, but disparate code bases, but without it, the value of
-a JavaScript implementation of zepto would not be as apparent.
+maintain two very similar but disparate code bases. Without it, the value of a
+JavaScript implementation of zepto would not be as apparent.
 
 Features that were removed include the \texttt{load} statement, \gls{repl} functionality,
 and language definitions as described in Section \ref{sec:LangDef}. These features
@@ -1631,16 +1632,16 @@ engine of the test system --- the most recent version of the Firefox Web browser
 that was available at the time of writing --- optimizing for property access, as
 this is one of the more common operations in the JavaScript setting \parencite{JSPA}.
 As hashmaps compile into a safer version of a data-only JavaScript object, this
-optimization takes full effect. Even so, the difference is never bigger than eighteen
-percent, more often than not even under ten percent, making it not significant enough
+optimization takes full effect. Even so, the difference is never bigger than 18\%,
+more often than not even under 10\%, making it not significant enough
 for exhaustive inspection.
 
 These initial tests seemed to hint at a confirmation of the hypothesis: code executed
-in zepto and zepto-js do not vary greatly in performance. Notwithstanding these
-findings, The final confirmation of that assumption was not possible using exclusively
-small and relatively code.
+in zepto and zepto-js does not vary greatly in performance. These findings notwithstanding,
+the final confirmation of that assumption was not possible using exclusively small and
+relatively trivial code samples.
 
-It was thus concluded to tackle a more-computation-intensive problem:
+It was thus decidded to tackle a more computation-intensive problem:
 encoding four Megabytes of random data in Base64\footnote{Base64 is a scheme
 for encoding binary as text. It restricts the set of output characters to
 sixty-four characters that are both human-readable and URL-safe.}. This
@@ -1733,7 +1734,7 @@ Using the \gls{dom} function \texttt{window.btoa}, however, a standardized funct
 to encode data in Base64, the execution time  can be dramatically reduced, as shown
 in Figure \ref{fig:base64}\footnote{It is denoted as ``zepto-js \gls{ffi}''.}. This
 is partly due to the JavaScript function being a natively implemented function rather
-than part of a JavaScript library. It must be noted, however, that native JavaScript
+than part of a JavaScript library. It should be noted, however, that native JavaScript
 code is more often than not faster than its zepto-js equivalent.
 
 \begin{figure}
@@ -1800,7 +1801,7 @@ mind, as well as a web server framework that uses a \gls{dsl} to simplify writin
 request handlers ---, some of them borne purely out of the desire to toy around
 with the language; parsers and cross-compilers have been written for a handful of
 esoteric programming languages, including Brainfuck\footnote{Brainfuck is a language
-that aims to reduce programming to its most minimal and tries to emulate a Turing
+that aims to reduce programming to its most minimal form and tries to emulate a Turing
 machine \parencite{BFK}.}, Io, and Iota\footnote{Io and Iota are conceptually similar
 to Brainfuck, although they try to reduce programming to the lambda calculus described
 by Alonzo Church \parencite{IOT}.}.
