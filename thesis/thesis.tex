@@ -234,16 +234,16 @@ introducing special functions and properties to the objects such as \texttt{exte
 and \texttt{superclass}.
 
 These and other libraries have shaped the way JavaScript has developed. In the
-upcoming revisions of ECMAScript\footnote{ECMAscript is the officially trademarked
+upcoming revisions of ECMAScript,\footnote{ECMAscript is the officially trademarked
 name for the application developers and browser vendors most commonly refer to as
-JavaScript.}, ECMAScript 6\footnote{ECMAScript 6 was renamed ECMAScript 2015
+JavaScript.} ECMAScript 6\footnote{ECMAScript 6 was renamed ECMAScript 2015
 during the standardization process, but this thesis uses the more commonly known name
 of the revision for the sake of clarity. For an up-to-date version of this revision
 please refer to \parencite{ECMA6}.} and ECMAScript 7\footnote{Now ECMAScript 2017. For
 an up-to-date version of the current draft please refer to \parencite{ECMA7}.}, a
-lot of conveniences from third-party libraries have been adopted by the
-``vanilla''\footnote{A common name for JavaScript that refrains from leveraging
-paradigm-altering libraries.} JavaScript canon.
+lot of conveniences from third-party libraries have been adopted by the ``vanilla''
+JavaScript canon.\footnote{``vanilla'' is a common qualifier for JavaScript that
+refrains from leveraging paradigm-altering libraries.}
 Among these features is the widely controversial introduction of a \texttt{class}
 notation for JavaScript that makes prototypes feel more like classes without
 breaking from existing semantics.
@@ -289,8 +289,8 @@ this is often a doable task, albeit not always desirable.
 
 The value of having the same level of abstraction present at runtime as at compile-time
 is obvious if the language that is considered places strong emphasis on code
-mutability, such as in Lisp or Elixir\footnote{As exemplified by Chris McCord in
-\parencite{ELIX}.}. This thesis aims to equip the programmer with these abstractions
+mutability, such as in Lisp or Elixir.\footnote{As exemplified by Chris McCord in
+\parencite{ELIX}.} This thesis aims to equip the programmer with these abstractions
 by presenting a language that is not a preprocessor, but a genuine runtime system
 for the frontend.
 
@@ -377,8 +377,8 @@ kinds of systems in the context of this thesis.
 
 GHCJS --- often hyphenated as GHC-JS --- is a transpiler from the Haskell language
 to JavaScript. It is currently maintained by Luite Stegeman. It aims to ``solve
-the JavaScript problem''\footnote{A talk given by Stegeman bore this title, see
-\parencite{STEG}.}, in that it enables the user to compile any Haskell program to JavaScript.
+the JavaScript problem'',\footnote{A talk given by Stegeman bore this title, see
+\parencite{STEG}.} in that it enables the user to compile any Haskell program to JavaScript.
 GHCJS does so by insterting a custom compiler backend into the \gls{ghc} toolchain
 that emits JavaScript instead of machine code.
 
@@ -463,9 +463,9 @@ commit history of \texttt{https://github.com/jashkenas/coffeescript}.
 The first public release took place shortly after that.} Many of the constructs,
 relating both to syntax and semantics, have been adopted by JavaScript.
 CoffeeScript is similar to JavaScript in that it is a procedural, prototypal
-language. No semantic features have been added or removed from JavaScript\footnote{Although
+language. No semantic features have been added or removed from JavaScript,\footnote{Although
 the syntactic abstractions often make it seem as if CoffeeScript offers
-constructs that are missing from JavaScript.}, making it relatively
+constructs that are missing from JavaScript.} making it relatively
 dissimilar to the programming system presented in this thesis.
 
 The biggest deviations from JavaScript can be found in the syntax.
@@ -639,8 +639,8 @@ to allow for the cross-fertilization of Scheme and zepto.
 
 While not necessarily a standard, Unix and its guidelines do indirectly affect zepto. Much of zepto's
 tooling, such as the \gls{zeps} use Unix utilities and system calls internally. This is expected to change
-in the future, but so far all of the developers who have worked on or with zepto\footnote{To the
-best of the author's knowledge.} have used Unix or Unix-like systems such as MacOS X or \gls{bsd}.
+in the future, but so far all of the developers who have worked on or with zepto have used Unix
+or Unix-like systems such as MacOS X or \gls{bsd}.\footnote{To the best of the author's knowledge.}
 This is less of a problem in the browser context because many of the packaging and versioning
 tools are run from the command line before the application is distributed. It is important to
 keep in mind, though, that some of the tools rely on a specific Operating System when
@@ -706,19 +706,19 @@ as expressiveness and elegance \parencite{JCM}.
 
 As explained in Section \ref{sec:ExistingStandards}, zepto is a new Scheme implementation. It seeks
 to be as small as possible, to be able to target a lot of different backends and simplify the
-process of writing new backend code. Currently, \gls{llvm} and Erlang Core\footnote{Erlang Core 
-is the \gls{ir} of Erlang code before it is complied. Resources and documentation
-about it are sparse; it mostly seems to exist inside the BEAM's implementation. A small
-paper \parencite{ERL} that describes its basics was used to implement the compiler from
-zepto.} bindings are under development. zepto's reference implementation is a simple interpreter
+process of writing new backend code. Currently, \gls{llvm} and Erlang Core bindings are under
+development.\footnote{Erlang Core is the \gls{ir} of Erlang code before it is complied. Resources
+and documentation about it are sparse; it mostly seems to exist inside the BEAM's implementation.
+A small paper \parencite{ERL} that describes its basics was used to implement the compiler
+from zepto.} zepto's reference implementation is a simple interpreter
 that evaluates code directly from the \gls{ast}. This is slow but ensures a small
 interpreter size.\footnote{The entire codebase is only about 4000 lines of Haskell code.}
 The compilers are written directly in zepto itself.
 
 The small code base makes zepto a good target for porting it to the web. Furthermore, because
 it is written in Haskell the code base was expected to be almost entirely compilable
-to JavaScript using GHCJS\footnote{GHCJS is the transpiler mentioned in Section \ref{sec:GHCJS},
-a backend for the \gls{ghc} targetting JavaScript instead of native code.}. It offers many
+to JavaScript using GHCJS.\footnote{GHCJS is the transpiler mentioned in Section \ref{sec:GHCJS},
+a backend for the \gls{ghc} targetting JavaScript instead of native code.} It offers many
 advanced compilation features such as inlining of JavaScript into the Haskell code
 base using a technique called quasi-quoting, wherein a special character sequence delimits the
 inlined code, much like regular quotes. This tool set was expected to simplify the work of
@@ -820,8 +820,8 @@ applications. The numerical tower is presented graphically in Figure \ref{fig:nu
 COercing between these types is always safe when done in the direction denoted
 by the arrows in Figure \ref{fig:numtower}. When coercing in the other direction, information
 is lost, or, in the case of coercion from floating point numbers to rationals, the meaning
-of the statement is ambiguous\footnote{This is due to any finite floating point number
-having an infinite number of representations as fractional values.}.
+of the statement is ambiguous.\footnote{This is due to any finite floating point number
+having an infinite number of representations as fractional values.}
 
 \section{Additional Features}
 
@@ -897,9 +897,9 @@ to be a problem and worked without further tweaking.
 \subsection{The standard library}
 
 zepto comes with a fairly extensive standard library. It includes a wide
-variety of utilities spanning such diverse topics as cryptography\footnote{As found
+variety of utilities spanning such diverse topics as cryptography,\footnote{As found
 in the \texttt{rsa} module, which implements RSA key generation, signing,
-validating, and en- and decryption.}, testing, monads, parsing command line
+validating, and en- and decryption.} testing, monads, parsing command line
 arguments, and a parser combinator.\footnote{An exhaustive list of the modules
 found in the zepto standard library at the time of writing can be found in appendix
 \ref{app:stdlib}.}
@@ -911,8 +911,8 @@ code for Chibi Scheme and its standard library can be found under
 https://github.com/ashinn/chibi-scheme.} and Racket, the distributions of which
 are bundled with an even bigger standard library. This might be due to the fact
 that Alex Shinn, the main developer behind Chibi Scheme, is very active in the
-Scheme community and has authored a few SRFIs\footnote{\gls{srfi} 56 \parencite{SRFI56}
-and 115 \parencite{SRFI115} were both proposed by Alex Shinn.} of his own. He has
+Scheme community and has authored a few SRFIs of his own. \footnote{\gls{srfi} 56
+\parencite{SRFI56} and 115 \parencite{SRFI115} were both proposed by Alex Shinn.} He has
 also served as one of the editors of the upcoming standard of Scheme \parencite{R7RS}.
 Additionally, Racket is a language supported by the Computer Science faculties of
 multiple universities and is the result of over twenty years of research.
@@ -930,19 +930,19 @@ is suggested.
 \subsection{\gls{zeps}}
 
 \gls{zeps} is the package manager for zepto. It is capable of installing and
-managing packages from Github\footnote{Github.com, often abbreviated to Github,
-is a website for hosting Git repositories. Git is a distributed versioning system
-\parencite{GIT}.} and the \gls{zpr} through the command line. It
+managing packages from Github and the \gls{zpr} through the command line.\footnote{Github.com,
+often abbreviated to Github, is a website for hosting Git repositories. Git is
+a distributed versioning system \parencite{GIT}.} It
 is undoubtedly the biggest coherent piece of code written entirely in zepto,
 and it is capable of intalling and updating itself. At the time of writing,
 at least forty packages have been published with \gls{zeps}, including a framework
 for writing web servers and a Redis database client. It is only able to run
 on Unix-like systems or systems exposing at least a Unix-like shell.
 
-The authentication system of \gls{zeps} on the \gls{zpr} is RSA-backed\footnote{RSA,
+The authentication system of \gls{zeps} on the \gls{zpr} is RSA-backed,\footnote{RSA,
 named after its inventors Ron Rivest, Adi Shamir, and Leonard Ableton, is a public-key
 cryptosystem that was first described in the article ``A Method for Obtaining Digital
-Signatures and Public-Key Cryptosystems'' \parencite{RSA}.}, which
+Signatures and Public-Key Cryptosystems'' \parencite{RSA}.} which
 also allows for the signing of packages for the user's convenience. This feature
 is not available when installing from Github.
 
@@ -1038,9 +1038,9 @@ part of the interactivity of modern web development, is presented in \ref{sec:DO
 
 Other, more advanced multimedia libraries were not integrated at the time of writing.
 Planning and implementing the right abstraction interfaces for big \glspl{api} such as
-the WebAudio, WebMIDI or WebGL\footnote{These libraries provide audio, \gls{midi} and
+the WebAudio, WebMIDI or WebGL.\footnote{These libraries provide audio, \gls{midi} and
 graphical functionality to their user. \gls{midi} is a standard for the communication
-of musical devices \parencite{MIDI}.}. By providing a simplistic example as proof
+of musical devices \parencite{MIDI}.} By providing a simplistic example as proof
 of the concept, the possibility of this undertaking should, however, be demonstrated.
 
 It should also be noted that after the prototype is finished and released to the
@@ -1053,11 +1053,11 @@ to write these libraries.
 
 A big part of modern web development is the availability of tools that automate
 the process of preparing and shipping JavaScript code. There are tools that
-cross-compile, minify\footnote{Minification is the process of removing extraneous
+cross-compile, minify,\footnote{Minification is the process of removing extraneous
 characters from a program that have no syntactic meaning and only add to the readability
 of the code at hand. In the case of JavaScript, this includes newline characters,
 comments, and some spaces. The first JavaScript minifier was written by Douglas
-Crockford \parencite{JSMIN}.}, and optimize JavaScript in a matter of
+Crockford \parencite{JSMIN}.} and optimize JavaScript in a matter of
 seconds.\footnote{A few of those tools have been mentioned in the Chapters
 \ref{sec:Motivation} and \ref{chap:RelatedWork}.} There are also utilities that
 simplify the definition of pipelines in which the code is passed through various
@@ -1124,14 +1124,14 @@ down a rather natural path and kept the implementation described here fairly sho
 The build infrastructure is centered around GHCJS, the compiler mentioned in Section \ref{sec:GHCJS}.
 This means that the usual build infrastructure for Haskell is supported, which zepto-js partially
 makes use of, through Cabal and Stackage. Cabal is Haskell's standard package utility
-system\footnote{It does not claim to be a full-fledged package manager.}, through which
+system,\footnote{It does not claim to be a fully fledged package manager.} through which
 zepto-js' dependencies, installation and builds are configured. Stackage is an acronym
 for \textit{st}able h\textit{ackage}, wherein hackage is the Haskell package registry.
 It provides lists of packages and their versions that work with each other, making
 dependency relations more manageable.
 
-GHCJS itself provides zepto-js with aforementioned quasi-quoting\footnote{A description
-of quasi-quoting is provided in Section \ref{ququ}.}, which powers the JavaScript \gls{ffi}.
+GHCJS itself provides zepto-js with aforementioned quasi-quoting,\footnote{A description
+of quasi-quoting is provided in Section \ref{ququ}.} which powers the JavaScript \gls{ffi}.
 
 
 The management of pure JavaScript sources is another important feature. As in regular \gls{ghc},
@@ -1477,9 +1477,9 @@ were measured and evaluated. The results are presented in the following.
 
 \section{Usability}
 
-There are many ways to measure usability\footnote{For a comparison of ways
+There are many ways to measure usability.\footnote{For a comparison of ways
 to measure usability of designs, please refer to ``Methods for Measuring
-Usability'' \parencite{USBL}.}. All of them come with their own unqiue set
+Usability'' \parencite{USBL}.} All of them come with their own unqiue set
 of conveniences and drawbacks. A classical approach from the field of
 user-centered software design was chosen for zepto-js --- an alpha test
 followed by user feedback.
@@ -1517,9 +1517,9 @@ programming problems and which parts of zepto-js are cause for confusion.
 The goal of the workshop was to program an interactive website that would
 render personal information in the browser and provide the user with the means
 to edit them. This required form handling, validation, and, optionally, the
-use of \gls{ajax} technology\footnote{\gls{ajax} is a technique for asynchronous
+use of \gls{ajax} technology.\footnote{\gls{ajax} is a technique for asynchronous
 web applications. It leverages small, data-driven requests instead of the reload
-of an entire web page.}. The attendees were provided with a minimal development
+of an entire web page.} The attendees were provided with a minimal development
 template and instructions on how to work with the \gls{ffi} and \gls{dom} in zepto-js.
 
 During the workshops, most questions asked were about tooling and the \gls{ffi}.
@@ -1539,9 +1539,9 @@ simplifies this process.
 
 Tthe users' response to the prototype was, in toto, very positive. Some
 of the attendees even suggested they might want to work on it, or with it, on
-a regular basis. All, however, except for attendee number seven\footnote{Attendee
+a regular basis. All, however, except for attendee number seven,\footnote{Attendee
 number seven had no prior programming experience and was thus very hesitant to
-provide comprehensive feedback.}, indicated that it is very obviously a prototypal
+provide comprehensive feedback.} indicated that it is very obviously a prototypal
 system.
 
 Due to time constraints it was not possible to incorporate all of the feedback into
@@ -1575,7 +1575,7 @@ JavaScript implementation of zepto would not be as apparent.
 Features that were removed include the \texttt{load} statement, \gls{repl} functionality,
 and language definitions as described in Section \ref{sec:LangDef}. These features
 are all interrelated and were dropped because zepto-js does not work on a file-based
-system\footnote{This matter was discussed in the Section \ref{sec:LangDef}.}. Zepto-js
+system.\footnote{This matter was discussed in the Section \ref{sec:LangDef}.} Zepto-js
 uses the tag-based approach presented in Section \ref{sec:MutObs} to fit into the web
 ecosystem.
 
@@ -1597,10 +1597,10 @@ should not be due to zepto.
 
 A small testbench of test programs was written, testing operations on
 different data types and of different complexity, from integer addition and
-the generation of lists to the calculation of Fibonacci numbers\footnote{Of interest
+the generation of lists to the calculation of Fibonacci numbers.\footnote{Of interest
 might be that not the usual tree-recursive algorithm was used but rather the
 algorithm that uses the formula \(f(n) = \lfloor{((1 + \sqrt{5}) / 2)^n / \sqrt{5} + 1/2)}\rfloor\),
-as found in zepto's standard library. It is of logarithmic time complexity.}.
+as found in zepto's standard library. It is of logarithmic time complexity.}
 The example programs are listed in Appendix \ref{app:testbench}, a graphical
 representation of the results is provided in Figure \ref{fig:benchres}. The
 benchmarking library used is \texttt{bench} from zepto's standard library,
@@ -1717,10 +1717,11 @@ is written purely in unoptimized zepto and thus relatively slow. Encoding four
 megabytes of binary data takes around one minute in both zepto implementations.
 Using the \gls{dom} function \texttt{window.btoa}, however, a standardized function
 to encode data in Base64, the execution time  can be dramatically reduced, as shown
-in Figure \ref{fig:base64}\footnote{It is denoted as ``zepto-js \gls{ffi}''.}. This
-is partly due to the JavaScript function being a natively implemented function rather
-than part of a JavaScript library. It should be noted, however, that native JavaScript
-code is more often than not faster than its zepto-js equivalent.
+in Figure \ref{fig:base64}.\footnote{The optimized function is denoted as
+``zepto-js \gls{ffi}''.} This is partly due to the JavaScript function being a
+natively implemented function rather than part of a JavaScript library. It should
+be noted, however, that native JavaScript code is more often than not faster
+than its zepto-js equivalent.
 
 \begin{figure}
 \centering
@@ -1785,11 +1786,11 @@ them usable --- the aforementioned compiler backends for LLVM and Erlang come to
 mind, as well as a web server framework that uses a \gls{dsl} to simplify writing
 request handlers ---, some of them borne purely out of the desire to toy around
 with the language; parsers and cross-compilers have been written for a handful of
-esoteric programming languages, including Brainfuck\footnote{Brainfuck is a language
+esoteric programming languages, including Brainfuck,\footnote{Brainfuck is a language
 that aims to reduce programming to its most minimal form and tries to emulate a Turing
-machine \parencite{BFK}.}, Io, and Iota\footnote{Io and Iota are conceptually similar
+machine \parencite{BFK}.} Io, and Iota.\footnote{Io and Iota are conceptually similar
 to Brainfuck, although they try to reduce programming to the lambda calculus described
-by Alonzo Church \parencite{IOT}.}.
+by Alonzo Church \parencite{IOT}.}
 
 The development of \gls{zeps} has surely contributed to the growth of zepto and
 fueled the development of zepto-js. It is tested on real systems and has
